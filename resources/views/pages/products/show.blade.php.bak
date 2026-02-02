@@ -1,0 +1,409 @@
+@extends('layouts.app')
+
+@section('title', $product->getTranslation('name', app()->getLocale()) . ' - ' . config('app.name'))
+@section('meta_description', Str::limit(strip_tags($product->getTranslation('description', app()->getLocale())), 160))
+
+@push('meta')
+    <meta property="og:type" content="product">
+    <meta property="og:title" content="{{ $product->getTranslation('name', app()->getLocale()) }}">
+    <meta property="og:description" content="{{ Str::limit(strip_tags($product->getTranslation('description', app()->getLocale())), 160) }}">
+    @if($product->getFirstMediaUrl('images'))
+        <meta property="og:image" content="{{ $product->getFirstMediaUrl('images') }}">
+    @endif
+@endpush
+
+@push('schema')
+    @php
+        $schemaService = app(\App\Services\SchemaService::class);
+        
+        // Product Schema
+        $productData = [
+            'name' => $product->getTranslation('name', app()->getLocale()),
+            'description' => $product->getTranslation('description', app()->getLocale()),
+            'short_description' => $product->getTranslation('short_description', app()->getLocale()),
+            'slug' => $product->slug,
+            'sku' => $product->sku ?? $product->slug,
+            'price' => $product->price ?? 0,
+            'stock_status' => $product->stock_status ?? 'ready',
+            'primary_image' => $product->productMedia->first()?->file_path ?? null,
+            'reviews_count' => $product->reviews_count ?? 0,
+            'average_rating' => $product->average_rating ?? 5,
+        ];
+        
+        $categoryData = $product->category ? [
+            'name' => $product->category->getTranslation('name', app()->getLocale()),
+        ] : null;
+        
+        $productSchema = $schemaService->getProductSchema($productData, $categoryData);
+        
+        // Breadcrumb Schema
+        $breadcrumbItems = [
+            ['name' => __('Home'), 'url' => route('home')],
+            ['name' => __('Products'), 'url' => route('products.index')],
+        ];
+        foreach($breadcrumbs as $crumb) {
+            $breadcrumbItems[] = ['name' => $crumb['name'], 'url' => $crumb['url']];
+        }
+        $breadcrumbSchema = $schemaService->getBreadcrumbSchema($breadcrumbItems);
+        
+        // FAQ Schema (if product has FAQs)
+        $faqSchema = null;
+        if($product->productFaqs && $product->productFaqs->count() > 0) {
+            $faqs = $product->productFaqs->map(function($faq) {
+                return [
+                    'question' => $faq->getTranslation('question', app()->getLocale()),
+                    'answer' => $faq->getTranslation('answer', app()->getLocale()),
+                ];
+            })->toArray();
+            $faqSchema = $schemaService->getFaqSchema($faqs);
+        }
+    @endphp
+    <x-schema-markup :schemas="[$productSchema, $breadcrumbSchema]" />
+    @if($faqSchema)
+        <x-schema-markup :schemas="[$faqSchema]" />
+    @endif
+@endpush
+
+@section('content')
+    {{-- Page Header --}}
+    <section class="bg-gray-50 py-4">
+        <div class="container">
+            <nav class="text-sm" aria-label="Breadcrumb">
+                <ol class="flex items-center gap-2 flex-wrap">
+                    <li><a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600">{{ __('Home') }}</a></li>
+                    <li><span class="text-gray-400">/</span></li>
+                    <li><a href="{{ route('products.index') }}" class="text-gray-500 hover:text-primary-600">{{ __('Products') }}</a></li>
+                    @foreach($breadcrumbs as $crumb)
+                        <li><span class="text-gray-400">/</span></li>
+                        @if($crumb['url'])
+                            <li><a href="{{ $crumb['url'] }}" class="text-gray-500 hover:text-primary-600">{{ $crumb['name'] }}</a></li>
+                        @else
+                            <li class="text-gray-900 font-medium">{{ $crumb['name'] }}</li>
+                        @endif
+                    @endforeach
+                </ol>
+            </nav>
+        </div>
+    </section>
+
+    {{-- Product Detail --}}
+    <section class="py-8 md:py-12">
+        <div class="container">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                {{-- Product Gallery --}}
+                <div x-data="{ activeImage: 0 }">
+                    {{-- Main Image --}}
+                    <div class="aspect-square bg-gray-100 rounded-xl overflow-hidden mb-4">
+                        @if($product->productMedia->count() > 0)
+                            @foreach($product->productMedia as $index => $media)
+                                <div x-show="activeImage === {{ $index }}" x-transition class="w-full h-full">
+                                    @if($media->type === 'image')
+                                        <img src="{{ $media->url }}" alt="{{ $product->getTranslation('name', app()->getLocale()) }}" class="w-full h-full object-contain">
+                                    @elseif($media->type === 'video')
+                                        <video src="{{ $media->url }}" controls class="w-full h-full object-contain"></video>
+                                    @elseif($media->type === 'youtube')
+                                        <iframe src="https://www.youtube.com/embed/{{ $media->youtube_id }}" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+                                    @endif
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="w-full h-full flex items-center justify-center">
+                                <svg class="w-24 h-24 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                        @endif
+                    </div>
+                    
+                    {{-- Thumbnails --}}
+                    @if($product->productMedia->count() > 1)
+                        <div class="grid grid-cols-6 gap-2">
+                            @foreach($product->productMedia as $index => $media)
+                                <button @click="activeImage = {{ $index }}" :class="activeImage === {{ $index }} ? 'ring-2 ring-primary-500' : ''" class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                                    @if($media->type === 'image')
+                                        <img src="{{ $media->thumbnail_url ?? $media->url }}" alt="Thumbnail" class="w-full h-full object-cover">
+                                    @elseif($media->type === 'video' || $media->type === 'youtube')
+                                        <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                                            <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </button>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
+                {{-- Product Info --}}
+                <div>
+                    @if($product->category)
+                        <a href="{{ route('products.category', $product->category->slug) }}" class="text-sm text-primary-600 hover:text-primary-700 font-medium">{{ $product->category->getTranslation('name', app()->getLocale()) }}</a>
+                    @endif
+                    
+                    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold font-heading text-gray-900 mt-2">
+                        {{ $product->getTranslation('name', app()->getLocale()) }}
+                    </h1>
+                    
+                    <div class="flex items-center gap-4 mt-4">
+                        @if($product->sku)
+                            <span class="text-sm text-gray-500">SKU: {{ $product->sku }}</span>
+                        @endif
+                        @if($product->stock_status === 'in_stock')
+                            <span class="badge bg-green-100 text-green-700">{{ __('In Stock') }}</span>
+                        @elseif($product->stock_status === 'pre_order')
+                            <span class="badge bg-yellow-100 text-yellow-700">{{ __('Pre Order') }}</span>
+                        @else
+                            <span class="badge bg-red-100 text-red-700">{{ __('Out of Stock') }}</span>
+                        @endif
+                    </div>
+
+                    {{-- Short Description --}}
+                    @if($product->short_description)
+                        <p class="text-gray-600 mt-6 text-lg">
+                            {{ $product->getTranslation('short_description', app()->getLocale()) }}
+                        </p>
+                    @endif
+
+                    {{-- Variants --}}
+                    @if($product->variants->count() > 0)
+                        <div class="mt-8" x-data="{ selectedVariant: null }">
+                            <h3 class="font-semibold text-gray-900 mb-3">{{ __('Variants') }}</h3>
+                            <div class="space-y-2">
+                                @foreach($product->variants as $variant)
+                                    <label class="flex items-center gap-3 p-3 border rounded-lg cursor-pointer hover:border-primary-500 transition-colors" :class="selectedVariant === '{{ $variant->id }}' ? 'border-primary-500 bg-primary-50' : 'border-gray-200'">
+                                        <input type="radio" name="variant" value="{{ $variant->id }}" x-model="selectedVariant" class="text-primary-600">
+                                        <div class="flex-1">
+                                            <span class="font-medium">{{ $variant->getTranslation('name', app()->getLocale()) }}</span>
+                                            @if($variant->sku)
+                                                <span class="text-sm text-gray-500 ml-2">({{ $variant->sku }})</span>
+                                            @endif
+                                        </div>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Actions --}}
+                    <div class="mt-8 flex flex-wrap gap-4">
+                        <a href="{{ route('quote') }}?product={{ $product->id }}" class="btn btn-primary text-lg px-8 py-3">
+                            {{ __('Request Quote') }}
+                        </a>
+                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', config('social.whatsapp')) }}?text=Halo, saya tertarik dengan produk {{ $product->getTranslation('name', 'id') }} ({{ $product->sku }})" target="_blank" class="btn bg-green-500 hover:bg-green-600 text-white text-lg px-8 py-3">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                            </svg>
+                            Chat WhatsApp
+                        </a>
+                    </div>
+
+                    {{-- Product Inquiry Form --}}
+                    <div class="mt-8 pt-8 border-t">
+                        <h3 class="font-semibold text-gray-900 mb-4">{{ __('Quick Inquiry') }}</h3>
+                        @livewire('product-inquiry-form', ['product' => $product])
+                    </div>
+
+                    {{-- Marketplace Links --}}
+                    @php
+                        $marketplaceSettings = app(\App\Services\SettingService::class)->getMarketplaceLinks();
+                        $showMarketplaceProduct = $marketplaceSettings['show_marketplace_product'] ?? false;
+                    @endphp
+                    @if($showMarketplaceProduct && $product->marketplaceLinks->count() > 0)
+                        <div class="mt-8 pt-8 border-t">
+                            <h3 class="font-semibold text-gray-900 mb-4">{{ __('Buy on') }} Marketplace:</h3>
+                            <div class="flex flex-wrap gap-3">
+                                @foreach($product->marketplaceLinks as $link)
+                                    <a href="{{ route('products.marketplace', ['platform' => $link->platform, 'product' => $product->id]) }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 hover:border-primary-500 hover:bg-primary-50 transition-colors">
+                                        @switch($link->platform)
+                                            @case('shopee')
+                                                <img src="/images/marketplaces/shopee.png" alt="Shopee" class="w-6 h-6">
+                                                @break
+                                            @case('tokopedia')
+                                                <img src="/images/marketplaces/tokopedia.png" alt="Tokopedia" class="w-6 h-6">
+                                                @break
+                                            @case('tiktok')
+                                                <img src="/images/marketplaces/tiktok.png" alt="TikTok Shop" class="w-6 h-6">
+                                                @break
+                                            @case('lazada')
+                                                <img src="/images/marketplaces/lazada.png" alt="Lazada" class="w-6 h-6">
+                                                @break
+                                            @case('blibli')
+                                                <img src="/images/marketplaces/blibli.png" alt="Blibli" class="w-6 h-6">
+                                                @break
+                                            @default
+                                                <svg class="w-6 h-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                                                </svg>
+                                        @endswitch
+                                        <span class="font-medium">{{ ucfirst($link->platform) }}</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- Global Marketplace Links (Store Links) --}}
+                    @if($showMarketplaceProduct)
+                        @php
+                            $globalMarketplaces = [
+                                ['key' => 'shopee_url', 'name' => 'Shopee', 'color' => 'bg-orange-500'],
+                                ['key' => 'tokopedia_url', 'name' => 'Tokopedia', 'color' => 'bg-green-500'],
+                                ['key' => 'tiktok_shop_url', 'name' => 'TikTok Shop', 'color' => 'bg-black'],
+                                ['key' => 'lazada_url', 'name' => 'Lazada', 'color' => 'bg-blue-800'],
+                                ['key' => 'blibli_url', 'name' => 'Blibli', 'color' => 'bg-blue-600'],
+                            ];
+                            $activeGlobalMarketplaces = collect($globalMarketplaces)->filter(fn($m) => !empty($marketplaceSettings[$m['key']]));
+                        @endphp
+                        @if($product->marketplaceLinks->count() == 0 && $activeGlobalMarketplaces->count() > 0)
+                            <div class="mt-8 pt-8 border-t">
+                                <h3 class="font-semibold text-gray-900 mb-4">{{ __('Also Available at') }}:</h3>
+                                <div class="flex flex-wrap gap-3">
+                                    @foreach($activeGlobalMarketplaces as $mp)
+                                        <a href="{{ $marketplaceSettings[$mp['key']] }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 hover:border-primary-500 hover:bg-primary-50 transition-colors">
+                                            <div class="w-6 h-6 {{ $mp['color'] }} rounded flex items-center justify-center text-white text-xs font-bold">{{ substr($mp['name'], 0, 1) }}</div>
+                                            <span class="font-medium">{{ $mp['name'] }}</span>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+
+                    {{-- Share --}}
+                    <div class="mt-8 pt-8 border-t">
+                        <h3 class="font-semibold text-gray-900 mb-4">{{ __('Share') }}:</h3>
+                        <div class="flex gap-3">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(request()->url()) }}" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($product->getTranslation('name', app()->getLocale())) }}" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-black text-white hover:bg-gray-800 transition-colors">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            </a>
+                            <a href="https://wa.me/?text={{ urlencode($product->getTranslation('name', app()->getLocale()) . ' - ' . request()->url()) }}" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-full bg-green-500 text-white hover:bg-green-600 transition-colors">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- Product Details Tabs --}}
+    <section class="py-8 md:py-12 bg-gray-50">
+        <div class="container">
+            <div x-data="{ activeTab: 'description' }">
+                {{-- Tabs --}}
+                <div class="flex flex-wrap border-b border-gray-200 mb-8">
+                    <button @click="activeTab = 'description'" :class="activeTab === 'description' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-medium border-b-2 transition-colors">
+                        {{ __('Product Description') }}
+                    </button>
+                    @if($product->specifications)
+                        <button @click="activeTab = 'specifications'" :class="activeTab === 'specifications' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-medium border-b-2 transition-colors">
+                            {{ __('Specifications') }}
+                        </button>
+                    @endif
+                    @if($product->documents->count() > 0)
+                        <button @click="activeTab = 'documents'" :class="activeTab === 'documents' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-medium border-b-2 transition-colors">
+                            {{ __('Documents') }}
+                        </button>
+                    @endif
+                    @if($product->faqs->count() > 0)
+                        <button @click="activeTab = 'faq'" :class="activeTab === 'faq' ? 'border-primary-500 text-primary-600' : 'border-transparent text-gray-500 hover:text-gray-700'" class="px-6 py-3 font-medium border-b-2 transition-colors">
+                            {{ __('FAQ') }}
+                        </button>
+                    @endif
+                </div>
+
+                {{-- Tab Content --}}
+                <div class="bg-white rounded-xl p-6 md:p-8">
+                    {{-- Description --}}
+                    <div x-show="activeTab === 'description'" x-transition>
+                        <div class="prose prose-lg max-w-none">
+                            {!! $product->getTranslation('description', app()->getLocale()) !!}
+                        </div>
+                    </div>
+
+                    {{-- Specifications --}}
+                    @if($product->specifications)
+                        <div x-show="activeTab === 'specifications'" x-transition>
+                            <table class="w-full">
+                                <tbody class="divide-y divide-gray-200">
+                                    @foreach($product->specifications as $key => $value)
+                                        <tr>
+                                            <td class="py-3 pr-4 font-medium text-gray-900 w-1/3">{{ $key }}</td>
+                                            <td class="py-3 text-gray-600">{{ $value }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+
+                    {{-- Documents --}}
+                    @if($product->documents->count() > 0)
+                        <div x-show="activeTab === 'documents'" x-transition>
+                            <div class="space-y-4">
+                                @foreach($product->documents as $document)
+                                    <a href="{{ $document->file_url }}" target="_blank" class="flex items-center gap-4 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h4 class="font-medium text-gray-900">{{ $document->getTranslation('title', app()->getLocale()) }}</h4>
+                                            <p class="text-sm text-gray-500">{{ strtoupper($document->file_type) }} • {{ $document->formatted_file_size }}</p>
+                                        </div>
+                                        <svg class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                        </svg>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+
+                    {{-- FAQ --}}
+                    @if($product->faqs->count() > 0)
+                        <div x-show="activeTab === 'faq'" x-transition>
+                            <div class="space-y-4" x-data="{ openFaq: null }">
+                                @foreach($product->faqs as $index => $faq)
+                                    <div class="border rounded-lg">
+                                        <button @click="openFaq = openFaq === {{ $index }} ? null : {{ $index }}" class="w-full flex items-center justify-between p-4 text-left">
+                                            <span class="font-medium text-gray-900">{{ $faq->getTranslation('question', app()->getLocale()) }}</span>
+                                            <svg class="w-5 h-5 text-gray-500 transform transition-transform" :class="openFaq === {{ $index }} ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                            </svg>
+                                        </button>
+                                        <div x-show="openFaq === {{ $index }}" x-collapse>
+                                            <div class="px-4 pb-4 text-gray-600">
+                                                {{ $faq->getTranslation('answer', app()->getLocale()) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- Related Products --}}
+    @if($relatedProducts->count() > 0)
+        <section class="py-12 md:py-16">
+            <div class="container">
+                <h2 class="section-title">{{ __('Related Products') }}</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+                    @foreach($relatedProducts as $related)
+                        @include('components.product-card', ['product' => $related])
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+@endsection
+

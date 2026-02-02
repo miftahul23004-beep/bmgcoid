@@ -1,0 +1,140 @@
+================================================================================
+            PANDUAN UPLOAD KE HOSTING - berkahmandiri.co.id
+================================================================================
+
+CARA PALING MUDAH: INSTALL WIZARD
+=================================
+
+1. Upload semua file ke hosting
+2. Buka: https://berkahmandiri.co.id/install
+3. Ikuti langkah-langkah wizard
+4. Selesai! Hapus folder /install setelahnya
+
+
+STRUKTUR FOLDER DI HOSTING:
+===========================
+
+OPSI 1: Shared Hosting dengan public_html (cPanel)
+--------------------------------------------------
+1. Upload semua file KECUALI folder "public" ke folder di LUAR public_html
+   Contoh: /home/berkahma/bmg/
+
+2. Upload ISI folder "public" ke public_html
+   Contoh: /home/berkahma/public_html/
+
+3. Edit file public_html/index.php, ubah path:
+   
+   DARI:
+   require __DIR__.'/../vendor/autoload.php';
+   $app = require_once __DIR__.'/../bootstrap/app.php';
+   
+   MENJADI:
+   require __DIR__.'/../bmg/vendor/autoload.php';
+   $app = require_once __DIR__.'/../bmg/bootstrap/app.php';
+
+
+OPSI 2: VPS/Dedicated Server
+----------------------------
+1. Upload semua file ke folder website
+   Contoh: /var/www/berkahmandiri.co.id/
+
+2. Arahkan document root ke folder "public"
+   Contoh: /var/www/berkahmandiri.co.id/public
+
+
+LANGKAH-LANGKAH SETUP MANUAL:
+=============================
+
+1. UPLOAD FILES
+   - Upload semua file dari folder "upload" ke hosting
+
+2. SETUP .ENV
+   - Rename .env.example menjadi .env
+   - Edit .env dan sesuaikan:
+     * APP_URL=https://berkahmandiri.co.id
+     * DB_DATABASE, DB_USERNAME, DB_PASSWORD
+     * MAIL settings
+
+3. GENERATE APP KEY
+   - Jalankan: php artisan key:generate
+
+4. SETUP DATABASE
+   - Import database atau jalankan: php artisan migrate --seed
+
+5. BUAT STORAGE LINK
+   - Jalankan: php artisan storage:link
+   - Atau buat symlink manual: public/storage -> storage/app/public
+
+6. SET PERMISSIONS
+   - chmod -R 775 storage
+   - chmod -R 775 bootstrap/cache
+
+7. CACHE CONFIG (Untuk performa)
+   - php artisan config:cache
+   - php artisan route:cache
+   - php artisan view:cache
+
+8. TEST WEBSITE
+   - Buka https://berkahmandiri.co.id
+   - Buka https://berkahmandiri.co.id/admin
+
+
+KONFIGURASI DNS:
+================
+
+Pastikan DNS domain mengarah ke server hosting:
+- A Record: berkahmandiri.co.id -> IP_SERVER
+- A Record: www.berkahmandiri.co.id -> IP_SERVER
+
+Atau gunakan CNAME jika hosting menyediakan subdomain.
+
+
+TROUBLESHOOTING:
+================
+
+Error 500 / Blank Page:
+- Cek storage/logs/laravel.log
+- Pastikan permissions benar (775 untuk storage dan bootstrap/cache)
+- Pastikan .env sudah dikonfigurasi dengan benar
+
+Error Database:
+- Pastikan kredensial database benar di .env
+- Pastikan database sudah ada dan bisa diakses
+
+Error Storage/Images:
+- Jalankan: php artisan storage:link
+- Pastikan folder storage/app/public ada
+
+SSL Certificate:
+- Gunakan Let's Encrypt dari cPanel (gratis)
+- Atau install via Certbot untuk VPS
+
+================================================================================
+INFORMASI TEKNIS
+================================================================================
+
+Domain: berkahmandiri.co.id
+PHP Version Required: 8.2+
+Laravel Version: 12.x
+Database: MySQL 5.7+ / MariaDB 10.3+
+
+Extensions Required:
+- BCMath PHP Extension
+- Ctype PHP Extension
+- Fileinfo PHP Extension
+- JSON PHP Extension
+- Mbstring PHP Extension
+- OpenSSL PHP Extension
+- PDO PHP Extension
+- PDO MySQL Extension
+- Tokenizer PHP Extension
+- XML PHP Extension
+- GD PHP Extension
+
+================================================================================
+KONTAK SUPPORT
+================================================================================
+
+Jika mengalami kesulitan, hubungi developer.
+
+================================================================================

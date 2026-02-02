@@ -1,0 +1,16 @@
+# PT. Berkah Mandiri Globalindo - bmg.local
+User-agent: *
+Disallow: /admin/
+Disallow: /livewire/
+Disallow: /api/
+Disallow: /storage/logs/
+Disallow: /_debugbar/
+
+# Allow all crawlers
+Allow: /
+
+# Sitemap
+Sitemap: https://bmg.local/sitemap.xml
+
+# Crawl-delay (optional - be nice to server)
+Crawl-delay: 1

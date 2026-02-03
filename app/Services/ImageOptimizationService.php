@@ -28,10 +28,11 @@ class ImageOptimizationService
             return $path;
         }
         
-        // Skip if already webp and under size limit
+        // Check current file size and extension
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
         $currentSize = filesize($storagePath) / 1024; // KB
         
+        // Skip if already webp and under size limit
         if ($extension === 'webp' && $currentSize <= $maxSizeKb) {
             return $path;
         }
@@ -39,42 +40,60 @@ class ImageOptimizationService
         // Generate new webp path
         $directory = pathinfo($path, PATHINFO_DIRNAME);
         $filename = pathinfo($path, PATHINFO_FILENAME);
-        $newPath = $directory . '/' . $filename . '.webp';
+        $newPath = $directory . '/' . $filename . '_opt.webp';
         $newStoragePath = Storage::disk('public')->path($newPath);
         
         try {
             // Start with quality 85 and decrease until under max size
             $quality = 85;
-            $minQuality = 30;
+            $minQuality = 20;
+            $currentWidth = $maxWidth;
             
             do {
+                // Clear file stat cache to get accurate size
+                clearstatcache(true, $newStoragePath);
+                
                 Image::useImageDriver(ImageDriver::Gd)
                     ->load($storagePath)
-                    ->width($maxWidth)
+                    ->width($currentWidth)
                     ->quality($quality)
                     ->save($newStoragePath);
                 
+                clearstatcache(true, $newStoragePath);
                 $newSize = filesize($newStoragePath) / 1024; // KB
+                
+                \Log::info("Image optimization: quality={$quality}, width={$currentWidth}, size={$newSize}KB, target={$maxSizeKb}KB");
                 
                 if ($newSize <= $maxSizeKb) {
                     break;
                 }
                 
-                $quality -= 10;
+                $quality -= 5;
                 
-            } while ($quality >= $minQuality);
+                // If quality is too low, reduce dimensions instead
+                if ($quality < $minQuality && $currentWidth > 800) {
+                    $quality = 70;
+                    $currentWidth -= 200;
+                }
+                
+            } while ($quality >= $minQuality || $currentWidth > 800);
             
-            // If still too large, reduce dimensions
-            if ($newSize > $maxSizeKb && $maxWidth > 800) {
-                $this->convertToWebp($path, $maxSizeKb, $maxWidth - 200);
-            }
-            
-            // Delete original file if different extension
-            if ($extension !== 'webp' && file_exists($storagePath)) {
+            // Delete original file
+            if (file_exists($storagePath) && $storagePath !== $newStoragePath) {
                 unlink($storagePath);
             }
             
-            return $newPath;
+            // Rename optimized file to clean name
+            $finalPath = $directory . '/' . $filename . '.webp';
+            $finalStoragePath = Storage::disk('public')->path($finalPath);
+            
+            if (file_exists($finalStoragePath) && $finalStoragePath !== $newStoragePath) {
+                unlink($finalStoragePath);
+            }
+            
+            rename($newStoragePath, $finalStoragePath);
+            
+            return $finalPath;
             
         } catch (\Exception $e) {
             \Log::error('Image conversion failed: ' . $e->getMessage());

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 
 class LanguageController extends Controller
@@ -16,9 +17,13 @@ class LanguageController extends Controller
             $locale = 'id';
         }
 
+        // Store in both session and cookie for reliability
         Session::put('locale', $locale);
         app()->setLocale($locale);
 
-        return redirect()->back();
+        // Cookie lasts 1 year
+        $cookie = Cookie::make('locale', $locale, 60 * 24 * 365, '/', null, false, false);
+
+        return redirect()->back()->withCookie($cookie);
     }
 }

@@ -81,3 +81,16 @@ Route::get('/clear-hero-cache/{secret}', function ($secret) {
     \Illuminate\Support\Facades\Cache::forget('hero_slides.displayable');
     return response()->json(['status' => 'ok', 'message' => 'Hero slides cache cleared']);
 });
+
+// Debug hero slides (temporary)
+Route::get('/debug-hero/{secret}', function ($secret) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    $slides = \App\Models\HeroSlide::select('id', 'title_id', 'image', 'mobile_image', 'is_active')->get();
+    $files = \Illuminate\Support\Facades\Storage::disk('public')->files('hero-slides');
+    return response()->json([
+        'database' => $slides,
+        'files_in_folder' => $files
+    ]);
+});

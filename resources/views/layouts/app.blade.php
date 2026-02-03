@@ -47,6 +47,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
+    {{-- Preload LCP hero image for homepage --}}
+    @stack('preload')
+    
     {{-- Fonts with display=swap for FOUT optimization --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
 

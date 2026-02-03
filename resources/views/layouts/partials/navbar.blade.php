@@ -48,9 +48,9 @@
                     @mouseenter="activeDropdown = 'about'"
                     @mouseleave="activeDropdown = null"
                 >
-                    <button class="flex items-center font-medium text-gray-700 hover:text-primary-600 transition-colors {{ request()->routeIs('about.*') ? 'text-primary-600' : '' }}">
+                    <button class="flex items-center font-medium text-gray-700 hover:text-primary-600 transition-colors {{ request()->routeIs('about.*') ? 'text-primary-600' : '' }}" aria-haspopup="true" aria-expanded="false">
                         {{ __('About') }}
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
@@ -211,9 +211,9 @@
                 
                 {{-- About Accordion --}}
                 <div x-data="{ open: false }">
-                    <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600">
+                    <button @click="open = !open" aria-label="{{ __('Toggle About menu') }}" :aria-expanded="open" class="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600">
                         <span>{{ __('About') }}</span>
-                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
@@ -227,9 +227,9 @@
                 
                 {{-- Products Accordion --}}
                 <div x-data="{ open: false }">
-                    <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 {{ request()->routeIs('products.*') ? 'text-primary-600' : '' }}">
+                    <button @click="open = !open" aria-label="{{ __('Toggle Products menu') }}" :aria-expanded="open" class="w-full flex items-center justify-between px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 {{ request()->routeIs('products.*') ? 'text-primary-600' : '' }}">
                         <span>{{ __('Products') }}</span>
-                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>

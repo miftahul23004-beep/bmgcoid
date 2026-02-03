@@ -161,13 +161,15 @@ class HeroSlide extends Model
     }
 
     /**
-     * Get all displayable slides
+     * Get all displayable slides (cached for 5 minutes)
      */
     public static function getDisplayableSlides()
     {
-        return static::active()
-            ->scheduled()
-            ->ordered()
-            ->get();
+        return \Illuminate\Support\Facades\Cache::remember('hero_slides.displayable', 300, function () {
+            return static::active()
+                ->scheduled()
+                ->ordered()
+                ->get();
+        });
     }
 }

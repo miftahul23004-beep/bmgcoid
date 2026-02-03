@@ -2,6 +2,13 @@
 
 @section('title', __('Home') . ' - ' . ($companyInfo['company_name'] ?? config('app.name')))
 
+{{-- Preload LCP hero image for faster rendering --}}
+@push('preload')
+@if($heroSlides->count() > 0)
+<link rel="preload" href="{{ $heroSlides->first()->image_url }}" as="image" fetchpriority="high">
+@endif
+@endpush
+
 @section('content')
     {{-- SEO: Main H1 heading (visually hidden but accessible) --}}
     <h1 class="sr-only">{{ $companyInfo['company_name'] ?? config('app.name') }} - {{ $companyInfo['company_tagline'] ?? __('Your Trusted Steel Partner') }}</h1>
@@ -41,18 +48,27 @@
         
         {{-- Slides --}}
         @foreach($heroSlides as $index => $slide)
-        <div x-show="currentSlide === {{ $index }}" 
+        <div @if($index === 0)
+                x-show="currentSlide === {{ $index }}"
+             @else
+                x-show="currentSlide === {{ $index }}"
+                x-cloak
+             @endif
              x-transition:enter="transition ease-out duration-700"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
              x-transition:leave="transition ease-in duration-300"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="absolute inset-0"
-             x-cloak>
+             class="absolute inset-0">
             
-            {{-- Background Image --}}
-            <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $slide->image_url }}')"></div>
+            {{-- Background Image - Use <img> for LCP optimization --}}
+            <img 
+                src="{{ $slide->image_url }}" 
+                alt="{{ $slide->title }}"
+                class="absolute inset-0 w-full h-full object-cover"
+                @if($index === 0) fetchpriority="high" loading="eager" @else loading="lazy" @endif
+            >
             
             {{-- Gradient Overlay --}}
             <div class="absolute inset-0 bg-gradient-to-r {{ $slide->gradient_class }}"></div>
@@ -108,22 +124,25 @@
         
         {{-- Navigation Arrows (show only if more than 1 slide) --}}
         @if($heroSlides->count() > 1)
-        <button @click="prevSlide()" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all border border-white/20 hover:scale-110 group">
-            <svg class="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button @click="prevSlide()" aria-label="{{ __('Previous slide') }}" class="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all border border-white/20 hover:scale-110 group">
+            <svg class="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
         </button>
         
-        <button @click="nextSlide()" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all border border-white/20 hover:scale-110 group">
-            <svg class="w-5 h-5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button @click="nextSlide()" aria-label="{{ __('Next slide') }}" class="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white rounded-full flex items-center justify-center transition-all border border-white/20 hover:scale-110 group">
+            <svg class="w-5 h-5 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
             </svg>
         </button>
         
         {{-- Dots Indicator --}}
-        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2" role="tablist" aria-label="{{ __('Slide navigation') }}">
             @foreach($heroSlides as $index => $slide)
             <button @click="goToSlide({{ $index }})" 
+                    aria-label="{{ __('Go to slide') }} {{ $index + 1 }}"
+                    role="tab"
+                    :aria-selected="currentSlide === {{ $index }}"
                     class="transition-all rounded-full"
                     :class="currentSlide === {{ $index }} ? 'w-8 h-2 bg-white' : 'w-2 h-2 bg-white/40 hover:bg-white/60'">
             </button>

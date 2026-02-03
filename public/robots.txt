@@ -11,10 +11,6 @@ Disallow: /api/
 Disallow: /storage/logs/
 Disallow: /_debugbar/
 Disallow: /vendor/
-Disallow: /*.json$
-Disallow: /*?*sort=
-Disallow: /*?*page=
-Disallow: /*?*lang=
 
 # Allow important resources
 Allow: /sitemap.xml
@@ -26,15 +22,10 @@ Allow: /images/
 # Sitemap
 Sitemap: https://berkahmandiri.co.id/sitemap.xml
 
-# Crawl-delay (be nice to server)
-Crawl-delay: 1
-
 # Google specific
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 0
 
 # Bing specific  
 User-agent: Bingbot
 Allow: /
-Crawl-delay: 1

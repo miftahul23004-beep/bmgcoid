@@ -25,13 +25,15 @@ class HomepageSection extends Model
     ];
 
     /**
-     * Get active sections ordered by sort_order
+     * Get active sections ordered by sort_order (cached for 10 minutes)
      */
     public static function getActiveSections(): \Illuminate\Database\Eloquent\Collection
     {
-        return static::where('is_active', true)
-            ->orderBy('sort_order')
-            ->get();
+        return \Illuminate\Support\Facades\Cache::remember('homepage_sections.active', 600, function () {
+            return static::where('is_active', true)
+                ->orderBy('sort_order')
+                ->get();
+        });
     }
 
     /**

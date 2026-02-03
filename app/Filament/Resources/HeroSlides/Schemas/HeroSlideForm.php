@@ -70,7 +70,7 @@ class HeroSlideForm
                             ->directory('hero-slides')
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(5120) // 5MB max upload
-                            ->helperText('Upload gambar (JPG, PNG, WebP). Akan otomatis dikonversi ke WebP max 200KB. Ukuran ideal: 1920x1080 pixels (16:9).'),
+                            ->helperText('Upload gambar (JPG, PNG, WebP). Akan otomatis dikonversi ke WebP max 95KB. Ukuran ideal: 1920x1080 pixels (16:9).'),
 
                         FileUpload::make('mobile_image')
                             ->label('Gambar Mobile (Opsional)')
@@ -78,7 +78,7 @@ class HeroSlideForm
                             ->directory('hero-slides')
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(5120) // 5MB max upload
-                            ->helperText('Akan otomatis dikonversi ke WebP max 150KB. Ukuran ideal: 750x1000 pixels.'),
+                            ->helperText('Akan otomatis dikonversi ke WebP max 80KB. Ukuran ideal: 750x1000 pixels.'),
 
                         Grid::make(2)
                             ->schema([

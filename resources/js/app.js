@@ -1,39 +1,23 @@
 import './bootstrap';
-import Alpine from 'alpinejs';
-import intersect from '@alpinejs/intersect';
-import collapse from '@alpinejs/collapse';
 
-// Register Alpine plugins
-Alpine.plugin(intersect);
-Alpine.plugin(collapse);
-
-// Alpine Stores
-Alpine.store('productView', {
-    mode: 'list',
-    init() {
-        // Load from localStorage if available
-        const saved = localStorage.getItem('productViewMode');
-        if (saved) {
-            this.mode = saved;
+// Livewire 3 includes Alpine.js automatically
+// We use the livewire:init event to add our stores before Alpine starts
+document.addEventListener('livewire:init', () => {
+    // Alpine Stores - using window.Alpine provided by Livewire
+    window.Alpine.store('productView', {
+        mode: 'list',
+        init() {
+            const saved = localStorage.getItem('productViewMode');
+            if (saved) {
+                this.mode = saved;
+            }
+        },
+        toggle() {
+            this.mode = this.mode === 'grid' ? 'list' : 'grid';
+            localStorage.setItem('productViewMode', this.mode);
         }
-    },
-    toggle() {
-        this.mode = this.mode === 'grid' ? 'list' : 'grid';
-        localStorage.setItem('productViewMode', this.mode);
-    }
+    });
 });
-
-// Watch for mode changes and save to localStorage
-Alpine.effect(() => {
-    const mode = Alpine.store('productView').mode;
-    localStorage.setItem('productViewMode', mode);
-});
-
-// Make Alpine available globally
-window.Alpine = Alpine;
-
-// Start Alpine
-Alpine.start();
 
 // Smooth scroll for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {

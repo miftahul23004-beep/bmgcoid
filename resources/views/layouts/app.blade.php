@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
+    {{-- Site Verification Meta Tags --}}
+    @php
+        $seoSettings = app(\App\Services\SettingService::class)->getGroup('seo');
+    @endphp
+    @if(!empty($seoSettings['google_site_verification']))
+        <meta name="google-site-verification" content="{{ $seoSettings['google_site_verification'] }}">
+    @endif
+    @if(!empty($seoSettings['bing_site_verification']))
+        <meta name="msvalidate.01" content="{{ $seoSettings['bing_site_verification'] }}">
+    @endif
+    
     {{-- SEO Meta Tags --}}
     <title>{{ $metaTitle ?? config('seo.defaults.title') }}</title>
     <meta name="description" content="{{ $metaDescription ?? config('seo.defaults.description') }}">
@@ -50,14 +61,24 @@
     {{-- Preload LCP hero image for homepage --}}
     @stack('preload')
     
-    {{-- Fonts with display=swap for FOUT optimization --}}
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+    {{-- Preload critical font (only weights used above fold) --}}
+    <link rel="preload" href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2" as="font" type="font/woff2" crossorigin>
+    
+    {{-- Fonts loaded async to prevent render blocking --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
+    </noscript>
 
-    {{-- Critical CSS for preventing CLS --}}
+    {{-- Critical CSS for preventing CLS and FOIT --}}
     <style>
         [x-cloak] { display: none !important; }
         /* Critical font fallback to prevent layout shift */
         body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        /* Prevent FOIT - show text immediately with fallback */
+        .font-display-swap { font-display: swap; }
     </style>
 
     {{-- Vite Assets --}}
@@ -66,16 +87,10 @@
     {{-- Additional Head Content --}}
     @stack('head')
     @stack('meta')
-
-    {{-- Google Analytics --}}
-    @if(config('seo.analytics.google_analytics_id'))
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('seo.analytics.google_analytics_id') }}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '{{ config('seo.analytics.google_analytics_id') }}');
-    </script>
+    
+    {{-- Custom Head Scripts from SEO Settings --}}
+    @if(!empty($seoSettings['custom_head_scripts']))
+        {!! $seoSettings['custom_head_scripts'] !!}
     @endif
 </head>
 <body class="font-sans antialiased bg-gray-50 text-gray-900 overflow-x-hidden">
@@ -122,6 +137,26 @@
     {{-- Additional Scripts --}}
     @stack('scripts')
 
+    {{-- Google Analytics - Loaded after page content for better performance --}}
+    @if(config('seo.analytics.google_analytics_id'))
+    <script>
+        // Defer Google Analytics until after page load
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                var script = document.createElement('script');
+                script.src = 'https://www.googletagmanager.com/gtag/js?id={{ config('seo.analytics.google_analytics_id') }}';
+                script.async = true;
+                document.head.appendChild(script);
+                
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '{{ config('seo.analytics.google_analytics_id') }}');
+            }, 2000); // Wait 2 seconds after page load
+        });
+    </script>
+    @endif
+
     {{-- Base JSON-LD Schema (Organization, LocalBusiness, WebSite) --}}
     @php
         $schemaService = app(\App\Services\SchemaService::class);
@@ -140,6 +175,11 @@
     {{-- Page-specific JSON-LD Schema --}}
     @stack('schema')
     @stack('structured-data')
+    
+    {{-- Custom Body Scripts from SEO Settings --}}
+    @if(!empty($seoSettings['custom_body_scripts']))
+        {!! $seoSettings['custom_body_scripts'] !!}
+    @endif
 </body>
 </html>
 

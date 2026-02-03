@@ -344,3 +344,62 @@ Route::get('/debug-articles/{secret}', function ($secret) {
         'files_in_folder' => $articleFiles,
     ]);
 });
+
+// Debug categories (temporary)
+Route::get('/debug-categories/{secret}', function ($secret) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    
+    $categories = \App\Models\Category::select('id', 'name', 'slug', 'icon', 'image')
+        ->where('is_active', true)
+        ->get();
+    
+    $categoryFiles = \Illuminate\Support\Facades\Storage::disk('public')->files('categories/images');
+    $iconFiles = \Illuminate\Support\Facades\Storage::disk('public')->files('categories/icons');
+    
+    $result = [];
+    foreach ($categories as $category) {
+        $imageExists = $category->image 
+            ? \Illuminate\Support\Facades\Storage::disk('public')->exists($category->image)
+            : null;
+        $iconExists = $category->icon 
+            ? \Illuminate\Support\Facades\Storage::disk('public')->exists($category->icon)
+            : null;
+        $result[] = [
+            'id' => $category->id,
+            'name' => $category->name,
+            'image_db' => $category->image,
+            'image_exists' => $imageExists,
+            'icon_db' => $category->icon,
+            'icon_exists' => $iconExists,
+        ];
+    }
+    
+    return response()->json([
+        'categories' => $result,
+        'image_files' => $categoryFiles,
+        'icon_files' => $iconFiles,
+    ]);
+});
+
+// Debug migrate (temporary)
+Route::get('/debug-migrate/{secret}', function ($secret) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        $output = \Illuminate\Support\Facades\Artisan::output();
+        return response()->json([
+            'status' => 'success',
+            'output' => $output,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+});

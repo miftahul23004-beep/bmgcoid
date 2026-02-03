@@ -18,6 +18,11 @@ class ArticlesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->query(
+                \App\Models\Article::query()
+                    ->with(['author'])
+            )
+            ->defaultPaginationPageOption(25)
             ->columns([
                 TextColumn::make('author.name')
                     ->searchable(),

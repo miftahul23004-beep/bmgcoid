@@ -41,6 +41,12 @@ class HeroSlideObserver
     {
         // Clear hero slides cache
         Cache::forget('hero_slides.displayable');
+        
+        // Clear homepage data cache for all locales
+        Cache::forget('homepage_data:id');
+        Cache::forget('homepage_data:en');
+        Cache::forget('page_cache:home:id');
+        Cache::forget('page_cache:home:en');
 
         // Purge Cloudflare homepage
         try {

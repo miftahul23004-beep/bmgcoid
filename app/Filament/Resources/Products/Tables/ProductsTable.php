@@ -20,6 +20,12 @@ class ProductsTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->query(
+                \App\Models\Product::query()
+                    ->with(['category'])
+                    ->withCount(['media', 'variants', 'marketplaceLinks'])
+            )
+            ->defaultPaginationPageOption(25)
             ->columns([
                 ImageColumn::make('featured_image')
                     ->label(__('Image'))

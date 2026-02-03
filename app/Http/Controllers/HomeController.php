@@ -13,10 +13,13 @@ use App\Services\CategoryService;
 use App\Services\ProductService;
 use App\Services\SettingService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class HomeController extends Controller
 {
+    protected int $cacheTime = 300; // 5 minutes
+
     public function __construct(
         protected ProductService $productService,
         protected CategoryService $categoryService,
@@ -26,49 +29,34 @@ class HomeController extends Controller
 
     public function index(): View
     {
-        // Get active homepage sections with their order
-        $homepageSections = HomepageSection::getActiveSections()->keyBy('key');
+        // Cache all homepage data together for maximum performance
+        $locale = app()->getLocale();
         
-        $heroSlides = HeroSlide::getDisplayableSlides();
+        $data = Cache::remember("homepage_data:{$locale}", $this->cacheTime, function () {
+            return [
+                'homepageSections' => HomepageSection::getActiveSections()->keyBy('key'),
+                'heroSlides' => HeroSlide::getDisplayableSlides(),
+                'featuredCategories' => $this->categoryService->getActiveCategories()
+                    ->where('is_featured', true)
+                    ->take(6)
+                    ->values(),
+                'featuredProducts' => $this->productService->getFeaturedProducts(8),
+                'clients' => Client::where('is_active', true)
+                    ->where('is_featured', true)
+                    ->orderBy('order')
+                    ->take(12)
+                    ->get(),
+                'testimonials' => Testimonial::where('is_active', true)
+                    ->where('is_featured', true)
+                    ->orderBy('order')
+                    ->take(6)
+                    ->get(),
+                'latestArticles' => $this->articleService->getLatestArticles(3, true),
+                'companyInfo' => $this->settingService->getCompanyInfo(),
+            ];
+        });
 
-        $featuredCategories = $this->categoryService->getActiveCategories()
-            ->where('is_featured', true)
-            ->take(6);
-
-        $featuredProducts = $this->productService->getFeaturedProducts(8);
-
-        $newProducts = $this->productService->getProducts([
-            'is_new' => true,
-            'limit' => 4
-        ]);
-
-        $clients = Client::where('is_active', true)
-            ->where('is_featured', true)
-            ->orderBy('order')
-            ->take(12)
-            ->get();
-
-        $testimonials = Testimonial::where('is_active', true)
-            ->where('is_featured', true)
-            ->orderBy('order')
-            ->take(6)
-            ->get();
-
-        $latestArticles = $this->articleService->getLatestArticles(3, true); // Featured only
-
-        $companyInfo = $this->settingService->getCompanyInfo();
-
-        return view('pages.home.index', compact(
-            'homepageSections',
-            'heroSlides',
-            'featuredCategories',
-            'featuredProducts',
-            'newProducts',
-            'clients',
-            'testimonials',
-            'latestArticles',
-            'companyInfo'
-        ));
+        return view('pages.home.index', $data);
     }
 
     public function about(): View

@@ -18,6 +18,7 @@ use Filament\Pages\Page;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Cache;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use UnitEnum;
 
 class SeoSettings extends Page implements Forms\Contracts\HasForms
@@ -76,15 +77,16 @@ class SeoSettings extends Page implements Forms\Contracts\HasForms
                                 FileUpload::make('og_image')
                                     ->label('Default OG Image')
                                     ->image()
+                                    ->disk('public')
                                     ->directory('seo')
+                                    ->visibility('public')
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                    ->maxSize(10240)
-                                    ->saveUploadedFileUsing(function ($file) {
+                                    ->maxSize(10240) // 10MB max upload
+                                    ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
                                         $service = app(ImageOptimizationService::class);
-                                        return $service->processUpload($file, 'seo', 200);
+                                        return $service->processUpload($file, 'seo', 30); // Max 30KB output
                                     })
-                                    ->helperText('Recommended: 1200x630px. Auto-convert to WebP max 200KB.')
-                                    ->visibility('public'),
+                                    ->helperText('Recommended: 1200x630px. Max upload 10MB, auto-convert to WebP max 30KB.'),
                             ]),
                         Tabs\Tab::make('Analytics')
                             ->icon('heroicon-o-chart-bar')

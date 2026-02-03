@@ -94,3 +94,17 @@ Route::get('/debug-hero/{secret}', function ($secret) {
         'files_in_folder' => $files
     ]);
 });
+
+// Debug language (temporary)
+Route::get('/debug-lang/{secret}', function ($secret, \Illuminate\Http\Request $request) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    return response()->json([
+        'app_locale' => app()->getLocale(),
+        'session_locale' => session('locale'),
+        'cookie_locale' => $request->cookie('locale'),
+        'config_locale' => config('app.locale'),
+        'all_cookies' => $request->cookies->all(),
+    ]);
+});

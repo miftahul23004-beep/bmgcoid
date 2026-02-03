@@ -98,10 +98,35 @@ class ImageOptimizationService
             mkdir($dirPath, 0755, true);
         }
         
-        // Get source path
-        $sourcePath = $file instanceof TemporaryUploadedFile 
-            ? $file->getRealPath() 
-            : $file->path();
+        // Get source path - handle both TemporaryUploadedFile and regular UploadedFile
+        $sourcePath = null;
+        if ($file instanceof TemporaryUploadedFile) {
+            $sourcePath = $file->getRealPath();
+            // Fallback: try to get path from temporary disk
+            if (!$sourcePath || !file_exists($sourcePath)) {
+                $sourcePath = $file->path();
+            }
+        } else {
+            $sourcePath = $file->path();
+        }
+        
+        // Debug logging
+        \Log::info("processUpload called", [
+            'directory' => $directory,
+            'maxSizeKb' => $maxSizeKb,
+            'file_class' => get_class($file),
+            'sourcePath' => $sourcePath,
+            'source_exists' => $sourcePath ? file_exists($sourcePath) : false,
+        ]);
+        
+        // Validate source file exists
+        if (!$sourcePath || !file_exists($sourcePath)) {
+            \Log::error("Source file not found, storing with default method", [
+                'sourcePath' => $sourcePath
+            ]);
+            $originalPath = $file->store($directory, 'public');
+            return $originalPath;
+        }
         
         // Check if GD is available and supports WebP
         if (!$this->canConvertToWebp()) {
@@ -117,20 +142,33 @@ class ImageOptimizationService
             $fullPath = Storage::disk('public')->path($storagePath);
             
             // Convert to WebP with optimization
-            $quality = 85;
-            $maxWidth = 1200;
+            // For hero slides, use larger width, for others use smaller
+            $maxWidth = str_contains($directory, 'hero') ? 1600 : 1200;
+            $minWidth = 800;
+            $quality = 80;
+            $minQuality = 25;
             
+            // Get original dimensions
+            $originalInfo = getimagesize($sourcePath);
+            $originalWidth = $originalInfo[0] ?? 1920;
+            
+            // Don't upscale if original is smaller
+            if ($originalWidth < $maxWidth) {
+                $maxWidth = $originalWidth;
+            }
+            
+            // First pass with initial settings
             Image::useImageDriver(ImageDriver::Gd)
                 ->load($sourcePath)
                 ->width($maxWidth)
                 ->quality($quality)
                 ->save($fullPath);
             
-            // Check file size and reduce quality if needed
             $fileSize = filesize($fullPath) / 1024; // KB
             
-            while ($fileSize > $maxSizeKb && $quality > 30) {
-                $quality -= 10;
+            // Reduce quality first (faster than resizing)
+            while ($fileSize > $maxSizeKb && $quality > $minQuality) {
+                $quality -= 5;
                 Image::useImageDriver(ImageDriver::Gd)
                     ->load($sourcePath)
                     ->width($maxWidth)
@@ -139,7 +177,18 @@ class ImageOptimizationService
                 $fileSize = filesize($fullPath) / 1024;
             }
             
-            \Log::info("Image converted to WebP: {$storagePath} ({$fileSize}KB, quality: {$quality})");
+            // If still too large, reduce dimensions
+            while ($fileSize > $maxSizeKb && $maxWidth > $minWidth) {
+                $maxWidth -= 100;
+                Image::useImageDriver(ImageDriver::Gd)
+                    ->load($sourcePath)
+                    ->width($maxWidth)
+                    ->quality($minQuality)
+                    ->save($fullPath);
+                $fileSize = filesize($fullPath) / 1024;
+            }
+            
+            \Log::info("Image converted to WebP: {$storagePath} ({$fileSize}KB, quality: {$quality}, width: {$maxWidth})");
             
             return $storagePath;
             

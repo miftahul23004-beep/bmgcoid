@@ -23,7 +23,10 @@ class ArticlesTable
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
-                ImageColumn::make('featured_image'),
+                ImageColumn::make('featured_image')
+                    ->disk('public')
+                    ->circular()
+                    ->size(50),
                 TextColumn::make('type')
                     ->badge(),
                 TextColumn::make('view_count')

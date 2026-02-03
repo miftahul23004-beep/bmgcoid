@@ -109,6 +109,27 @@ Route::get('/debug-lang/{secret}', function ($secret, \Illuminate\Http\Request $
     ]);
 });
 
+// Check file content (temporary)
+Route::get('/check-code/{secret}', function ($secret) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    
+    $filePath = app_path('Filament/Resources/HeroSlides/Schemas/HeroSlideForm.php');
+    $content = file_get_contents($filePath);
+    
+    // Find processUpload calls
+    preg_match_all('/processUpload\([^)]+,\s*(\d+)\)/', $content, $matches);
+    
+    return response()->json([
+        'file_exists' => file_exists($filePath),
+        'file_size' => filesize($filePath),
+        'max_sizes_found' => $matches[1] ?? [],
+        'has_saveUploadedFileUsing' => str_contains($content, 'saveUploadedFileUsing'),
+        'snippet' => substr($content, strpos($content, 'saveUploadedFileUsing') ?: 0, 500),
+    ]);
+});
+
 // Test Cloudflare purge (temporary)
 Route::get('/test-purge/{secret}', function ($secret) {
     if ($secret !== 'bmg2026secure') {
@@ -143,4 +164,183 @@ Route::get('/test-purge/{secret}', function ($secret) {
             'error' => $e->getMessage(),
         ]);
     }
+});
+
+// Re-optimize hero images (temporary)
+Route::get('/reoptimize-hero/{secret}', function ($secret) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    
+    $service = app(\App\Services\ImageOptimizationService::class);
+    $results = [];
+    
+    $slides = \App\Models\HeroSlide::all();
+    
+    foreach ($slides as $slide) {
+        $slideResult = ['id' => $slide->id, 'title' => $slide->title_id];
+        
+        // Re-optimize desktop image
+        if ($slide->image && \Illuminate\Support\Facades\Storage::disk('public')->exists($slide->image)) {
+            $oldPath = $slide->image;
+            $oldSize = \Illuminate\Support\Facades\Storage::disk('public')->size($oldPath) / 1024;
+            
+            $newPath = $service->convertToWebp($oldPath, 100, 1920);
+            $newSize = \Illuminate\Support\Facades\Storage::disk('public')->size($newPath) / 1024;
+            
+            $slideResult['desktop'] = [
+                'old_size' => round($oldSize, 2) . 'KB',
+                'new_size' => round($newSize, 2) . 'KB',
+                'path' => $newPath,
+            ];
+            
+            if ($newPath !== $oldPath) {
+                \App\Models\HeroSlide::withoutEvents(function () use ($slide, $newPath) {
+                    $slide->update(['image' => $newPath]);
+                });
+            }
+        }
+        
+        // Re-optimize mobile image
+        if ($slide->mobile_image && \Illuminate\Support\Facades\Storage::disk('public')->exists($slide->mobile_image)) {
+            $oldPath = $slide->mobile_image;
+            $oldSize = \Illuminate\Support\Facades\Storage::disk('public')->size($oldPath) / 1024;
+            
+            $newPath = $service->convertToWebp($oldPath, 80, 750);
+            $newSize = \Illuminate\Support\Facades\Storage::disk('public')->size($newPath) / 1024;
+            
+            $slideResult['mobile'] = [
+                'old_size' => round($oldSize, 2) . 'KB',
+                'new_size' => round($newSize, 2) . 'KB',
+                'path' => $newPath,
+            ];
+            
+            if ($newPath !== $oldPath) {
+                \App\Models\HeroSlide::withoutEvents(function () use ($slide, $newPath) {
+                    $slide->update(['mobile_image' => $newPath]);
+                });
+            }
+        }
+        
+        $results[] = $slideResult;
+    }
+    
+    // Clear cache
+    \Illuminate\Support\Facades\Cache::forget('hero_slides.displayable');
+    
+    // Purge Cloudflare
+    app(\App\Services\CloudflarePurgeService::class)->purgeHomepage();
+    
+    return response()->json([
+        'success' => true,
+        'results' => $results,
+    ]);
+});
+
+// Debug GD WebP support (temporary)
+Route::get('/debug-gd/{secret}', function ($secret) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    
+    $gdLoaded = extension_loaded('gd');
+    $gdInfo = $gdLoaded ? gd_info() : null;
+    $webpSupport = $gdInfo['WebP Support'] ?? false;
+    
+    // Test actual WebP creation
+    $testResult = 'not tested';
+    if ($webpSupport) {
+        try {
+            $img = imagecreatetruecolor(100, 100);
+            $testPath = storage_path('app/public/test-webp-' . time() . '.webp');
+            $result = imagewebp($img, $testPath);
+            if ($result && file_exists($testPath)) {
+                $testResult = 'success - file created: ' . filesize($testPath) . ' bytes';
+                unlink($testPath);
+            } else {
+                $testResult = 'failed - file not created';
+            }
+            imagedestroy($img);
+        } catch (\Exception $e) {
+            $testResult = 'error: ' . $e->getMessage();
+        }
+    }
+    
+    // Check articles folder
+    $articleFiles = \Illuminate\Support\Facades\Storage::disk('public')->files('articles');
+    
+    return response()->json([
+        'gd_loaded' => $gdLoaded,
+        'gd_info' => $gdInfo,
+        'webp_support' => $webpSupport,
+        'webp_test' => $testResult,
+        'articles_files' => $articleFiles,
+        'storage_path' => storage_path('app/public'),
+        'storage_writable' => is_writable(storage_path('app/public')),
+    ]);
+});
+
+// Debug recent logs (temporary)
+Route::get('/debug-log/{secret}', function ($secret) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    
+    $logPath = storage_path('logs/laravel.log');
+    if (!file_exists($logPath)) {
+        return response()->json(['error' => 'Log file not found']);
+    }
+    
+    // Get last 100 lines
+    $lines = [];
+    $file = new \SplFileObject($logPath, 'r');
+    $file->seek(PHP_INT_MAX);
+    $totalLines = $file->key();
+    $startLine = max(0, $totalLines - 100);
+    
+    $file->seek($startLine);
+    while (!$file->eof()) {
+        $line = $file->fgets();
+        if (str_contains($line, 'processUpload') || str_contains($line, 'Image converted') || str_contains($line, 'upload') || str_contains($line, 'Error')) {
+            $lines[] = trim($line);
+        }
+    }
+    
+    return response()->json([
+        'log_lines' => array_slice($lines, -30),
+        'total_lines' => $totalLines,
+    ]);
+});
+
+// Debug articles (temporary)
+Route::get('/debug-articles/{secret}', function ($secret) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    
+    $articles = \App\Models\Article::select('id', 'slug', 'featured_image', 'created_at')
+        ->orderByDesc('created_at')
+        ->limit(5)
+        ->get();
+    
+    $articleFiles = \Illuminate\Support\Facades\Storage::disk('public')->files('articles');
+    
+    $result = [];
+    foreach ($articles as $article) {
+        $imageExists = $article->featured_image 
+            ? \Illuminate\Support\Facades\Storage::disk('public')->exists($article->featured_image)
+            : null;
+        $result[] = [
+            'id' => $article->id,
+            'slug' => $article->slug,
+            'featured_image_db' => $article->featured_image,
+            'image_exists' => $imageExists,
+            'storage_url' => $article->featured_image ? \Illuminate\Support\Facades\Storage::disk('public')->url($article->featured_image) : null,
+        ];
+    }
+    
+    return response()->json([
+        'articles' => $result,
+        'files_in_folder' => $articleFiles,
+    ]);
 });

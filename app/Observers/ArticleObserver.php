@@ -3,82 +3,35 @@
 namespace App\Observers;
 
 use App\Models\Article;
+use App\Services\CloudflarePurgeService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Image\Image;
-use Spatie\Image\Enums\ImageDriver;
 
 class ArticleObserver
 {
     /**
-     * Handle the Article "saving" event.
-     * Converts featured image to optimized WebP format
+     * Handle the Article "saved" event.
+     * Clear cache and purge Cloudflare
      */
-    public function saving(Article $article): void
+    public function saved(Article $article): void
     {
-        if ($article->isDirty('featured_image') && $article->featured_image) {
-            $this->optimizeImage($article);
-        }
-    }
-
-    /**
-     * Optimize and convert image to WebP
-     */
-    protected function optimizeImage(Article $article): void
-    {
-        $originalPath = $article->featured_image;
+        // Clear article cache
+        Cache::forget('articles_homepage');
+        Cache::forget('articles_featured');
+        Cache::forget('article_' . $article->slug);
         
-        // Skip if already webp or if it's a URL
-        if (str_ends_with(strtolower($originalPath), '.webp') || str_starts_with($originalPath, 'http')) {
-            return;
-        }
-
-        $storagePath = storage_path('app/public/' . $originalPath);
-        
-        if (!file_exists($storagePath)) {
-            return;
-        }
-
-        // Generate new webp filename
-        $pathInfo = pathinfo($originalPath);
-        $webpPath = $pathInfo['dirname'] . '/' . $pathInfo['filename'] . '.webp';
-        $webpStoragePath = storage_path('app/public/' . $webpPath);
-
+        // Auto-purge Cloudflare
         try {
-            // Use Spatie Image to convert and optimize
-            Image::useImageDriver(ImageDriver::Gd)
-                ->loadFile($storagePath)
-                ->width(1200)
-                ->quality(85)
-                ->save($webpStoragePath);
-
-            // Check file size and reduce quality if > 200KB
-            $fileSize = filesize($webpStoragePath);
-            $maxSize = 200 * 1024; // 200KB
-            
-            if ($fileSize > $maxSize) {
-                $quality = 85;
-                while ($fileSize > $maxSize && $quality > 20) {
-                    $quality -= 10;
-                    Image::useImageDriver(ImageDriver::Gd)
-                        ->loadFile($storagePath)
-                        ->width(1200)
-                        ->quality($quality)
-                        ->save($webpStoragePath);
-                    $fileSize = filesize($webpStoragePath);
-                }
-            }
-
-            // Delete original file if different from webp
-            if ($originalPath !== $webpPath && file_exists($storagePath)) {
-                unlink($storagePath);
-            }
-
-            // Update the article with new webp path
-            $article->featured_image = $webpPath;
-            
+            $purgeService = app(CloudflarePurgeService::class);
+            $urls = [
+                config('app.url'),
+                config('app.url') . '/artikel',
+                config('app.url') . '/artikel/' . $article->slug,
+            ];
+            $purgeService->purgeUrls($urls);
+            \Log::info('Cloudflare purged for article: ' . $article->slug);
         } catch (\Exception $e) {
-            // Log error but don't fail the save
-            \Log::error('Failed to optimize article image: ' . $e->getMessage());
+            \Log::warning('Cloudflare purge failed: ' . $e->getMessage());
         }
     }
 
@@ -90,6 +43,21 @@ class ArticleObserver
         // Delete featured image when article is deleted
         if ($article->featured_image) {
             Storage::disk('public')->delete($article->featured_image);
+        }
+        
+        // Clear cache
+        Cache::forget('articles_homepage');
+        Cache::forget('articles_featured');
+        
+        // Purge Cloudflare
+        try {
+            $purgeService = app(CloudflarePurgeService::class);
+            $purgeService->purgeUrls([
+                config('app.url'),
+                config('app.url') . '/artikel',
+            ]);
+        } catch (\Exception $e) {
+            \Log::warning('Cloudflare purge failed: ' . $e->getMessage());
         }
     }
 }

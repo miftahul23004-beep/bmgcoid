@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Articles\Schemas;
 
+use App\Services\ImageOptimizationService;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
@@ -15,6 +16,7 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class ArticleForm
 {
@@ -123,14 +125,16 @@ class ArticleForm
                         FileUpload::make('featured_image')
                             ->label('Image')
                             ->image()
+                            ->disk('public')
                             ->directory('articles')
                             ->visibility('public')
-                            ->imageResizeMode('cover')
-                            ->imageResizeTargetWidth('1200')
-                            ->imageResizeTargetHeight('630')
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->maxSize(10240) // 10MB max upload, will be optimized to <200kb webp
-                            ->helperText('Max 10MB. Will be auto-converted to WebP and optimized to <200KB.'),
+                            ->maxSize(10240) // 10MB max upload
+                            ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
+                                $service = app(ImageOptimizationService::class);
+                                return $service->processUpload($file, 'articles', 50);
+                            })
+                            ->helperText('Upload gambar (JPG, PNG, WebP). Akan otomatis dikonversi ke WebP max 50KB.'),
                     ]),
 
                 Tabs::make('SEO')

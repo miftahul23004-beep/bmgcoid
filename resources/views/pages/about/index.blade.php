@@ -123,7 +123,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 <div class="relative order-2 lg:order-1">
                     <div class="aspect-w-4 aspect-h-3 rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="/images/about/company.jpg" alt="PT. Berkah Mandiri Globalindo" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=PT.+Berkah+Mandiri+Globalindo'">
+                        <img src="{{ asset('storage/about/company.webp') }}" alt="PT. Berkah Mandiri Globalindo" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=PT.+Berkah+Mandiri+Globalindo'">
                     </div>
                     <div class="absolute -bottom-8 -right-8 bg-secondary-600 text-white p-8 rounded-2xl shadow-2xl">
                         <div class="text-5xl font-bold">14+</div>

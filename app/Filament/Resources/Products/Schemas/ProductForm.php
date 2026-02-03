@@ -147,15 +147,17 @@ class ProductForm
                             ->label(__('Featured Image'))
                             ->image()
                             ->imageEditor()
+                            ->disk('public')
                             ->directory('products/featured')
+                            ->visibility('public')
                             ->maxSize(10240)
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                            ->getUploadedFileNameForStorageUsing(function (TemporaryUploadedFile $file): string {
-                                return Str::uuid() . '.webp';
-                            })
-                            ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
+                            ->saveUploadedFileUsing(function (TemporaryUploadedFile $file, $get) {
                                 $service = app(ImageOptimizationService::class);
-                                return $service->processUpload($file, 'products/featured', 200);
+                                $path = $service->processUpload($file, 'products/featured', 200);
+                                
+                                // Return full path (Filament stores this in DB)
+                                return $path;
                             })
                             ->helperText(__('Image will be auto-converted to WebP (max 200KB)')),
                     ]),

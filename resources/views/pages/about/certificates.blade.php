@@ -219,7 +219,7 @@
                 {{-- Image Side --}}
                 <div class="relative">
                     <div class="aspect-w-4 aspect-h-3 rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="/images/about/certificates.jpg" alt="Certificates" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=Certified+Quality'">
+                        <img src="{{ asset('storage/about/certificates.webp') }}" alt="Certificates" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=Certified+Quality'">
                     </div>
                     {{-- Floating Badge --}}
                     <div class="absolute -bottom-6 -right-6 bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-2xl shadow-2xl">

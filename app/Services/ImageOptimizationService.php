@@ -4,6 +4,8 @@ namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Spatie\Image\Image;
 use Spatie\Image\Enums\ImageDriver;
 
@@ -83,18 +85,90 @@ class ImageOptimizationService
     /**
      * Process uploaded file and convert to WebP
      * 
-     * @param UploadedFile $file
+     * @param UploadedFile|TemporaryUploadedFile $file
      * @param string $directory Storage directory
      * @param int $maxSizeKb Maximum file size in KB
      * @return string WebP file path
      */
-    public function processUpload(UploadedFile $file, string $directory, int $maxSizeKb = 200): string
+    public function processUpload(UploadedFile|TemporaryUploadedFile $file, string $directory, int $maxSizeKb = 200): string
     {
-        // Store original file first
-        $originalPath = $file->store($directory, 'public');
+        // Ensure directory exists
+        $dirPath = Storage::disk('public')->path($directory);
+        if (!is_dir($dirPath)) {
+            mkdir($dirPath, 0755, true);
+        }
         
-        // Convert to WebP
-        return $this->convertToWebp($originalPath, $maxSizeKb);
+        // Get source path
+        $sourcePath = $file instanceof TemporaryUploadedFile 
+            ? $file->getRealPath() 
+            : $file->path();
+        
+        // Check if GD is available and supports WebP
+        if (!$this->canConvertToWebp()) {
+            \Log::warning('WebP conversion not available, storing original file');
+            $originalPath = $file->store($directory, 'public');
+            return $originalPath;
+        }
+        
+        try {
+            // Generate unique filename
+            $filename = Str::uuid() . '.webp';
+            $storagePath = $directory . '/' . $filename;
+            $fullPath = Storage::disk('public')->path($storagePath);
+            
+            // Convert to WebP with optimization
+            $quality = 85;
+            $maxWidth = 1200;
+            
+            Image::useImageDriver(ImageDriver::Gd)
+                ->load($sourcePath)
+                ->width($maxWidth)
+                ->quality($quality)
+                ->save($fullPath);
+            
+            // Check file size and reduce quality if needed
+            $fileSize = filesize($fullPath) / 1024; // KB
+            
+            while ($fileSize > $maxSizeKb && $quality > 30) {
+                $quality -= 10;
+                Image::useImageDriver(ImageDriver::Gd)
+                    ->load($sourcePath)
+                    ->width($maxWidth)
+                    ->quality($quality)
+                    ->save($fullPath);
+                $fileSize = filesize($fullPath) / 1024;
+            }
+            
+            \Log::info("Image converted to WebP: {$storagePath} ({$fileSize}KB, quality: {$quality})");
+            
+            return $storagePath;
+            
+        } catch (\Exception $e) {
+            \Log::error('Image upload processing failed: ' . $e->getMessage() . ' | ' . $e->getTraceAsString());
+            
+            // Fallback: store original file
+            $originalPath = $file->store($directory, 'public');
+            return $originalPath;
+        }
+    }
+    
+    /**
+     * Check if WebP conversion is available
+     */
+    protected function canConvertToWebp(): bool
+    {
+        // Check if GD extension is loaded
+        if (!extension_loaded('gd')) {
+            return false;
+        }
+        
+        // Check if WebP support is available
+        $gdInfo = gd_info();
+        if (!isset($gdInfo['WebP Support']) || !$gdInfo['WebP Support']) {
+            return false;
+        }
+        
+        return true;
     }
     
     /**

@@ -23,6 +23,7 @@ class ProductsTable
             ->columns([
                 ImageColumn::make('featured_image')
                     ->label(__('Image'))
+                    ->disk('public')
                     ->circular()
                     ->size(50),
                 TextColumn::make('name')

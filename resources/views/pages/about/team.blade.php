@@ -317,7 +317,7 @@
                 {{-- Image Side --}}
                 <div class="relative">
                     <div class="aspect-w-4 aspect-h-3 rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="/images/about/team-work.jpg" alt="Team Work" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=Team+Work'">
+                        <img src="{{ asset('storage/about/team.webp') }}" alt="Team Work" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=Team+Work'">
                     </div>
                     {{-- Floating Stats --}}
                     <div class="absolute -bottom-8 -left-8 bg-white p-6 rounded-2xl shadow-2xl">

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Models\Category;
+use App\Services\ImageOptimizationService;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -14,6 +15,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class CategoryForm
 {
@@ -96,17 +98,29 @@ class CategoryForm
                                 ->label(__('Icon'))
                                 ->image()
                                 ->imageEditor()
+                                ->disk('public')
                                 ->directory('categories/icons')
+                                ->visibility('public')
                                 ->maxSize(10240)
-                                ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/webp', 'image/jpeg']),
+                                ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/webp', 'image/jpeg'])
+                                ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
+                                    $service = app(ImageOptimizationService::class);
+                                    return $service->processUpload($file, 'categories/icons', 50);
+                                }),
                             FileUpload::make('image')
                                 ->label(__('Category Image'))
                                 ->image()
                                 ->imageEditor()
+                                ->disk('public')
                                 ->directory('categories/images')
+                                ->visibility('public')
                                 ->maxSize(10240)
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                ->helperText(__('Auto WebP, max 200KB')),
+                                ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
+                                    $service = app(ImageOptimizationService::class);
+                                    return $service->processUpload($file, 'categories/images', 50);
+                                })
+                                ->helperText(__('Auto WebP, max 50KB')),
                         ]),
                     ]),
 

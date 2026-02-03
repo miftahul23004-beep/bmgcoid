@@ -4,10 +4,17 @@
 /public/hot
 /public/storage
 /storage/*.key
+/storage/logs/*.log
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/debugbar/*
 /vendor
 .env
 .env.backup
 .env.production
+.env.local
+.env.*.local
 .phpactor.json
 .phpunit.result.cache
 Homestead.json
@@ -19,3 +26,4 @@ yarn-error.log
 /.idea
 /.vscode
 /.ftpquota
+deploy.php

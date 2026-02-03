@@ -1,16 +1,40 @@
-# PT. Berkah Mandiri Globalindo - bmg.local
+# PT. Berkah Mandiri Globalindo - berkahmandiri.co.id
+# https://berkahmandiri.co.id
+
 User-agent: *
+Allow: /
+
+# Disallow admin and sensitive areas
 Disallow: /admin/
 Disallow: /livewire/
 Disallow: /api/
 Disallow: /storage/logs/
 Disallow: /_debugbar/
+Disallow: /vendor/
+Disallow: /*.json$
+Disallow: /*?*sort=
+Disallow: /*?*page=
+Disallow: /*?*lang=
 
-# Allow all crawlers
-Allow: /
+# Allow important resources
+Allow: /sitemap.xml
+Allow: /robots.txt
+Allow: /storage/
+Allow: /build/
+Allow: /images/
 
 # Sitemap
-Sitemap: https://bmg.local/sitemap.xml
+Sitemap: https://berkahmandiri.co.id/sitemap.xml
 
-# Crawl-delay (optional - be nice to server)
+# Crawl-delay (be nice to server)
+Crawl-delay: 1
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Bing specific  
+User-agent: Bingbot
+Allow: /
 Crawl-delay: 1

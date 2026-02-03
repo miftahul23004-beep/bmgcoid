@@ -129,6 +129,8 @@ class ProductService
             ->where('is_active', true)
             ->where('id', '!=', $product->id)
             ->where('category_id', $product->category_id)
+            ->with(['category:id,name,slug'])
+            ->select(['id', 'name', 'slug', 'short_description', 'featured_image', 'category_id'])
             ->limit($limit)
             ->get();
     }
@@ -167,6 +169,8 @@ class ProductService
         return Cache::remember('products.popular', $this->cacheTime, function () use ($limit) {
             return Product::query()
                 ->where('is_active', true)
+                ->with(['category:id,name,slug'])
+                ->select(['id', 'name', 'slug', 'short_description', 'featured_image', 'category_id', 'view_count'])
                 ->orderByDesc('view_count')
                 ->limit($limit)
                 ->get();

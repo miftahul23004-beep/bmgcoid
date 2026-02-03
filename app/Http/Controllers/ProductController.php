@@ -70,8 +70,11 @@ class ProductController extends Controller
     {
         $product = $this->productService->getBySlug($slug);
 
-        // Increment view count
-        $product->incrementViewCount();
+        if (!$product) {
+            abort(404);
+        }
+
+        // View count already incremented in getBySlug()
 
         // Related products
         $relatedProducts = $this->productService->getRelatedProducts($product, 4);

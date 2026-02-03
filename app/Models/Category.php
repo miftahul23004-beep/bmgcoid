@@ -65,6 +65,16 @@ class Category extends Model implements HasMedia
         return $this->hasMany(Category::class, 'parent_id')->orderBy('order');
     }
 
+    /**
+     * Recursive relationship to get all nested children
+     */
+    public function allChildren(): HasMany
+    {
+        return $this->hasMany(Category::class, 'parent_id')
+            ->with('allChildren')
+            ->orderBy('order');
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(Product::class)->orderBy('order');

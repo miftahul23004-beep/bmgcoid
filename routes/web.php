@@ -108,3 +108,39 @@ Route::get('/debug-lang/{secret}', function ($secret, \Illuminate\Http\Request $
         'all_cookies' => $request->cookies->all(),
     ]);
 });
+
+// Test Cloudflare purge (temporary)
+Route::get('/test-purge/{secret}', function ($secret) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    
+    $zoneId = config('services.cloudflare.zone_id');
+    $apiToken = config('services.cloudflare.api_token');
+    $baseUrl = config('app.url');
+    
+    $urls = [
+        $baseUrl,
+        $baseUrl . '/',
+    ];
+    
+    try {
+        $response = \Illuminate\Support\Facades\Http::withHeaders([
+            'Authorization' => 'Bearer ' . $apiToken,
+            'Content-Type' => 'application/json',
+        ])->post("https://api.cloudflare.com/client/v4/zones/{$zoneId}/purge_cache", [
+            'files' => $urls,
+        ]);
+        
+        return response()->json([
+            'success' => $response->successful(),
+            'status' => $response->status(),
+            'response' => $response->json(),
+            'urls_purged' => $urls,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+        ]);
+    }
+});

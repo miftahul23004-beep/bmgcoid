@@ -27,6 +27,7 @@ class HeroSlidesTable
 
                 ImageColumn::make('image')
                     ->label('Preview')
+                    ->disk('public')
                     ->width(120)
                     ->height(68)
                     ->defaultImageUrl('/images/hero-default.jpg'),

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\HeroSlides\Schemas;
 
+use App\Services\ImageOptimizationService;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -13,6 +14,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class HeroSlideForm
 {
@@ -67,18 +69,30 @@ class HeroSlideForm
                         FileUpload::make('image')
                             ->label('Gambar Desktop')
                             ->image()
+                            ->disk('public')
                             ->directory('hero-slides')
+                            ->visibility('public')
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(5120) // 5MB max upload
-                            ->helperText('Upload gambar (JPG, PNG, WebP). Akan otomatis dikonversi ke WebP max 200KB. Ukuran ideal: 1920x1080 pixels (16:9).'),
+                            ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
+                                $service = app(ImageOptimizationService::class);
+                                return $service->processUpload($file, 'hero-slides', 100);
+                            })
+                            ->helperText('Upload gambar (JPG, PNG, WebP). Akan otomatis dikonversi ke WebP max 100KB. Ukuran ideal: 1920x1080 pixels (16:9).'),
 
                         FileUpload::make('mobile_image')
                             ->label('Gambar Mobile (Opsional)')
                             ->image()
+                            ->disk('public')
                             ->directory('hero-slides')
+                            ->visibility('public')
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->maxSize(5120) // 5MB max upload
-                            ->helperText('Akan otomatis dikonversi ke WebP max 150KB. Ukuran ideal: 750x1000 pixels.'),
+                            ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
+                                $service = app(ImageOptimizationService::class);
+                                return $service->processUpload($file, 'hero-slides', 80);
+                            })
+                            ->helperText('Akan otomatis dikonversi ke WebP max 80KB. Ukuran ideal: 750x1000 pixels.'),
 
                         Grid::make(2)
                             ->schema([

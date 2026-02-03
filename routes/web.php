@@ -72,3 +72,12 @@ Route::get('/sitemap', [HomeController::class, 'sitemap'])->name('sitemap');
 Route::get('/go/{platform}/{productId}', [ProductController::class, 'marketplaceRedirect'])
     ->name('marketplace.redirect')
     ->middleware('throttle:30,1'); // 30 requests per minute
+
+// Clear hero slides cache (temporary utility route)
+Route::get('/clear-hero-cache/{secret}', function ($secret) {
+    if ($secret !== 'bmg2026secure') {
+        abort(404);
+    }
+    \Illuminate\Support\Facades\Cache::forget('hero_slides.displayable');
+    return response()->json(['status' => 'ok', 'message' => 'Hero slides cache cleared']);
+});

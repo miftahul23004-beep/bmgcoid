@@ -109,6 +109,18 @@ Route::get('/debug-lang/{secret}', function ($secret, \Illuminate\Http\Request $
     ]);
 });
 
+// Backup Download Route (Admin only)
+Route::get('/admin/backup/download/{file}', function ($file) {
+    $filename = basename($file); // Security: prevent path traversal
+    $path = storage_path("app/backups/{$filename}");
+    
+    if (!file_exists($path)) {
+        abort(404, 'Backup file not found');
+    }
+    
+    return response()->download($path);
+})->middleware(['auth'])->name('backup.download');
+
 // Check file content (temporary)
 Route::get('/check-code/{secret}', function ($secret) {
     if ($secret !== 'bmg2026secure') {

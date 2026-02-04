@@ -14,8 +14,8 @@
         mobileExpanded: null
     }"
     x-on:scroll.window="scrolled = window.scrollY > 50"
-    :class="{ 'shadow-md bg-white': scrolled, 'bg-white md:bg-transparent': !scrolled }"
-    class="sticky top-0 z-50 transition-all duration-300 min-h-[72px] md:min-h-[80px]"
+    :class="{ 'shadow-md': scrolled }"
+    class="sticky top-0 z-50 transition-all duration-300 bg-white min-h-[72px] md:min-h-[80px]"
 >
     <nav class="container mx-auto px-4">
         <div class="flex justify-between items-center py-4">

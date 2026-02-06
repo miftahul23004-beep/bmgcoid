@@ -47,10 +47,10 @@
                     <span class="bg-primary-600 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">{{ __('Featured') }}</span>
                 @endif
                 @if($product->is_new)
-                    <span class="bg-green-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">{{ __('New') }}</span>
+                    <span class="bg-green-700 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg border border-green-600">{{ __('New') }}</span>
                 @endif
                 @if($product->is_bestseller)
-                    <span class="bg-amber-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full shadow-sm">{{ __('Best Seller') }}</span>
+                    <span class="bg-amber-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg border border-amber-700">{{ __('Best Seller') }}</span>
                 @endif
             </div>
 

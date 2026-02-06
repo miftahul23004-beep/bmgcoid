@@ -150,6 +150,12 @@
         Header set Cache-Control "public, max-age=2592000"
     </FilesMatch>
 
+    # Security Headers
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
     # Enable Keep-Alive
     Header set Connection keep-alive
 </IfModule>

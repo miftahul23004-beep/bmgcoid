@@ -19,19 +19,41 @@
 >
     <nav class="container mx-auto px-4">
         <div class="flex justify-between items-center py-4">
-            {{-- Logo with Site Name --}}
-            <a href="{{ route('home') }}" class="flex items-center gap-3">
-                <img 
-                    src="{{ $logoPath }}" 
-                    alt="{{ $companyName }}" 
-                    class="h-10 md:h-12 w-auto"
-                    width="48"
-                    height="48"
-                    fetchpriority="high"
-                >
-                <div class="hidden sm:block">
-                    <span class="block font-bold text-gray-900 text-lg leading-tight">{{ $companyName }}</span>
-                    <span class="block text-xs text-gray-500 leading-tight">{{ $companyTagline }}</span>
+            {{-- Logo with Site Name & Badges --}}
+            <a href="{{ route('home') }}" class="flex items-center gap-3 group">
+                {{-- Logo Container with Glow Effect --}}
+                <div class="relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-amber-500/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="relative bg-gradient-to-br from-white to-gray-50 p-2 rounded-xl border border-gray-100 shadow-sm group-hover:shadow-md group-hover:border-primary-200 transition-all duration-300">
+                        <img 
+                            src="{{ $logoPath }}" 
+                            alt="{{ $companyName }}" 
+                            class="h-8 md:h-10 w-auto"
+                            width="40"
+                            height="40"
+                            fetchpriority="high"
+                        >
+                    </div>
+                    {{-- Trust Badge --}}
+                    <div class="absolute -bottom-1 -right-1 bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full shadow-sm flex items-center gap-0.5">
+                        <svg class="w-2 h-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+                {{-- Company Name & Tagline --}}
+                <div class="hidden sm:flex flex-col">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-gray-900 text-lg leading-tight group-hover:text-primary-700 transition-colors">{{ $companyName }}</span>
+                        {{-- Verified Badge --}}
+                        <span class="inline-flex items-center gap-0.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-full">
+                            <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="hidden md:inline">Terpercaya</span>
+                        </span>
+                    </div>
+                    <span class="text-xs text-gray-500 leading-tight">{{ $companyTagline }}</span>
                 </div>
             </a>
 

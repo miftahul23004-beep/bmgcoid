@@ -76,9 +76,9 @@ class HeroSlideForm
                             ->maxSize(5120) // 5MB max upload
                             ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
                                 $service = app(ImageOptimizationService::class);
-                                return $service->processUpload($file, 'hero-slides', 100);
+                                return $service->processUpload($file, 'hero-slides', 50);
                             })
-                            ->helperText('Upload gambar (JPG, PNG, WebP). Akan otomatis dikonversi ke WebP max 100KB. Ukuran ideal: 1920x1080 pixels (16:9).'),
+                            ->helperText('Upload gambar (JPG, PNG, WebP). Akan otomatis dikonversi ke WebP max 50KB. Ukuran ideal: 1920x1080 pixels (16:9).'),
 
                         FileUpload::make('mobile_image')
                             ->label('Gambar Mobile (Opsional)')
@@ -90,9 +90,9 @@ class HeroSlideForm
                             ->maxSize(5120) // 5MB max upload
                             ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
                                 $service = app(ImageOptimizationService::class);
-                                return $service->processUpload($file, 'hero-slides', 80);
+                                return $service->processUpload($file, 'hero-slides', 40);
                             })
-                            ->helperText('Akan otomatis dikonversi ke WebP max 80KB. Ukuran ideal: 750x1000 pixels.'),
+                            ->helperText('Akan otomatis dikonversi ke WebP max 40KB. Ukuran ideal: 750x1000 pixels.'),
 
                         Grid::make(2)
                             ->schema([

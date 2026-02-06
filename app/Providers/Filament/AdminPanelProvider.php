@@ -21,6 +21,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -28,7 +29,9 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         $settingService = app(SettingService::class);
-        $siteName = $settingService->get('site_name', config('app.name'));
+        $siteName = $settingService->get('company_name', config('app.name'));
+        $logo = $settingService->get('logo');
+        $logoUrl = $logo ? Storage::disk('public')->url($logo) : asset('images/logo.png');
 
         return $panel
             ->default()
@@ -36,7 +39,8 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName($siteName)
-            ->brandLogo(asset('images/logo.png'))
+            ->brandLogo(fn () => view('filament.brand-logo', ['logo' => $logoUrl, 'name' => $siteName]))
+            ->darkModeBrandLogo(fn () => view('filament.brand-logo', ['logo' => $logoUrl, 'name' => $siteName, 'dark' => true]))
             ->brandLogoHeight('2.5rem')
             ->colors([
                 'primary' => Color::Blue,

@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Setting;
+use App\Services\ImageOptimizationService;
 use BackedEnum;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
@@ -14,6 +15,7 @@ use Filament\Pages\Page;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use UnitEnum;
 
 class CompanySettings extends Page implements Forms\Contracts\HasForms
@@ -34,6 +36,11 @@ class CompanySettings extends Page implements Forms\Contracts\HasForms
     public ?array $data = [];
 
     public function mount(): void
+    {
+        $this->loadSettings();
+    }
+
+    protected function loadSettings(): void
     {
         $settings = Setting::where('group', 'general')
             ->orWhere('group', 'contact')
@@ -68,6 +75,8 @@ class CompanySettings extends Page implements Forms\Contracts\HasForms
                                     ->disk('public')
                                     ->directory('settings')
                                     ->visibility('public')
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'])
+                                    ->helperText('Upload gambar, akan otomatis dikonversi ke WebP (<20KB) saat disimpan')
                                     ->imagePreviewHeight('100'),
                                 FileUpload::make('logo_white')
                                     ->label('Logo (White/Dark Mode)')
@@ -75,14 +84,16 @@ class CompanySettings extends Page implements Forms\Contracts\HasForms
                                     ->disk('public')
                                     ->directory('settings')
                                     ->visibility('public')
+                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'])
+                                    ->helperText('Upload gambar, akan otomatis dikonversi ke WebP (<20KB) saat disimpan')
                                     ->imagePreviewHeight('100'),
                                 FileUpload::make('favicon')
                                     ->label('Favicon')
-                                    ->image()
                                     ->disk('public')
                                     ->directory('settings')
                                     ->visibility('public')
-                                    ->acceptedFileTypes(['image/x-icon', 'image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml'])
+                                    ->acceptedFileTypes(['image/x-icon', 'image/png', 'image/jpeg', 'image/gif', 'image/webp', 'image/svg+xml', 'image/vnd.microsoft.icon'])
+                                    ->helperText('Upload gambar, akan otomatis dikonversi ke ICO saat disimpan')
                                     ->imagePreviewHeight('50'),
                             ]),
                         Tabs\Tab::make('Contact Info')
@@ -164,6 +175,55 @@ class CompanySettings extends Page implements Forms\Contracts\HasForms
     public function save(): void
     {
         $data = $this->form->getState();
+        $service = app(ImageOptimizationService::class);
+
+        // Process logo conversion to WebP if uploaded (PNG files)
+        foreach (['logo', 'logo_white'] as $logoField) {
+            if (!empty($data[$logoField])) {
+                $logoPath = is_array($data[$logoField]) ? reset($data[$logoField]) : $data[$logoField];
+                
+                if ($logoPath) {
+                    $extension = strtolower(pathinfo($logoPath, PATHINFO_EXTENSION));
+                    
+                    // If not WebP, convert it
+                    if (!in_array($extension, ['webp', 'svg'])) {
+                        $fullPath = Storage::disk('public')->path($logoPath);
+                        
+                        if (file_exists($fullPath)) {
+                            $newPath = $service->convertToWebp($logoPath, 20, 400);
+                            
+                            if ($newPath !== $logoPath) {
+                                Storage::disk('public')->delete($logoPath);
+                                $data[$logoField] = $newPath;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Process favicon conversion to ICO if uploaded
+        if (!empty($data['favicon'])) {
+            $faviconPath = is_array($data['favicon']) ? reset($data['favicon']) : $data['favicon'];
+            
+            if ($faviconPath) {
+                $extension = strtolower(pathinfo($faviconPath, PATHINFO_EXTENSION));
+                
+                // If not ICO, convert it
+                if ($extension !== 'ico') {
+                    $fullPath = Storage::disk('public')->path($faviconPath);
+                    
+                    if (file_exists($fullPath)) {
+                        $newPath = $service->convertToIco($faviconPath, 'settings');
+                        
+                        if ($newPath !== $faviconPath) {
+                            Storage::disk('public')->delete($faviconPath);
+                            $data['favicon'] = $newPath;
+                        }
+                    }
+                }
+            }
+        }
 
         foreach ($data as $key => $value) {
             $group = in_array($key, ['company_name', 'company_tagline', 'company_description', 'logo', 'logo_white', 'favicon']) 
@@ -176,9 +236,15 @@ class CompanySettings extends Page implements Forms\Contracts\HasForms
             );
         }
 
-        // Clear cache
+        // Clear all related caches
         Cache::forget('settings.general');
         Cache::forget('settings.contact');
+        Cache::forget('company_info');
+        Cache::forget('navbar_categories');
+        Cache::forget('footer_categories');
+
+        // Refresh form data to show converted files
+        $this->loadSettings();
 
         Notification::make()
             ->title('Settings saved successfully')

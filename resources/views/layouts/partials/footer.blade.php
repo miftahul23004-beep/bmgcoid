@@ -3,6 +3,7 @@
 @php
     $showSocialFooter = !empty($socialLinks['show_social_footer']) && $socialLinks['show_social_footer'] == '1';
     $logoWhitePath = !empty($companyInfo['logo_white']) ? Storage::url($companyInfo['logo_white']) : asset('images/logo-white.png');
+    $companyYear = $companyInfo['company_year'] ?? '2011';
 @endphp
 <footer class="bg-gray-900 text-gray-300">
     {{-- Main Footer --}}
@@ -10,10 +11,42 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {{-- Company Info --}}
             <div class="lg:col-span-1">
-                <div class="flex items-center gap-3 mb-4">
-                    <img src="{{ $logoWhitePath }}" alt="{{ $companyInfo['company_name'] ?? config('app.name') }}" class="h-10" width="40" height="40" loading="lazy">
-                    <div>
-                        <h3 class="text-white font-bold text-lg leading-tight">{{ $companyInfo['company_name'] ?? config('app.name') }}</h3>
+                {{-- Logo with Badges --}}
+                <div class="flex items-start gap-3 mb-4">
+                    {{-- Logo Container --}}
+                    <div class="relative flex-shrink-0">
+                        <div class="bg-gradient-to-br from-gray-800 to-gray-700 p-2.5 rounded-xl border border-gray-600/50 shadow-lg">
+                            <img src="{{ $logoWhitePath }}" alt="{{ $companyInfo['company_name'] ?? config('app.name') }}" class="h-10 w-auto" width="40" height="40" loading="lazy">
+                        </div>
+                        {{-- Trust Badge on Logo --}}
+                        <div class="absolute -bottom-1.5 -right-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full p-1 shadow-lg">
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                    </div>
+                    {{-- Company Name & Badges --}}
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-wrap items-center gap-2 mb-1">
+                            <h3 class="text-white font-bold text-lg leading-tight">{{ $companyInfo['company_name'] ?? config('app.name') }}</h3>
+                        </div>
+                        {{-- Badge Row --}}
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            {{-- Verified Badge --}}
+                            <span class="inline-flex items-center gap-1 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                                <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Terpercaya
+                            </span>
+                            {{-- Year Badge --}}
+                            <span class="inline-flex items-center gap-1 bg-gray-700/80 text-gray-300 text-[10px] font-medium px-2 py-0.5 rounded-full border border-gray-600/50">
+                                <svg class="w-2.5 h-2.5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                </svg>
+                                Sejak {{ $companyYear }}
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <p class="text-sm text-gray-400 mb-4">

@@ -44,7 +44,7 @@ class TestimonialForm
                                     ->maxSize(10240)
                                     ->saveUploadedFileUsing(function ($file) {
                                         $service = app(ImageOptimizationService::class);
-                                        return $service->processUpload($file, 'testimonials', 200);
+                                        return $service->processUpload($file, 'testimonials', 50);
                                     })
                                     ->helperText('Auto-convert to WebP max 200KB')
                                     ->visibility('public')

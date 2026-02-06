@@ -58,7 +58,7 @@ class ProductMediaRelationManager extends RelationManager
                     ->visible(fn ($get) => $get('type') === 'image')
                     ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
                         $service = app(ImageOptimizationService::class);
-                        return $service->processUpload($file, 'products/media', 200);
+                        return $service->processUpload($file, 'products/media', 50);
                     })
                     ->helperText(__('Images auto-converted to WebP (max 200KB)'))
                     ->columnSpanFull(),

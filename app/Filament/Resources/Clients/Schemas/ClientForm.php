@@ -70,9 +70,9 @@ class ClientForm
                                 ->maxSize(10240)
                                 ->saveUploadedFileUsing(function ($file) {
                                     $service = app(ImageOptimizationService::class);
-                                    return $service->processUpload($file, 'clients', 200);
+                                    return $service->processUpload($file, 'clients', 20);
                                 })
-                                ->helperText('Recommended: PNG/SVG with transparent background. Auto-convert to WebP max 200KB.'),
+                                ->helperText('Recommended: PNG/SVG with transparent background. Auto-convert to WebP max 20KB.'),
                             ColorPicker::make('bg_color')
                                 ->label('Background Color')
                                 ->default('#ffffff')

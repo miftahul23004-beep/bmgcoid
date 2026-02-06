@@ -25,6 +25,7 @@ class ImageOptimizationService
         
         // Skip if file doesn't exist
         if (!file_exists($storagePath)) {
+            \Log::warning('WebP conversion: file not found', ['path' => $storagePath]);
             return $path;
         }
         
@@ -36,13 +37,16 @@ class ImageOptimizationService
             return $path;
         }
         
-        // Generate new webp path
+        // Generate new webp path with UUID to avoid conflicts
         $directory = pathinfo($path, PATHINFO_DIRNAME);
-        $filename = pathinfo($path, PATHINFO_FILENAME);
-        $newPath = $directory . '/' . $filename . '.webp';
+        $newPath = $directory . '/' . Str::uuid() . '.webp';
         $newStoragePath = Storage::disk('public')->path($newPath);
         
         try {
+            // Suppress GD warnings (like libpng iCCP warnings)
+            $errorLevel = error_reporting();
+            error_reporting($errorLevel & ~E_WARNING);
+            
             // Start with quality 85 and decrease until under max size
             $quality = 85;
             $minQuality = 30;
@@ -64,20 +68,119 @@ class ImageOptimizationService
                 
             } while ($quality >= $minQuality);
             
+            // Restore error reporting
+            error_reporting($errorLevel);
+            
             // If still too large, reduce dimensions
-            if ($newSize > $maxSizeKb && $maxWidth > 800) {
-                $this->convertToWebp($path, $maxSizeKb, $maxWidth - 200);
+            if ($newSize > $maxSizeKb && $maxWidth > 400) {
+                // Clean up current attempt
+                if (file_exists($newStoragePath)) {
+                    unlink($newStoragePath);
+                }
+                return $this->convertToWebp($path, $maxSizeKb, $maxWidth - 100);
             }
             
-            // Delete original file if different extension
-            if ($extension !== 'webp' && file_exists($storagePath)) {
+            // Delete original file if conversion successful
+            if (file_exists($newStoragePath) && file_exists($storagePath)) {
                 unlink($storagePath);
             }
+            
+            \Log::info("Image converted to WebP: {$newPath} ({$newSize}KB, quality: {$quality})");
             
             return $newPath;
             
         } catch (\Exception $e) {
             \Log::error('Image conversion failed: ' . $e->getMessage());
+            return $path;
+        }
+    }
+
+    /**
+     * Convert an existing stored image to ICO format
+     * 
+     * @param string $path Storage path of the image
+     * @param string $directory Output directory
+     * @return string New ICO file path or original path if conversion fails
+     */
+    public function convertToIco(string $path, string $directory = 'settings'): string
+    {
+        $storagePath = Storage::disk('public')->path($path);
+        
+        if (!file_exists($storagePath)) {
+            \Log::warning('ICO conversion: file not found', ['path' => $storagePath]);
+            return $path;
+        }
+        
+        // Already ICO, return as is
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        if ($extension === 'ico') {
+            return $path;
+        }
+        
+        try {
+            // Suppress warnings from GD (like libpng iCCP warnings)
+            $errorLevel = error_reporting();
+            error_reporting($errorLevel & ~E_WARNING);
+            
+            // Get image info
+            $sourceInfo = @getimagesize($storagePath);
+            if (!$sourceInfo) {
+                error_reporting($errorLevel);
+                \Log::warning('ICO conversion: cannot get image size', ['path' => $storagePath]);
+                return $path;
+            }
+            
+            $mimeType = $sourceInfo['mime'] ?? '';
+            $sourceImage = null;
+            
+            // Create GD image from source
+            switch ($mimeType) {
+                case 'image/jpeg':
+                    $sourceImage = @imagecreatefromjpeg($storagePath);
+                    break;
+                case 'image/png':
+                    $sourceImage = @imagecreatefrompng($storagePath);
+                    break;
+                case 'image/gif':
+                    $sourceImage = @imagecreatefromgif($storagePath);
+                    break;
+                case 'image/webp':
+                    $sourceImage = @imagecreatefromwebp($storagePath);
+                    break;
+                default:
+                    $sourceImage = @imagecreatefrompng($storagePath) ?: @imagecreatefromjpeg($storagePath);
+            }
+            
+            // Restore error reporting
+            error_reporting($errorLevel);
+            
+            if (!$sourceImage) {
+                \Log::warning('ICO conversion: failed to create GD image', ['mime' => $mimeType]);
+                return $path;
+            }
+            
+            // Generate new ICO path
+            $filename = Str::uuid() . '.ico';
+            $newPath = $directory . '/' . $filename;
+            $fullPath = Storage::disk('public')->path($newPath);
+            
+            // Create ICO with 16x16 and 32x32 sizes
+            $sizes = [16, 32];
+            $icoData = $this->createIcoData($sourceImage, $sizes);
+            
+            // Write ICO file
+            file_put_contents($fullPath, $icoData);
+            
+            // Clean up
+            imagedestroy($sourceImage);
+            
+            $fileSize = filesize($fullPath) / 1024;
+            \Log::info("Favicon converted to ICO: {$newPath} ({$fileSize}KB)");
+            
+            return $newPath;
+            
+        } catch (\Exception $e) {
+            \Log::error('ICO conversion failed: ' . $e->getMessage());
             return $path;
         }
     }
@@ -144,9 +247,9 @@ class ImageOptimizationService
             // Convert to WebP with optimization
             // For hero slides, use larger width, for others use smaller
             $maxWidth = str_contains($directory, 'hero') ? 1600 : 1200;
-            $minWidth = 800;
-            $quality = 80;
-            $minQuality = 25;
+            $minWidth = 600; // Lower minimum for aggressive compression
+            $quality = 75;   // Start lower for better compression
+            $minQuality = 20; // Lower minimum quality for <50KB target
             
             // Get original dimensions
             $originalInfo = getimagesize($sourcePath);
@@ -249,5 +352,177 @@ class ImageOptimizationService
         }
         
         return $results;
+    }
+
+    /**
+     * Process favicon upload and convert to ICO format
+     * Creates a small, optimized favicon.ico file
+     * 
+     * @param UploadedFile|TemporaryUploadedFile $file
+     * @param string $directory Storage directory
+     * @param int $size Favicon size in pixels (16, 32, 48, etc)
+     * @return string ICO file path
+     */
+    public function processFaviconUpload(UploadedFile|TemporaryUploadedFile $file, string $directory, int $size = 32): string
+    {
+        // Ensure directory exists
+        $dirPath = Storage::disk('public')->path($directory);
+        if (!is_dir($dirPath)) {
+            mkdir($dirPath, 0755, true);
+        }
+        
+        // Get source path
+        $sourcePath = null;
+        if ($file instanceof TemporaryUploadedFile) {
+            $sourcePath = $file->getRealPath();
+            if (!$sourcePath || !file_exists($sourcePath)) {
+                $sourcePath = $file->path();
+            }
+        } else {
+            $sourcePath = $file->path();
+        }
+        
+        // Validate source file exists
+        if (!$sourcePath || !file_exists($sourcePath)) {
+            \Log::error("Favicon source file not found");
+            $originalPath = $file->store($directory, 'public');
+            return $originalPath;
+        }
+        
+        try {
+            // Generate unique filename
+            $filename = Str::uuid() . '.ico';
+            $storagePath = $directory . '/' . $filename;
+            $fullPath = Storage::disk('public')->path($storagePath);
+            
+            // Create GD image from source
+            $sourceInfo = getimagesize($sourcePath);
+            $mimeType = $sourceInfo['mime'] ?? '';
+            
+            switch ($mimeType) {
+                case 'image/jpeg':
+                    $sourceImage = imagecreatefromjpeg($sourcePath);
+                    break;
+                case 'image/png':
+                    $sourceImage = imagecreatefrompng($sourcePath);
+                    break;
+                case 'image/gif':
+                    $sourceImage = imagecreatefromgif($sourcePath);
+                    break;
+                case 'image/webp':
+                    $sourceImage = imagecreatefromwebp($sourcePath);
+                    break;
+                case 'image/x-icon':
+                case 'image/vnd.microsoft.icon':
+                    // Already ICO, just copy and optimize if needed
+                    $file->storeAs($directory, $filename, 'public');
+                    return $storagePath;
+                default:
+                    // Try to load as PNG by default
+                    $sourceImage = @imagecreatefrompng($sourcePath) ?: @imagecreatefromjpeg($sourcePath);
+            }
+            
+            if (!$sourceImage) {
+                throw new \Exception("Failed to create image from source");
+            }
+            
+            // Create favicon with multiple sizes for best compatibility
+            // ICO format can contain multiple sizes: 16x16, 32x32, 48x48
+            $sizes = [16, 32]; // Minimal sizes for smallest file
+            $icoData = $this->createIcoData($sourceImage, $sizes);
+            
+            // Write ICO file
+            file_put_contents($fullPath, $icoData);
+            
+            // Clean up
+            imagedestroy($sourceImage);
+            
+            $fileSize = filesize($fullPath) / 1024;
+            \Log::info("Favicon converted to ICO: {$storagePath} ({$fileSize}KB, sizes: " . implode(',', $sizes) . ")");
+            
+            return $storagePath;
+            
+        } catch (\Exception $e) {
+            \Log::error('Favicon conversion failed: ' . $e->getMessage());
+            
+            // Fallback: store original file
+            $originalPath = $file->store($directory, 'public');
+            return $originalPath;
+        }
+    }
+    
+    /**
+     * Create ICO binary data from GD image
+     * 
+     * @param resource $image GD image resource
+     * @param array $sizes Array of sizes to include
+     * @return string Binary ICO data
+     */
+    protected function createIcoData($image, array $sizes = [16, 32]): string
+    {
+        $images = [];
+        
+        foreach ($sizes as $size) {
+            // Create resized image
+            $resized = imagecreatetruecolor($size, $size);
+            
+            // Preserve transparency
+            imagealphablending($resized, false);
+            imagesavealpha($resized, true);
+            $transparent = imagecolorallocatealpha($resized, 0, 0, 0, 127);
+            imagefill($resized, 0, 0, $transparent);
+            imagealphablending($resized, true);
+            
+            // High quality resize
+            imagecopyresampled(
+                $resized, $image,
+                0, 0, 0, 0,
+                $size, $size,
+                imagesx($image), imagesy($image)
+            );
+            
+            // Convert to PNG binary
+            ob_start();
+            imagepng($resized, null, 9); // Max compression
+            $pngData = ob_get_clean();
+            
+            $images[] = [
+                'size' => $size,
+                'data' => $pngData
+            ];
+            
+            imagedestroy($resized);
+        }
+        
+        // Build ICO file structure
+        $iconDir = '';
+        $iconImages = '';
+        $offset = 6 + (count($images) * 16); // Header + directory entries
+        
+        // ICONDIR header
+        $iconDir .= pack('v', 0);        // Reserved (0)
+        $iconDir .= pack('v', 1);        // Image type (1 = ICO)
+        $iconDir .= pack('v', count($images)); // Number of images
+        
+        // ICONDIRENTRY for each image
+        foreach ($images as $img) {
+            $size = $img['size'];
+            $data = $img['data'];
+            $dataLen = strlen($data);
+            
+            $iconDir .= pack('C', $size == 256 ? 0 : $size); // Width
+            $iconDir .= pack('C', $size == 256 ? 0 : $size); // Height
+            $iconDir .= pack('C', 0);        // Color palette (0 = no palette)
+            $iconDir .= pack('C', 0);        // Reserved
+            $iconDir .= pack('v', 1);        // Color planes
+            $iconDir .= pack('v', 32);       // Bits per pixel
+            $iconDir .= pack('V', $dataLen); // Size of image data
+            $iconDir .= pack('V', $offset);  // Offset to image data
+            
+            $iconImages .= $data;
+            $offset += $dataLen;
+        }
+        
+        return $iconDir . $iconImages;
     }
 }

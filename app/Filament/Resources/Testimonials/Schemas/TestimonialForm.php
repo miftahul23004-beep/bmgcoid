@@ -39,6 +39,7 @@ class TestimonialForm
                                 FileUpload::make('author_photo')
                                     ->label('Author Photo')
                                     ->image()
+                                    ->disk('public')
                                     ->directory('testimonials')
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                     ->maxSize(10240)

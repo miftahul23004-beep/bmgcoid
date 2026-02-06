@@ -1,18 +1,31 @@
 @props(['product', 'dark' => false, 'listView' => false])
 
 @php
+    use Illuminate\Support\Facades\Storage;
+    
     $productName = e($product->getTranslation('name', app()->getLocale()));
     $productSlug = e($product->slug);
     $categoryName = $product->category ? e($product->category->getTranslation('name', app()->getLocale())) : null;
     $shortDesc = $product->short_description ? e($product->getTranslation('short_description', app()->getLocale())) : null;
+    
+    // Get product image - try featured_image first, then productMedia
+    $productImage = null;
+    if ($product->featured_image) {
+        $productImage = Storage::disk('public')->url($product->featured_image);
+    } elseif ($product->productMedia && $product->productMedia->first()) {
+        $media = $product->productMedia->first();
+        if ($media->file_path) {
+            $productImage = Storage::disk('public')->url($media->file_path);
+        }
+    }
 @endphp
 
 <article class="product-card group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden {{ $dark ? 'bg-gray-800 border-gray-700' : '' }} {{ $listView ? 'flex flex-row' : '' }}" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" itemscope itemtype="https://schema.org/Product">
     <a href="{{ route('products.show', $productSlug) }}" class="block {{ $listView ? 'flex flex-row w-full' : '' }}" title="{{ $productName }}">
         {{-- Image Container --}}
         <div class="product-image bg-gray-100 overflow-hidden relative {{ $listView ? 'w-48 md:w-56 flex-shrink-0' : 'aspect-[4/3]' }}">
-            @if($product->featured_image)
-                <img src="{{ asset('storage/' . $product->featured_image) }}" 
+            @if($productImage)
+                <img src="{{ $productImage }}" 
                      alt="{{ $productName }}" 
                      class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 {{ $listView ? 'aspect-square md:aspect-[4/3]' : '' }}" 
                      width="{{ $listView ? '224' : '400' }}"

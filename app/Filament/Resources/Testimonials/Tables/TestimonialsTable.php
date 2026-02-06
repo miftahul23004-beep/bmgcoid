@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -15,6 +16,11 @@ class TestimonialsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('author_photo')
+                    ->label('Photo')
+                    ->disk('public')
+                    ->circular()
+                    ->size(40),
                 TextColumn::make('client.name')
                     ->searchable(),
                 TextColumn::make('author_name')
@@ -22,8 +28,6 @@ class TestimonialsTable
                 TextColumn::make('author_position')
                     ->searchable(),
                 TextColumn::make('author_company')
-                    ->searchable(),
-                TextColumn::make('author_photo')
                     ->searchable(),
                 TextColumn::make('rating')
                     ->numeric()

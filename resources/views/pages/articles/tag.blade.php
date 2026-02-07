@@ -26,7 +26,7 @@
                 {{-- Sidebar --}}
                 <aside class="w-full lg:w-64 flex-shrink-0">
                     <div class="card sticky top-24">
-                        <h3 class="font-semibold text-lg mb-4">{{ __('Tags') }}</h3>
+                        <h2 class="font-semibold text-lg mb-4">{{ __('Tags') }}</h2>
                         <div class="flex flex-wrap gap-2">
                             @foreach($tags as $t)
                                 <a href="{{ route('articles.tag', $t->slug) }}" class="badge {{ $t->slug === $tag->slug ? 'badge-primary' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">

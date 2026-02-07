@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\Product;
 use App\Observers\ArticleObserver;
 use App\Observers\CategoryObserver;
+use App\Observers\ProductObserver;
 use App\Services\ArticleService;
 use App\Services\CategoryService;
 use App\Services\ProductService;
@@ -48,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
         // Register observers
         Article::observe(ArticleObserver::class);
         Category::observe(CategoryObserver::class);
+        Product::observe(ProductObserver::class);
 
         // Share settings only with layout views (not all views to avoid duplicates)
         View::composer('layouts.app', function ($view) {

@@ -5,7 +5,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             <h3 class="text-xl font-semibold text-green-800 mb-2">{{ __('Inquiry Sent Successfully!') }}</h3>
-            <p class="text-green-600 mb-4">{{ __('Thank you for your interest. Our team will contact you soon.') }}</p>
+            <p class="text-green-700 mb-4">{{ __('Thank you for your interest. Our team will contact you soon.') }}</p>
             <button wire:click="resetForm" class="btn btn-outline text-green-700 border-green-300 hover:bg-green-100">
                 {{ __('Send Another Inquiry') }}
             </button>
@@ -24,19 +24,19 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Name') }} <span class="text-red-500">*</span></label>
+                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Name') }} <span class="text-red-600">*</span></label>
                         <input type="text" id="name" wire:model="name" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('name') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Your full name @else Nama lengkap Anda @endif">
-                        @error('name') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+                        @error('name') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Email') }} <span class="text-red-500">*</span></label>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Email') }} <span class="text-red-600">*</span></label>
                         <input type="email" id="email" wire:model="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('email') border-red-500 @enderror" placeholder="email@example.com">
-                        @error('email') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+                        @error('email') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Phone') }} <span class="text-red-500">*</span></label>
+                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Phone') }} <span class="text-red-600">*</span></label>
                         <input type="tel" id="phone" wire:model="phone" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('phone') border-red-500 @enderror" placeholder="08xxxxxxxxxx">
-                        @error('phone') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+                        @error('phone') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="company" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Company') }}</label>
@@ -57,9 +57,9 @@
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Quantity') }} <span class="text-red-500">*</span></label>
+                        <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Quantity') }} <span class="text-red-600">*</span></label>
                         <input type="number" id="quantity" wire:model="quantity" min="1" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('quantity') border-red-500 @enderror">
-                        @error('quantity') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+                        @error('quantity') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="unit" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Unit') }}</label>
@@ -88,14 +88,14 @@
                     <h3 class="font-semibold text-gray-900">{{ __('Message') }}</h3>
                 </div>
                 <div>
-                    <label for="subject" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Subject') }} <span class="text-red-500">*</span></label>
+                    <label for="subject" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Subject') }} <span class="text-red-600">*</span></label>
                     <input type="text" id="subject" wire:model="subject" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('subject') border-red-500 @enderror">
-                    @error('subject') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+                    @error('subject') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                 </div>
                 <div class="mt-4">
-                    <label for="message" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Message') }} <span class="text-red-500">*</span></label>
+                    <label for="message" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Message') }} <span class="text-red-600">*</span></label>
                     <textarea id="message" wire:model="message" rows="4" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('message') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Tell us about your requirements... @else Ceritakan kebutuhan Anda... @endif"></textarea>
-                    @error('message') <span class="text-red-500 text-sm mt-1">{{ $message }}</span> @enderror
+                    @error('message') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                 </div>
             </div>
 

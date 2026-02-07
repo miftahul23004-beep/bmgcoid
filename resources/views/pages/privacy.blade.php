@@ -100,7 +100,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') SSL Secured @else SSL Terenkripsi @endif</h3>
+                    <h2 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') SSL Secured @else SSL Terenkripsi @endif</h2>
                 </div>
                 <div class="text-center">
                     <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -108,7 +108,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Data Protected @else Data Terlindungi @endif</h3>
+                    <h2 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Data Protected @else Data Terlindungi @endif</h2>
                 </div>
                 <div class="text-center">
                     <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -116,7 +116,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Compliant @else Sesuai Regulasi @endif</h3>
+                    <h2 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Compliant @else Sesuai Regulasi @endif</h2>
                 </div>
                 <div class="text-center">
                     <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center mx-auto mb-3">
@@ -124,7 +124,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') 24/7 Monitoring @else Monitoring 24/7 @endif</h3>
+                    <h2 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') 24/7 Monitoring @else Monitoring 24/7 @endif</h2>
                 </div>
             </div>
         </div>

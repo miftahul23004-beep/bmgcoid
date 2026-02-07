@@ -53,6 +53,8 @@ class CategoryObserver
         Cache::forget('categories.active');
         Cache::forget('categories.navigation');
         Cache::forget('categories.featured');
+        Cache::forget('homepage_data:id');
+        Cache::forget('homepage_data:en');
     }
 
     /**
@@ -60,7 +62,7 @@ class CategoryObserver
      */
     protected function convertToOptimizedWebp(string $imagePath, string $directory): ?string
     {
-        $fullPath = storage_path('app/public/' . $imagePath);
+        $fullPath = Storage::disk('public')->path($imagePath);
 
         if (!file_exists($fullPath)) {
             return null;
@@ -70,7 +72,7 @@ class CategoryObserver
         $pathInfo = pathinfo($imagePath);
         $newFilename = $pathInfo['filename'] . '.webp';
         $newPath = $directory . '/' . $newFilename;
-        $newFullPath = storage_path('app/public/' . $newPath);
+        $newFullPath = Storage::disk('public')->path($newPath);
 
         // Ensure directory exists
         $newDir = dirname($newFullPath);

@@ -132,9 +132,9 @@ class ArticleForm
                             ->maxSize(10240) // 10MB max upload
                             ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
                                 $service = app(ImageOptimizationService::class);
-                                return $service->processUpload($file, 'articles', 50);
+                                return $service->processUpload($file, 'articles', 10);
                             })
-                            ->helperText('Upload gambar (JPG, PNG, WebP). Akan otomatis dikonversi ke WebP max 50KB.'),
+                            ->helperText('Upload gambar (JPG, PNG, WebP). Akan otomatis dikonversi ke WebP max 10KB.'),
                     ]),
 
                 Tabs::make('SEO')

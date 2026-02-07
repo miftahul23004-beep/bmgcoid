@@ -33,16 +33,10 @@ Schedule::command('audit:run', ['--type' => 'all'])
     ->runInBackground()
     ->appendOutputTo(storage_path('logs/audit-daily.log'));
 
-// Cleanup old performance logs weekly (keep 30 days)
-Schedule::call(function () {
-    \App\Models\PerformanceLog::where('created_at', '<', now()->subDays(30))->delete();
-})->weekly()->sundays()->at('03:00');
-
-// Cleanup old audit results monthly (keep 90 days)
-Schedule::call(function () {
-    $oldResults = \App\Models\AuditResult::where('created_at', '<', now()->subDays(90))->get();
-    foreach ($oldResults as $result) {
-        $result->issues()->delete();
-        $result->delete();
-    }
-})->monthlyOn(1, '03:30');
+// Cleanup old logs weekly (performance logs 30d, audit 90d, sessions 7d)
+Schedule::command('logs:prune')
+    ->weekly()
+    ->sundays()
+    ->at('03:00')
+    ->withoutOverlapping()
+    ->appendOutputTo(storage_path('logs/prune.log'));

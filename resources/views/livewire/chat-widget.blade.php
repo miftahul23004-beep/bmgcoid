@@ -89,11 +89,11 @@
                 <form wire:submit="startChat" class="space-y-3">
                     <div>
                         <input type="text" wire:model="visitorName" placeholder="{{ __('Your Name') }} *" class="input w-full text-sm @error('visitorName') border-red-500 @enderror">
-                        @error('visitorName') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        @error('visitorName') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <input type="email" wire:model="visitorEmail" placeholder="{{ __('Your Email') }} *" class="input w-full text-sm @error('visitorEmail') border-red-500 @enderror">
-                        @error('visitorEmail') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        @error('visitorEmail') <span class="text-red-600 text-xs">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <input type="tel" wire:model="visitorPhone" placeholder="{{ __('Phone (optional)') }}" class="input w-full text-sm">
@@ -128,11 +128,11 @@
                                     <svg class="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                                     </svg>
-                                    <span class="text-xs text-green-600 font-medium">Customer Service</span>
+                                    <span class="text-xs text-green-700 font-medium">Customer Service</span>
                                 </div>
                             @endif
                             <p class="text-sm whitespace-pre-wrap">{{ $msg['message'] }}</p>
-                            <p class="text-xs {{ $msg['sender_type'] === 'visitor' ? 'text-primary-200' : 'text-gray-400' }} mt-1">{{ $msg['created_at'] }}</p>
+                            <p class="text-xs {{ $msg['sender_type'] === 'visitor' ? 'text-primary-200' : 'text-gray-500' }} mt-1">{{ $msg['created_at'] }}</p>
                         </div>
                     </div>
                 @endforeach

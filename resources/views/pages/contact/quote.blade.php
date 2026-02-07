@@ -73,7 +73,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Quick Response @else Respon Cepat @endif</h3>
+                    <h2 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Quick Response @else Respon Cepat @endif</h2>
                     <p class="text-xs text-gray-500">1-2 @if(app()->getLocale() === 'en') Business Days @else Hari Kerja @endif</p>
                 </div>
                 <div class="text-center">
@@ -82,7 +82,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Best Price @else Harga Terbaik @endif</h3>
+                    <h2 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Best Price @else Harga Terbaik @endif</h2>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Competitive @else Kompetitif @endif</p>
                 </div>
                 <div class="text-center">
@@ -91,7 +91,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Detailed Quote @else Penawaran Detail @endif</h3>
+                    <h2 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Detailed Quote @else Penawaran Detail @endif</h2>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Complete Specs @else Spesifikasi Lengkap @endif</p>
                 </div>
                 <div class="text-center">
@@ -100,7 +100,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
                     </div>
-                    <h3 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Expert Consultation @else Konsultasi Ahli @endif</h3>
+                    <h2 class="font-semibold text-gray-900 text-sm">@if(app()->getLocale() === 'en') Expert Consultation @else Konsultasi Ahli @endif</h2>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Free @else Gratis @endif</p>
                 </div>
             </div>
@@ -204,31 +204,31 @@
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Name') }} <span class="text-red-500">*</span></label>
+                                        <label for="name" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Name') }} <span class="text-red-600">*</span></label>
                                         <input type="text" name="name" id="name" value="{{ old('name') }}" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all @error('name') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Your full name @else Nama lengkap Anda @endif">
                                         @error('name')
-                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
                                     <div>
-                                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Email') }} <span class="text-red-500">*</span></label>
+                                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Email') }} <span class="text-red-600">*</span></label>
                                         <input type="email" name="email" id="email" value="{{ old('email') }}" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all @error('email') border-red-500 @enderror" placeholder="email@example.com">
                                         @error('email')
-                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
                                     <div>
-                                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Phone') }} <span class="text-red-500">*</span></label>
+                                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Phone') }} <span class="text-red-600">*</span></label>
                                         <input type="text" name="phone" id="phone" value="{{ old('phone') }}" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all @error('phone') border-red-500 @enderror" placeholder="08xxxxxxxxxx">
                                         @error('phone')
-                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
                                     <div>
                                         <label for="company" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Company') }}</label>
                                         <input type="text" name="company" id="company" value="{{ old('company') }}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 transition-all @error('company') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Company name (optional) @else Nama perusahaan (opsional) @endif">
                                         @error('company')
-                                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                                         @enderror
                                     </div>
                                 </div>
@@ -287,7 +287,7 @@
                                 </div>
                                 
                                 @error('products')
-                                    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+                                    <p class="text-red-600 text-sm mt-2">{{ $message }}</p>
                                 @enderror
 
                                 <div class="mt-4 flex items-center gap-2 text-sm">

@@ -50,32 +50,15 @@ deploy.php
 /public_html/
 /.last_deploy
 
-# Utility/debug scripts (should be temporary)
-/public/debug*.php
-/public/fix-*.php
-/public/check-*.php
-/public/cleanup-*.php
-/public/clear-*.php
-/public/emergency-*.php
-/public/force-*.php
-/public/final-*.php
-/public/nuclear.php
-/public/diagnose.php
-/public/deep-debug.php
-/public/simple-debug.php
-/public/laravel-debug.php
-/public/read-log.php
-/public/regenerate-cache.php
-/public/regen-sitemap.php
-/public/optimize-performance.php
-/public/create-symlink.php
-/public/truncate-cache.php
-/public/index-manual.php
-/public/artisan-http.php
-/public/backup.php
-/public/test-redis.php
-/public/qc.php
-/public/vc.php
-/public/vc2.php
-/public/quick-clear.php
+# Block ALL non-essential PHP in public/ (only index.php allowed)
+/public/*.php
+!/public/index.php
+
+# Block dangerous root-level scripts & files
 /cleanup-production.php
+/BACKUP_README.md
+/HOSTING_SETUP.txt
+/install/
+
+# Doc data files
+/doc/*.csv

@@ -264,7 +264,7 @@
                                                             <a href="{{ route('products.category', $child->slug) }}" 
                                                                class="flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all duration-200 {{ request('category') === $child->slug ? 'bg-primary-50 text-primary-700 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                                                                 <span>{{ $child->getTranslation('name', app()->getLocale()) }}</span>
-                                                                <span class="text-xs {{ request('category') === $child->slug ? 'text-primary-600' : 'text-gray-400' }}">{{ $child->products_count ?? 0 }}</span>
+                                                                <span class="text-xs {{ request('category') === $child->slug ? 'text-primary-600' : 'text-gray-500' }}">{{ $child->products_count ?? 0 }}</span>
                                                             </a>
                                                         </li>
                                                     @endforeach
@@ -317,12 +317,12 @@
                                        maxlength="100"
                                        autocomplete="off"
                                        class="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-all">
-                                <svg class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <svg class="w-5 h-5 text-gray-500 absolute left-4 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                                 </svg>
                                 @if(request('search'))
                                     <a href="{{ route('products.index', request()->except('search')) }}" 
-                                       class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                       class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-600"
                                        aria-label="{{ __('Clear search') }}">
                                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -357,12 +357,12 @@
                             
                             {{-- View Toggle --}}
                             <div class="hidden sm:flex items-center gap-1 bg-gray-100 rounded-lg p-1" x-data x-on:click="$dispatch('toggle-view', $event.target.closest('button')?.dataset.view)">
-                                <button data-view="grid" class="p-2 rounded-md transition-all" :class="$store.productView.mode === 'grid' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-400 hover:text-gray-600'" @click="$store.productView.mode = 'grid'">
+                                <button data-view="grid" class="p-2 rounded-md transition-all" :class="$store.productView.mode === 'grid' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-500 hover:text-gray-600'" @click="$store.productView.mode = 'grid'">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                                     </svg>
                                 </button>
-                                <button data-view="list" class="p-2 rounded-md transition-all" :class="$store.productView.mode === 'list' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-400 hover:text-gray-600'" @click="$store.productView.mode = 'list'">
+                                <button data-view="list" class="p-2 rounded-md transition-all" :class="$store.productView.mode === 'list' ? 'bg-white shadow-sm text-primary-600' : 'text-gray-500 hover:text-gray-600'" @click="$store.productView.mode = 'list'">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                                     </svg>

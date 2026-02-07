@@ -29,8 +29,8 @@
                             src="{{ $logoPath }}" 
                             alt="{{ $companyName }}" 
                             class="h-8 md:h-10 w-auto"
-                            width="40"
-                            height="40"
+                            width="116"
+                            height="80"
                             fetchpriority="high"
                         >
                     </div>
@@ -145,7 +145,7 @@
                                             </p>
                                         </div>
                                         {{-- Arrow --}}
-                                        <svg class="w-4 h-4 text-gray-300 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-500 group-hover:translate-x-0.5 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
                                     </a>

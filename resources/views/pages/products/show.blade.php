@@ -140,10 +140,10 @@
                             </svg>
                         </a>
                     </li>
-                    <li><span class="text-gray-400">/</span></li>
+                    <li><span class="text-gray-500">/</span></li>
                     <li><a href="{{ route('products.index') }}" class="text-gray-500 hover:text-primary-600 transition-colors">{{ __('Products') }}</a></li>
                     @foreach($breadcrumbs as $crumb)
-                        <li><span class="text-gray-400">/</span></li>
+                        <li><span class="text-gray-500">/</span></li>
                         @if($crumb['url'])
                             <li><a href="{{ $crumb['url'] }}" class="text-gray-500 hover:text-primary-600 transition-colors">{{ $crumb['name'] }}</a></li>
                         @else
@@ -246,10 +246,10 @@
                                         <span class="bg-primary-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">{{ __('Featured') }}</span>
                                     @endif
                                     @if($product->is_new)
-                                        <span class="bg-green-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">{{ __('New') }}</span>
+                                        <span class="bg-green-700 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">{{ __('New') }}</span>
                                     @endif
                                     @if($product->is_bestseller)
-                                        <span class="bg-amber-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">{{ __('Best Seller') }}</span>
+                                        <span class="bg-amber-700 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">{{ __('Best Seller') }}</span>
                                     @endif
                                 </div>
                                 
@@ -329,7 +329,7 @@
                                         @if($i <= round($product->average_rating ?? 0))
                                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                         @else
-                                            <svg class="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
                                         @endif
                                     @endfor
                                 </div>
@@ -362,12 +362,12 @@
                     {{-- Variant Selector --}}
                     @if($product->variants->count() > 0)
                         <div class="mt-8 p-5 bg-gray-50 rounded-xl" x-data="{ selectedVariant: '{{ $product->variants->first()->id }}' }">
-                            <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                            <h2 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
                                 <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                                 </svg>
                                 {{ __('Select Variant') }}
-                            </h3>
+                            </h2>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                                 @foreach($product->variants as $variant)
                                     <label 
@@ -395,12 +395,12 @@
                     {{-- Quick Specs Preview --}}
                     @if($product->specifications && count($product->specifications) > 0)
                         <div class="mt-6 p-5 bg-gray-50 rounded-xl">
-                            <h3 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                            <h2 class="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                                 <svg class="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                                 </svg>
                                 {{ __('Quick Specifications') }}
-                            </h3>
+                            </h2>
                             <div class="grid grid-cols-2 gap-3">
                                 @foreach(collect($product->specifications)->take(4) as $key => $value)
                                     <div class="flex flex-col">
@@ -425,7 +425,7 @@
                             </svg>
                             {{ __('Request Quote') }}
                         </a>
-                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', config('social.whatsapp') ?? '6281234567890') }}?text={{ urlencode(__('Hello, I am interested in') . ' ' . $product->getTranslation('name', 'id') . ' (SKU: ' . ($product->sku ?? '-') . ')') }}" target="_blank" rel="noopener" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white text-lg font-semibold px-8 py-4 rounded-xl transition-colors border-2 border-green-700 hover:border-green-800">
+                        <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', config('social.whatsapp') ?? '6281234567890') }}?text={{ urlencode(__('Hello, I am interested in') . ' ' . $product->getTranslation('name', 'id') . ' (SKU: ' . ($product->sku ?? '-') . ')') }}" target="_blank" rel="noopener" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-green-700 hover:bg-green-800 text-white text-lg font-semibold px-8 py-4 rounded-xl transition-colors border-2 border-green-800 hover:border-green-900">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
                             </svg>
@@ -440,7 +440,7 @@
                     @endphp
                     @if($showMarketplaceProduct && $product->marketplaceLinks->count() > 0)
                         <div class="mt-6 pt-6 border-t border-gray-100">
-                            <h3 class="text-sm font-medium text-gray-500 mb-3">{{ __('Also Available at') }}:</h3>
+                            <h2 class="text-sm font-medium text-gray-500 mb-3">{{ __('Also Available at') }}:</h2>
                             <div class="flex flex-wrap gap-2">
                                 @foreach($product->marketplaceLinks as $link)
                                     <a href="{{ route('marketplace.redirect', ['platform' => $link->platform, 'productId' => $product->id]) }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 bg-white hover:border-primary-500 hover:bg-primary-50 transition-all group">
@@ -480,7 +480,7 @@
                             <a href="https://twitter.com/intent/tweet?url={{ urlencode(request()->url()) }}&text={{ urlencode($product->getTranslation('name', app()->getLocale())) }}" target="_blank" rel="noopener" class="w-9 h-9 flex items-center justify-center rounded-full bg-black text-white hover:bg-gray-800 transition-colors" title="X (Twitter)">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                             </a>
-                            <a href="https://wa.me/?text={{ urlencode($product->getTranslation('name', app()->getLocale()) . ' - ' . request()->url()) }}" target="_blank" rel="noopener" class="w-9 h-9 flex items-center justify-center rounded-full bg-green-500 text-white hover:bg-green-600 transition-colors" title="WhatsApp">
+                            <a href="https://wa.me/?text={{ urlencode($product->getTranslation('name', app()->getLocale()) . ' - ' . request()->url()) }}" target="_blank" rel="noopener" class="w-9 h-9 flex items-center justify-center rounded-full bg-green-700 text-white hover:bg-green-800 transition-colors" title="WhatsApp">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                             </a>
                             <button onclick="navigator.clipboard.writeText('{{ request()->url() }}'); this.classList.add('bg-green-500'); setTimeout(() => this.classList.remove('bg-green-500'), 2000)" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition-colors" title="{{ __('Copy Link') }}">
@@ -623,10 +623,10 @@
                                             </svg>
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <h4 class="font-semibold text-gray-900 truncate group-hover:text-primary-700">{{ $document->getTranslation('title', app()->getLocale()) }}</h4>
+                                            <h3 class="font-semibold text-gray-900 truncate group-hover:text-primary-700">{{ $document->getTranslation('title', app()->getLocale()) }}</h3>
                                             <p class="text-sm text-gray-500 mt-0.5">{{ strtoupper($document->file_type ?? 'PDF') }} • {{ $document->formatted_file_size ?? __('Download') }}</p>
                                         </div>
-                                        <svg class="w-5 h-5 text-gray-400 group-hover:text-primary-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg class="w-5 h-5 text-gray-500 group-hover:text-primary-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                                         </svg>
                                     </a>
@@ -735,7 +735,7 @@
                             <img :src="product.image || '/images/placeholder-product.png'" :alt="product.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
                         </div>
                         <div class="p-3">
-                            <h4 class="font-medium text-gray-900 text-sm line-clamp-2 group-hover:text-primary-600 transition-colors" x-text="product.name"></h4>
+                            <h3 class="font-medium text-gray-900 text-sm line-clamp-2 group-hover:text-primary-600 transition-colors" x-text="product.name"></h3>
                             <p x-show="product.category" class="text-xs text-gray-500 mt-1" x-text="product.category"></p>
                         </div>
                     </a>

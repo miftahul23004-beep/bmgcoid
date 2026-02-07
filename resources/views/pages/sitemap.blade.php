@@ -75,7 +75,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-2xl text-gray-900">6+</h3>
+                    <h2 class="font-bold text-2xl text-gray-900">6+</h2>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Main Pages @else Halaman Utama @endif</p>
                 </div>
                 <div class="text-center">
@@ -84,7 +84,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-2xl text-gray-900">{{ $categories->count() }}</h3>
+                    <h2 class="font-bold text-2xl text-gray-900">{{ $categories->count() }}</h2>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Product Categories @else Kategori Produk @endif</p>
                 </div>
                 <div class="text-center">
@@ -93,7 +93,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-2xl text-gray-900">{{ $articles->count() }}</h3>
+                    <h2 class="font-bold text-2xl text-gray-900">{{ $articles->count() }}</h2>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Articles @else Artikel @endif</p>
                 </div>
                 <div class="text-center">
@@ -102,7 +102,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
-                    <h3 class="font-bold text-2xl text-gray-900">3</h3>
+                    <h2 class="font-bold text-2xl text-gray-900">3</h2>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Info Pages @else Halaman Info @endif</p>
                 </div>
             </div>
@@ -128,7 +128,7 @@
                     <ul class="space-y-3">
                         <li>
                             <a href="{{ route('home') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('Home') }}
@@ -136,7 +136,7 @@
                         </li>
                         <li>
                             <a href="{{ route('about.company') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('About Us') }}
@@ -144,7 +144,7 @@
                         </li>
                         <li>
                             <a href="{{ route('about.vision-mission') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('Vision & Mission') }}
@@ -152,7 +152,7 @@
                         </li>
                         <li>
                             <a href="{{ route('about.team') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('Our Team') }}
@@ -160,7 +160,7 @@
                         </li>
                         <li>
                             <a href="{{ route('about.certificates') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('Certificates') }}
@@ -168,7 +168,7 @@
                         </li>
                         <li>
                             <a href="{{ route('contact') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('Contact Us') }}
@@ -176,7 +176,7 @@
                         </li>
                         <li>
                             <a href="{{ route('quote') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('Get Quote') }}
@@ -207,7 +207,7 @@
                         @foreach ($categories as $category)
                         <li>
                             <a href="{{ route('products.category', $category->slug) }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ $category->name }}
@@ -217,7 +217,7 @@
                                 @foreach ($category->children as $child)
                                 <li>
                                     <a href="{{ route('products.category', $child->slug) }}" class="text-gray-500 hover:text-primary-600 text-sm flex items-center gap-2 group py-1 px-2 rounded hover:bg-gray-50 transition-all">
-                                        <svg class="w-3 h-3 text-gray-300 group-hover:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg class="w-3 h-3 text-gray-400 group-hover:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
                                         {{ $child->name }}
@@ -253,7 +253,7 @@
                         @foreach ($articles->take(8) as $article)
                         <li>
                             <a href="{{ route('articles.show', $article->slug) }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 <span class="truncate">{{ Str::limit($article->title, 35) }}</span>
@@ -288,7 +288,7 @@
                     <ul class="space-y-3">
                         <li>
                             <a href="{{ route('privacy') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('Privacy Policy') }}
@@ -296,7 +296,7 @@
                         </li>
                         <li>
                             <a href="{{ route('terms') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('Terms & Conditions') }}
@@ -304,7 +304,7 @@
                         </li>
                         <li>
                             <a href="{{ route('search') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('Search') }}
@@ -312,7 +312,7 @@
                         </li>
                         <li>
                             <a href="{{ route('testimonials') }}" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all">
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
                                 {{ __('Testimonials') }}
@@ -324,11 +324,11 @@
                     <div class="mt-6 pt-6 border-t border-gray-100">
                         <p class="text-xs text-gray-500 mb-3">@if(app()->getLocale() === 'en') For Search Engines: @else Untuk Mesin Pencari: @endif</p>
                         <a href="{{ url('sitemap.xml') }}" target="_blank" class="text-gray-600 hover:text-primary-600 flex items-center gap-3 group p-2 rounded-lg hover:bg-primary-50 transition-all text-sm">
-                            <svg class="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
                             </svg>
                             sitemap.xml
-                            <svg class="w-3 h-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg class="w-3 h-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                             </svg>
                         </a>

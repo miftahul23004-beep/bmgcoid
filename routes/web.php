@@ -73,8 +73,13 @@ Route::get('/go/{platform}/{productId}', [ProductController::class, 'marketplace
     ->name('marketplace.redirect')
     ->middleware('throttle:30,1'); // 30 requests per minute
 
-// Backup Download Route (Admin only)
+// Backup Download Route (Super Admin only)
 Route::get('/admin/backup/download/{file}', function ($file) {
+    // Security: only Super Admin can download backups
+    if (!auth()->user()?->hasRole('Super Admin')) {
+        abort(403, 'Unauthorized');
+    }
+
     $filename = basename($file); // Security: prevent path traversal
     $path = storage_path("app/backups/{$filename}");
     

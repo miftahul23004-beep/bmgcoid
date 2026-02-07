@@ -52,15 +52,17 @@ class ProductMediaRelationManager extends RelationManager
 
                 FileUpload::make('file_path')
                     ->label(__('Image File'))
+                    ->disk('public')
                     ->directory('products/media')
+                    ->visibility('public')
                     ->maxSize(10240)
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->visible(fn ($get) => $get('type') === 'image')
                     ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
                         $service = app(ImageOptimizationService::class);
-                        return $service->processUpload($file, 'products/media', 50);
+                        return $service->processUpload($file, 'products/media', 10, 744, 496);
                     })
-                    ->helperText(__('Images auto-converted to WebP (max 200KB)'))
+                    ->helperText(__('Auto WebP & resize 744×496px, max 10KB'))
                     ->columnSpanFull(),
 
                 TextInput::make('youtube_url')

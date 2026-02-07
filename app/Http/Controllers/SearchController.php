@@ -11,6 +11,11 @@ class SearchController extends Controller
 {
     public function index(Request $request): View
     {
+        $request->validate([
+            'q' => 'nullable|string|max:100',
+            'type' => 'nullable|string|in:all,products,articles',
+        ]);
+
         $query = $request->get('q', '');
         $type = $request->get('type', 'all');
 

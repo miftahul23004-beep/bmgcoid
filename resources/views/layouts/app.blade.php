@@ -57,42 +57,66 @@
     <link rel="icon" type="image/x-icon" href="{{ $faviconPath }}">
     <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
 
-    {{-- DNS Prefetch & Preconnect for performance --}}
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    {{-- DNS Prefetch for external resources --}}
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    {{-- Preload local fonts (eliminates 2 DNS lookups = ~400ms on mobile) --}}
+    <link rel="preload" href="/fonts/inter/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/plus-jakarta-sans/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
     
     {{-- Preload LCP hero image for homepage --}}
     @stack('preload')
-    
-    {{-- Google Fonts loaded async to prevent render blocking --}}
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" as="style">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <noscript>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">
-    </noscript>
 
     {{-- Critical CSS for preventing CLS and FOIT --}}
     <style>
         [x-cloak] { display: none !important; }
         /* Critical font fallback to prevent layout shift */
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; }
         /* Prevent FOIT - show text immediately with fallback */
         .font-display-swap { font-display: swap; }
+        /* Critical above-fold layout to prevent CLS */
+        .bg-primary-900 { background-color: #1e3a5f; }
+        .bg-white { background-color: #fff; }
+        .container { width: 100%; max-width: 1280px; margin-left: auto; margin-right: auto; padding-left: 1rem; padding-right: 1rem; }
+        .sticky { position: sticky; }
+        .top-0 { top: 0; }
+        .z-50 { z-index: 50; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+        .hidden { display: none; }
+        @media (min-width: 768px) { .md\:block { display: block; } .md\:min-h-\[80px\] { min-height: 80px; } }
+        .min-h-\[72px\] { min-height: 72px; }
+        img { max-width: 100%; height: auto; }
     </style>
 
-    {{-- Vite Assets --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Vite CSS only in head (JS deferred to body) --}}
+    @vite(['resources/css/app.css'])
 
     {{-- Additional Head Content --}}
     @stack('head')
     @stack('meta')
     
-    {{-- Custom Head Scripts from SEO Settings --}}
+    {{-- Custom Head Scripts from SEO Settings (deferred to reduce TBT) --}}
     @if(!empty($seoSettings['custom_head_scripts']))
-        {!! $seoSettings['custom_head_scripts'] !!}
+    <script>
+        // Defer third-party scripts (GTM, etc.) until after page load
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                var div = document.createElement('div');
+                div.innerHTML = {!! json_encode($seoSettings['custom_head_scripts']) !!};
+                var scripts = div.querySelectorAll('script');
+                scripts.forEach(function(script) {
+                    var newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                        newScript.async = true;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.head.appendChild(newScript);
+                });
+            }, 1500);
+        });
+    </script>
     @endif
 </head>
 <body class="font-sans antialiased bg-gray-50 text-gray-900 overflow-x-hidden">
@@ -135,6 +159,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
         </svg>
     </button>
+
+    {{-- Vite JS deferred to end of body for faster FCP --}}
+    @vite(['resources/js/app.js'])
 
     {{-- Additional Scripts --}}
     @stack('scripts')

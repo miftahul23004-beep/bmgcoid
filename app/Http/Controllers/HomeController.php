@@ -18,7 +18,7 @@ use Illuminate\View\View;
 
 class HomeController extends Controller
 {
-    protected int $cacheTime = 300; // 5 minutes
+    protected int $cacheTime = 3600; // 1 hour
 
     public function __construct(
         protected ProductService $productService,

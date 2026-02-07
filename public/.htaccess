@@ -51,6 +51,41 @@
 </IfModule>
 
 # ============================================
+# SERVE PRE-COMPRESSED ASSETS (Brotli/Gzip)
+# ============================================
+<IfModule mod_rewrite.c>
+    # Serve .br files if browser supports Brotli
+    RewriteCond %{HTTP:Accept-Encoding} br
+    RewriteCond %{REQUEST_FILENAME}.br -f
+    RewriteRule ^(.*)$ $1.br [L]
+
+    # Serve .gz files if browser supports Gzip
+    RewriteCond %{HTTP:Accept-Encoding} gzip
+    RewriteCond %{REQUEST_FILENAME}.gz -f
+    RewriteRule ^(.*)$ $1.gz [L]
+</IfModule>
+
+# Set correct content types for pre-compressed files
+<IfModule mod_headers.c>
+    <FilesMatch "\.js\.br$">
+        Header set Content-Encoding br
+        Header set Content-Type "application/javascript"
+    </FilesMatch>
+    <FilesMatch "\.css\.br$">
+        Header set Content-Encoding br
+        Header set Content-Type "text/css"
+    </FilesMatch>
+    <FilesMatch "\.js\.gz$">
+        Header set Content-Encoding gzip
+        Header set Content-Type "application/javascript"
+    </FilesMatch>
+    <FilesMatch "\.css\.gz$">
+        Header set Content-Encoding gzip
+        Header set Content-Type "text/css"
+    </FilesMatch>
+</IfModule>
+
+# ============================================
 # GZIP COMPRESSION - GTmetrix Grade A
 # ============================================
 <IfModule mod_deflate.c>

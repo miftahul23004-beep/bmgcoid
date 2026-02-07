@@ -16,7 +16,7 @@
                     {{-- Logo Container --}}
                     <div class="relative flex-shrink-0">
                         <div class="bg-gradient-to-br from-gray-800 to-gray-700 p-2.5 rounded-xl border border-gray-600/50 shadow-lg">
-                            <img src="{{ $logoWhitePath }}" alt="{{ $companyInfo['company_name'] ?? config('app.name') }}" class="h-10 w-auto" width="40" height="40" loading="lazy">
+                            <img src="{{ $logoWhitePath }}" alt="{{ $companyInfo['company_name'] ?? config('app.name') }}" class="h-10 w-auto" width="116" height="80" loading="lazy">
                         </div>
                         {{-- Trust Badge on Logo --}}
                         <div class="absolute -bottom-1.5 -right-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full p-1 shadow-lg">
@@ -171,7 +171,7 @@
                         Supplier Besi Baja Melayani Seluruh Indonesia
                     @endif
                 </h4>
-                <p class="text-xs text-gray-500 max-w-4xl mx-auto leading-relaxed mb-2">
+                <p class="text-xs text-gray-400 max-w-4xl mx-auto leading-relaxed mb-2">
                     @if(app()->getLocale() === 'en') 
                         <span class="text-primary-400">Wholesale & Retail</span> • 
                         <span class="text-gray-400">Large Projects</span> • 
@@ -186,7 +186,7 @@
                         <span class="text-gray-400">Konstruksi</span>
                     @endif
                 </p>
-                <p class="text-xs text-gray-500 max-w-4xl mx-auto leading-relaxed">
+                <p class="text-xs text-gray-400 max-w-4xl mx-auto leading-relaxed">
                     @if(app()->getLocale() === 'en') 
                         <span class="text-gray-400 font-medium">Primary:</span> Surabaya • Sidoarjo • Gresik • Mojokerto • Jombang • East Java |
                         <span class="text-gray-400 font-medium">National:</span> Java • Sumatra • Kalimantan • Sulawesi • Bali • Papua • All Indonesia

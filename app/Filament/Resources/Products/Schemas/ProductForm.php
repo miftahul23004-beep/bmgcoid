@@ -154,12 +154,12 @@ class ProductForm
                             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                             ->saveUploadedFileUsing(function (TemporaryUploadedFile $file, $get) {
                                 $service = app(ImageOptimizationService::class);
-                                $path = $service->processUpload($file, 'products/featured', 50);
+                                $path = $service->processUpload($file, 'products/featured', 10, 744, 496);
                                 
                                 // Return full path (Filament stores this in DB)
                                 return $path;
                             })
-                            ->helperText(__('Image will be auto-converted to WebP (max 50KB)')),
+                            ->helperText(__('Auto WebP & resize 744×496px, max 10KB')),
                     ]),
 
                 // Specifications Section

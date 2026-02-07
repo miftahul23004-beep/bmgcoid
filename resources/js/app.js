@@ -1,4 +1,3 @@
-import './bootstrap';
 import Alpine from 'alpinejs';
 
 // Make Alpine available globally
@@ -19,42 +18,55 @@ Alpine.store('productView', {
     }
 });
 
-// Start Alpine
+// Start Alpine - prioritize first paint on mobile
 Alpine.start();
 
-// Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
-});
+// Defer non-critical JS to idle time (reduces TBT on mobile)
+const runWhenIdle = (fn) => {
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(fn);
+    } else {
+        setTimeout(fn, 1);
+    }
+};
 
-// Lazy load images with IntersectionObserver
-if ('IntersectionObserver' in window) {
-    const lazyImages = document.querySelectorAll('img[data-src]');
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.removeAttribute('data-src');
-                observer.unobserve(img);
+runWhenIdle(() => {
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
         });
     });
+});
 
-    lazyImages.forEach(img => imageObserver.observe(img));
-}
+// Lazy load images with IntersectionObserver (deferred)
+runWhenIdle(() => {
+    if ('IntersectionObserver' in window) {
+        const lazyImages = document.querySelectorAll('img[data-src]');
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
+                    observer.unobserve(img);
+                }
+            });
+        }, { rootMargin: '200px' });
 
-// Email Protection - Decode obfuscated emails
-document.addEventListener('DOMContentLoaded', function() {
+        lazyImages.forEach(img => imageObserver.observe(img));
+    }
+});
+
+// Email Protection - Decode obfuscated emails (deferred to idle)
+runWhenIdle(() => {
     const protectedEmails = document.querySelectorAll('.protected-email');
     
     protectedEmails.forEach(function(el) {

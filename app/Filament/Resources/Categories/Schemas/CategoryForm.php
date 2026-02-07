@@ -118,9 +118,9 @@ class CategoryForm
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->saveUploadedFileUsing(function (TemporaryUploadedFile $file) {
                                     $service = app(ImageOptimizationService::class);
-                                    return $service->processUpload($file, 'categories/images', 50);
+                                    return $service->processUpload($file, 'categories/images', 10, 308, 240);
                                 })
-                                ->helperText(__('Auto WebP, max 50KB')),
+                                ->helperText(__('Auto WebP & resize 308×240px, max 10KB')),
                         ]),
                     ]),
 

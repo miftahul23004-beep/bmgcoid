@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Spatie\Image\Image;
+use Spatie\Image\Enums\Fit;
 use Spatie\Image\Enums\ImageDriver;
 
 class ImageOptimizationService
@@ -193,7 +194,7 @@ class ImageOptimizationService
      * @param int $maxSizeKb Maximum file size in KB
      * @return string WebP file path
      */
-    public function processUpload(UploadedFile|TemporaryUploadedFile $file, string $directory, int $maxSizeKb = 200): string
+    public function processUpload(UploadedFile|TemporaryUploadedFile $file, string $directory, int $maxSizeKb = 200, ?int $targetWidth = null, ?int $targetHeight = null): string
     {
         // Ensure directory exists
         $dirPath = Storage::disk('public')->path($directory);
@@ -245,53 +246,83 @@ class ImageOptimizationService
             $fullPath = Storage::disk('public')->path($storagePath);
             
             // Convert to WebP with optimization
-            // For hero slides, use larger width, for others use smaller
-            $maxWidth = str_contains($directory, 'hero') ? 1600 : 1200;
-            $minWidth = 600; // Lower minimum for aggressive compression
             $quality = 75;   // Start lower for better compression
             $minQuality = 20; // Lower minimum quality for <50KB target
-            
-            // Get original dimensions
-            $originalInfo = getimagesize($sourcePath);
-            $originalWidth = $originalInfo[0] ?? 1920;
-            
-            // Don't upscale if original is smaller
-            if ($originalWidth < $maxWidth) {
-                $maxWidth = $originalWidth;
-            }
-            
-            // First pass with initial settings
-            Image::useImageDriver(ImageDriver::Gd)
-                ->load($sourcePath)
-                ->width($maxWidth)
-                ->quality($quality)
-                ->save($fullPath);
-            
-            $fileSize = filesize($fullPath) / 1024; // KB
-            
-            // Reduce quality first (faster than resizing)
-            while ($fileSize > $maxSizeKb && $quality > $minQuality) {
-                $quality -= 5;
+
+            // If exact target dimensions are specified, resize to cover & crop
+            if ($targetWidth && $targetHeight) {
+                Image::useImageDriver(ImageDriver::Gd)
+                    ->load($sourcePath)
+                    ->fit(Fit::Crop, $targetWidth, $targetHeight)
+                    ->quality($quality)
+                    ->save($fullPath);
+
+                $fileSize = filesize($fullPath) / 1024; // KB
+
+                // Reduce quality if still too large
+                while ($fileSize > $maxSizeKb && $quality > $minQuality) {
+                    $quality -= 5;
+                    Image::useImageDriver(ImageDriver::Gd)
+                        ->load($sourcePath)
+                        ->fit(Fit::Crop, $targetWidth, $targetHeight)
+                        ->quality($quality)
+                        ->save($fullPath);
+                    $fileSize = filesize($fullPath) / 1024;
+                }
+            } else {
+                // Original behaviour: constrain by max width
+                // For hero slides, use larger width, for others use smaller
+                $maxWidth = str_contains($directory, 'hero') ? 1600 : 1200;
+                $minWidth = 600; // Lower minimum for aggressive compression
+
+                // Get original dimensions
+                $originalInfo = getimagesize($sourcePath);
+                $originalWidth = $originalInfo[0] ?? 1920;
+
+                // Don't upscale if original is smaller
+                if ($originalWidth < $maxWidth) {
+                    $maxWidth = $originalWidth;
+                }
+
+                // First pass with initial settings
                 Image::useImageDriver(ImageDriver::Gd)
                     ->load($sourcePath)
                     ->width($maxWidth)
                     ->quality($quality)
                     ->save($fullPath);
-                $fileSize = filesize($fullPath) / 1024;
+
+                $fileSize = filesize($fullPath) / 1024; // KB
+
+                // Reduce quality first (faster than resizing)
+                while ($fileSize > $maxSizeKb && $quality > $minQuality) {
+                    $quality -= 5;
+                    Image::useImageDriver(ImageDriver::Gd)
+                        ->load($sourcePath)
+                        ->width($maxWidth)
+                        ->quality($quality)
+                        ->save($fullPath);
+                    $fileSize = filesize($fullPath) / 1024;
+                }
+
+                // If still too large, reduce dimensions
+                while ($fileSize > $maxSizeKb && $maxWidth > $minWidth) {
+                    $maxWidth -= 100;
+                    Image::useImageDriver(ImageDriver::Gd)
+                        ->load($sourcePath)
+                        ->width($maxWidth)
+                        ->quality($minQuality)
+                        ->save($fullPath);
+                    $fileSize = filesize($fullPath) / 1024;
+                }
             }
             
-            // If still too large, reduce dimensions
-            while ($fileSize > $maxSizeKb && $maxWidth > $minWidth) {
-                $maxWidth -= 100;
-                Image::useImageDriver(ImageDriver::Gd)
-                    ->load($sourcePath)
-                    ->width($maxWidth)
-                    ->quality($minQuality)
-                    ->save($fullPath);
-                $fileSize = filesize($fullPath) / 1024;
+            // Delete original source file to avoid duplicates (PNG/JPG alongside WebP)
+            if (file_exists($sourcePath) && realpath($sourcePath) !== realpath($fullPath)) {
+                @unlink($sourcePath);
+                \Log::info("Deleted original source file: {$sourcePath}");
             }
             
-            \Log::info("Image converted to WebP: {$storagePath} ({$fileSize}KB, quality: {$quality}, width: {$maxWidth})");
+            \Log::info("Image converted to WebP: {$storagePath} ({$fileSize}KB, quality: {$quality})");
             
             return $storagePath;
             

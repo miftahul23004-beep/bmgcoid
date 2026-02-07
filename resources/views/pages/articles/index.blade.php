@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    $pageTitle = __('Articles') . ' - ' . config('app.name');
+    $pageTitle = __('Articles') . ($articles->currentPage() > 1 ? ' - ' . __('Page') . ' ' . $articles->currentPage() : '') . ' - ' . config('app.name');
     $pageDescription = __('Latest news and articles about steel industry and construction tips');
     $canonicalUrl = request()->url();
 @endphp
@@ -10,22 +10,6 @@
 @section('meta_description', $pageDescription)
 
 @push('meta')
-    {{-- Canonical URL --}}
-    <link rel="canonical" href="{{ $canonicalUrl }}">
-    
-    {{-- Open Graph --}}
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ $canonicalUrl }}">
-    <meta property="og:title" content="{{ e($pageTitle) }}">
-    <meta property="og:description" content="{{ e($pageDescription) }}">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
-    <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
-    
-    {{-- Twitter Card --}}
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="{{ e($pageTitle) }}">
-    <meta name="twitter:description" content="{{ e($pageDescription) }}">
-    
     {{-- Pagination SEO --}}
     @if($articles->previousPageUrl())
         <link rel="prev" href="{{ $articles->previousPageUrl() }}">
@@ -34,8 +18,8 @@
         <link rel="next" href="{{ $articles->nextPageUrl() }}">
     @endif
     
-    {{-- Noindex for search/filter pages --}}
-    @if(request('search'))
+    {{-- Noindex for search/filter/paginated pages --}}
+    @if(request('search') || $articles->currentPage() > 1)
         <meta name="robots" content="noindex, follow">
     @endif
 @endpush

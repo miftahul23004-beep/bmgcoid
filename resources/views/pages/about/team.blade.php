@@ -1,7 +1,11 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @extends('layouts.app')
 
-@section('title', __('nav.team') . ' - ' . config('app.name'))
-@section('meta_description', __('about.team_meta_description'))
+@section('title', __('Our Team') . ' - ' . config('app.name'))
+@section('meta_description', __('Meet the expert team behind PT. Berkah Mandiri Globalindo'))
 
 @section('content')
     {{-- Hero Section with Overlay --}}
@@ -124,23 +128,32 @@
             </div>
 
             @php
+                $leader1Name = $staticPageImages['team_direktur_utama_name'] ?? 'H. Ahmad Sulaiman';
+                $leader1Position = $staticPageImages['team_direktur_utama_position'] ?? (app()->getLocale() === 'en' ? 'CEO / Founder' : 'Direktur Utama');
+                $leader2Name = $staticPageImages['team_direktur_operasional_name'] ?? 'Ir. Budi Santoso';
+                $leader2Position = $staticPageImages['team_direktur_operasional_position'] ?? (app()->getLocale() === 'en' ? 'Operations Director' : 'Direktur Operasional');
+                
                 $leaders = [
                     [
-                        'name' => 'H. Ahmad Sulaiman',
-                        'position' => app()->getLocale() === 'en' ? 'CEO / Founder' : 'Direktur Utama',
+                        'name' => $leader1Name,
+                        'position' => $leader1Position,
                         'description' => app()->getLocale() === 'en' 
                             ? 'With over 20 years of experience in steel industry, leading the company vision and strategic direction.'
                             : 'Dengan pengalaman lebih dari 20 tahun di industri besi baja, memimpin visi dan arah strategis perusahaan.',
-                        'image' => 'https://ui-avatars.com/api/?name=Ahmad+Sulaiman&size=400&background=1E40AF&color=fff&bold=true',
+                        'image' => !empty($staticPageImages['team_direktur_utama']) 
+                            ? Storage::disk('public')->url($staticPageImages['team_direktur_utama'])
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($leader1Name) . '&size=400&background=1E40AF&color=fff&bold=true',
                         'color' => 'primary'
                     ],
                     [
-                        'name' => 'Ir. Budi Santoso',
-                        'position' => app()->getLocale() === 'en' ? 'Operations Director' : 'Direktur Operasional',
+                        'name' => $leader2Name,
+                        'position' => $leader2Position,
                         'description' => app()->getLocale() === 'en'
                             ? 'Overseeing all operational activities ensuring efficiency and quality in every process.'
                             : 'Mengawasi seluruh aktivitas operasional memastikan efisiensi dan kualitas dalam setiap proses.',
-                        'image' => 'https://ui-avatars.com/api/?name=Budi+Santoso&size=400&background=DC2626&color=fff&bold=true',
+                        'image' => !empty($staticPageImages['team_direktur_operasional']) 
+                            ? Storage::disk('public')->url($staticPageImages['team_direktur_operasional'])
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($leader2Name) . '&size=400&background=DC2626&color=fff&bold=true',
                         'color' => 'secondary'
                     ],
                 ];
@@ -195,29 +208,46 @@
             </div>
 
             @php
+                $mgr1Name = $staticPageImages['team_management_1_name'] ?? 'Hendra Wijaya';
+                $mgr1Position = $staticPageImages['team_management_1_position'] ?? (app()->getLocale() === 'en' ? 'Sales Manager' : 'Manager Penjualan');
+                $mgr2Name = $staticPageImages['team_management_2_name'] ?? 'Dewi Lestari';
+                $mgr2Position = $staticPageImages['team_management_2_position'] ?? (app()->getLocale() === 'en' ? 'Finance Manager' : 'Manager Keuangan');
+                $mgr3Name = $staticPageImages['team_management_3_name'] ?? 'Rudi Hartono';
+                $mgr3Position = $staticPageImages['team_management_3_position'] ?? (app()->getLocale() === 'en' ? 'Warehouse Manager' : 'Manager Gudang');
+                $mgr4Name = $staticPageImages['team_management_4_name'] ?? 'Sri Mulyani';
+                $mgr4Position = $staticPageImages['team_management_4_position'] ?? (app()->getLocale() === 'en' ? 'HR Manager' : 'Manager HRD');
+                
                 $managers = [
                     [
-                        'name' => 'Hendra Wijaya',
-                        'position' => app()->getLocale() === 'en' ? 'Sales Manager' : 'Manager Penjualan',
-                        'image' => 'https://ui-avatars.com/api/?name=Hendra+W&size=400&background=3B82F6&color=fff&bold=true',
+                        'name' => $mgr1Name,
+                        'position' => $mgr1Position,
+                        'image' => !empty($staticPageImages['team_management_1']) 
+                            ? Storage::disk('public')->url($staticPageImages['team_management_1'])
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($mgr1Name) . '&size=400&background=3B82F6&color=fff&bold=true',
                         'color' => 'blue'
                     ],
                     [
-                        'name' => 'Dewi Lestari',
-                        'position' => app()->getLocale() === 'en' ? 'Finance Manager' : 'Manager Keuangan',
-                        'image' => 'https://ui-avatars.com/api/?name=Dewi+L&size=400&background=8B5CF6&color=fff&bold=true',
+                        'name' => $mgr2Name,
+                        'position' => $mgr2Position,
+                        'image' => !empty($staticPageImages['team_management_2']) 
+                            ? Storage::disk('public')->url($staticPageImages['team_management_2'])
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($mgr2Name) . '&size=400&background=8B5CF6&color=fff&bold=true',
                         'color' => 'purple'
                     ],
                     [
-                        'name' => 'Rudi Hartono',
-                        'position' => app()->getLocale() === 'en' ? 'Warehouse Manager' : 'Manager Gudang',
-                        'image' => 'https://ui-avatars.com/api/?name=Rudi+H&size=400&background=059669&color=fff&bold=true',
+                        'name' => $mgr3Name,
+                        'position' => $mgr3Position,
+                        'image' => !empty($staticPageImages['team_management_3']) 
+                            ? Storage::disk('public')->url($staticPageImages['team_management_3'])
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($mgr3Name) . '&size=400&background=059669&color=fff&bold=true',
                         'color' => 'green'
                     ],
                     [
-                        'name' => 'Sri Mulyani',
-                        'position' => app()->getLocale() === 'en' ? 'HR Manager' : 'Manager HRD',
-                        'image' => 'https://ui-avatars.com/api/?name=Sri+M&size=400&background=F59E0B&color=fff&bold=true',
+                        'name' => $mgr4Name,
+                        'position' => $mgr4Position,
+                        'image' => !empty($staticPageImages['team_management_4']) 
+                            ? Storage::disk('public')->url($staticPageImages['team_management_4'])
+                            : 'https://ui-avatars.com/api/?name=' . urlencode($mgr4Name) . '&size=400&background=F59E0B&color=fff&bold=true',
                         'color' => 'amber'
                     ],
                 ];
@@ -317,7 +347,12 @@
                 {{-- Image Side --}}
                 <div class="relative">
                     <div class="aspect-w-4 aspect-h-3 rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="{{ asset('storage/about/team.webp') }}" alt="Team Work" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=Team+Work'">
+                        @php
+                            $teamWorkImage = !empty($staticPageImages['team_work_image']) 
+                                ? Storage::disk('public')->url($staticPageImages['team_work_image']) 
+                                : asset('storage/about/team.webp');
+                        @endphp
+                        <img src="{{ $teamWorkImage }}" alt="Team Work" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=Team+Work'">
                     </div>
                     {{-- Floating Stats --}}
                     <div class="absolute -bottom-8 -left-8 bg-white p-6 rounded-2xl shadow-2xl">

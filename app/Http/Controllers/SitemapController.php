@@ -95,7 +95,7 @@ class SitemapController extends Controller
             }
         }
 
-        // Categories
+        // Categories - use clean URL path instead of query parameters
         if (config('seo.sitemap.include.categories', true)) {
             $categories = Category::where('is_active', true)
                 ->select('slug', 'updated_at')
@@ -103,7 +103,7 @@ class SitemapController extends Controller
 
             foreach ($categories as $category) {
                 $urls[] = [
-                    'loc' => $baseUrl . '/products?category=' . $category->slug,
+                    'loc' => $baseUrl . '/products/category/' . $category->slug,
                     'lastmod' => $category->updated_at->toW3cString(),
                     'changefreq' => 'weekly',
                     'priority' => '0.7',

@@ -108,7 +108,7 @@ class SettingService
             unset(static::$memoryCache["group.{$group}"]);
         } else {
             Cache::forget('settings.all');
-            $groups = ['general', 'contact', 'social', 'marketplace', 'seo'];
+            $groups = ['general', 'contact', 'social', 'marketplace', 'seo', 'about', 'static_pages'];
             foreach ($groups as $g) {
                 Cache::forget("settings.{$g}");
                 unset(static::$memoryCache["group.{$g}"]);
@@ -117,6 +117,8 @@ class SettingService
         // Clear companyInfo and socialLinks memory cache too
         unset(static::$memoryCache['companyInfo']);
         unset(static::$memoryCache['socialLinks']);
+        unset(static::$memoryCache['aboutImages']);
+        unset(static::$memoryCache['staticPageImages']);
     }
 
     /**
@@ -170,5 +172,39 @@ class SettingService
     public function getSeoSettings(): array
     {
         return $this->getGroup('seo');
+    }
+
+    /**
+     * Get About page images
+     */
+    public function getAboutImages(): array
+    {
+        // Check in-memory cache first
+        if (isset(static::$memoryCache['aboutImages'])) {
+            return static::$memoryCache['aboutImages'];
+        }
+        
+        $result = $this->getGroup('about');
+        
+        static::$memoryCache['aboutImages'] = $result;
+        
+        return $result;
+    }
+
+    /**
+     * Get Static Page images
+     */
+    public function getStaticPageImages(): array
+    {
+        // Check in-memory cache first
+        if (isset(static::$memoryCache['staticPageImages'])) {
+            return static::$memoryCache['staticPageImages'];
+        }
+        
+        $result = $this->getGroup('static_pages');
+        
+        static::$memoryCache['staticPageImages'] = $result;
+        
+        return $result;
     }
 }

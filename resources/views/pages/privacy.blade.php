@@ -21,16 +21,9 @@
     @endif
 @endsection
 
-@section('meta')
-    <link rel="canonical" href="{{ route('privacy') }}">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="@if(app()->getLocale() === 'en')Privacy Policy @else Kebijakan Privasi @endif - {{ config('app.name') }}">
-    <meta property="og:description" content="@if(app()->getLocale() === 'en')PT. Berkah Mandiri Globalindo privacy policy regarding the collection, use, and protection of your personal data.@else Kebijakan privasi PT. Berkah Mandiri Globalindo mengenai pengumpulan, penggunaan, dan perlindungan data pribadi Anda.@endif">
-    <meta property="og:url" content="{{ route('privacy') }}">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="@if(app()->getLocale() === 'en')Privacy Policy @else Kebijakan Privasi @endif - {{ config('app.name') }}">
-    <meta name="twitter:description" content="@if(app()->getLocale() === 'en')PT. Berkah Mandiri Globalindo privacy policy.@else Kebijakan privasi PT. Berkah Mandiri Globalindo.@endif">
-@endsection
+@php
+    $canonicalUrl = route('privacy');
+@endphp
 
 @section('content')
     {{-- Hero Section with Overlay --}}

@@ -11,22 +11,13 @@
 @section('title', $productName . ' - ' . config('app.name'))
 @section('meta_description', $metaDesc)
 
+@php
+    $canonicalUrl = route('products.show', $product->slug);
+@endphp
+
 @push('meta')
-    {{-- Canonical URL --}}
-    <link rel="canonical" href="{{ route('products.show', $product->slug) }}">
-    
-    {{-- Hreflang for Multi-Language SEO --}}
-    <link rel="alternate" hreflang="id" href="{{ route('products.show', $product->slug) }}?lang=id">
-    <link rel="alternate" hreflang="en" href="{{ route('products.show', $product->slug) }}?lang=en">
-    <link rel="alternate" hreflang="x-default" href="{{ route('products.show', $product->slug) }}">
-    
-    {{-- Open Graph --}}
+    {{-- Open Graph extras --}}
     <meta property="og:type" content="product">
-    <meta property="og:title" content="{{ $productName }}">
-    <meta property="og:description" content="{{ $metaDesc }}">
-    <meta property="og:url" content="{{ route('products.show', $product->slug) }}">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
-    <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
     @if($product->featured_image)
         <meta property="og:image" content="{{ asset('storage/' . $product->featured_image) }}">
         <meta property="og:image:alt" content="{{ $productName }}">
@@ -36,8 +27,6 @@
     
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ $productName }}">
-    <meta name="twitter:description" content="{{ $metaDesc }}">
     @if($product->featured_image)
         <meta name="twitter:image" content="{{ asset('storage/' . $product->featured_image) }}">
     @endif
@@ -311,9 +300,9 @@
                 <div class="product-info">
                     {{-- Category Badge --}}
                     @if($product->category)
-                        <a href="{{ route('products.index', ['category' => $product->category->slug]) }}" class="inline-flex items-center gap-1.5 text-sm text-primary-600 hover:text-primary-700 font-medium mb-3 transition-colors">
+                        <a href="{{ route('products.category', $product->category->slug) }}" class="inline-flex items-center gap-1.5 text-sm text-primary-600 hover:text-primary-700 font-medium mb-3 transition-colors">
                             @if($product->category->icon)
-                                <img src="{{ asset('storage/' . $product->category->icon) }}" alt="" class="w-4 h-4 object-contain">
+                                <img src="{{ asset('storage/' . $product->category->icon) }}" alt="{{ $product->category->getTranslation('name', app()->getLocale()) }}" class="w-4 h-4 object-contain">
                             @endif
                             {{ $product->category->getTranslation('name', app()->getLocale()) }}
                         </a>
@@ -700,7 +689,7 @@
                         <p class="text-gray-600 mt-1">{{ __('You might also like these products') }}</p>
                     </div>
                     @if($product->category)
-                        <a href="{{ route('products.index', ['category' => $product->category->slug]) }}" class="hidden sm:flex items-center gap-1.5 text-primary-600 hover:text-primary-700 font-medium transition-colors">
+                        <a href="{{ route('products.category', $product->category->slug) }}" class="hidden sm:flex items-center gap-1.5 text-primary-600 hover:text-primary-700 font-medium transition-colors">
                             {{ __('View All') }}
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -715,7 +704,7 @@
                 </div>
                 @if($product->category)
                     <div class="mt-8 text-center sm:hidden">
-                        <a href="{{ route('products.index', ['category' => $product->category->slug]) }}" class="btn btn-outline">
+                        <a href="{{ route('products.category', $product->category->slug) }}" class="btn btn-outline">
                             {{ __('View All Products') }}
                         </a>
                     </div>

@@ -21,16 +21,9 @@
     @endif
 @endsection
 
-@section('meta')
-    <link rel="canonical" href="{{ route('terms') }}">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="@if(app()->getLocale() === 'en')Terms & Conditions @else Syarat & Ketentuan @endif - {{ config('app.name') }}">
-    <meta property="og:description" content="@if(app()->getLocale() === 'en')PT. Berkah Mandiri Globalindo terms and conditions regarding the use of our services and website.@else Syarat dan ketentuan PT. Berkah Mandiri Globalindo mengenai penggunaan layanan dan website kami.@endif">
-    <meta property="og:url" content="{{ route('terms') }}">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="@if(app()->getLocale() === 'en')Terms & Conditions @else Syarat & Ketentuan @endif - {{ config('app.name') }}">
-    <meta name="twitter:description" content="@if(app()->getLocale() === 'en')PT. Berkah Mandiri Globalindo terms and conditions.@else Syarat dan ketentuan PT. Berkah Mandiri Globalindo.@endif">
-@endsection
+@php
+    $canonicalUrl = route('terms');
+@endphp
 
 @section('content')
     {{-- Hero Section with Overlay --}}

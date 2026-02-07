@@ -29,6 +29,8 @@ class LanguageController extends Controller
         $separator = str_contains($previousUrl, '?') ? '&' : '?';
         $redirectUrl = $previousUrl . $separator . 'lang=' . $locale;
 
-        return redirect($redirectUrl)->withCookie($cookie);
+        return redirect($redirectUrl)
+            ->withCookie($cookie)
+            ->header('X-Robots-Tag', 'noindex, nofollow');
     }
 }

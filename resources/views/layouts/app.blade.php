@@ -16,21 +16,27 @@
         <meta name="msvalidate.01" content="{{ $seoSettings['bing_site_verification'] }}">
     @endif
     
+    {{-- Derive page title & description from @section yields or variables --}}
+    @php
+        $pageTitle = html_entity_decode(trim($__env->yieldContent('title')) ?: ($metaTitle ?? config('seo.defaults.title')), ENT_QUOTES, 'UTF-8');
+        $pageDescription = html_entity_decode(trim($__env->yieldContent('meta_description')) ?: ($metaDescription ?? config('seo.defaults.description')), ENT_QUOTES, 'UTF-8');
+    @endphp
+
     {{-- SEO Meta Tags --}}
-    <title>{{ $metaTitle ?? config('seo.defaults.title') }}</title>
-    <meta name="description" content="{{ $metaDescription ?? config('seo.defaults.description') }}">
+    <title>{{ $pageTitle }}</title>
+    <meta name="description" content="{{ $pageDescription }}">
     <meta name="keywords" content="{{ $metaKeywords ?? config('seo.defaults.keywords') }}">
     <meta name="author" content="{{ config('seo.defaults.author') }}">
     <meta name="robots" content="{{ $metaRobots ?? config('seo.defaults.robots') }}">
     <link rel="canonical" href="{{ $canonicalUrl ?? url()->current() }}">
 
     {{-- Open Graph Meta Tags --}}
-    <meta property="og:title" content="{{ $ogTitle ?? $metaTitle ?? config('seo.defaults.title') }}">
-    <meta property="og:description" content="{{ $ogDescription ?? $metaDescription ?? config('seo.defaults.description') }}">
+    <meta property="og:title" content="{{ $ogTitle ?? $pageTitle }}">
+    <meta property="og:description" content="{{ $ogDescription ?? $pageDescription }}">
     <meta property="og:image" content="{{ $ogImage ?? asset(config('seo.og.image')) }}">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:url" content="{{ $canonicalUrl ?? url()->current() }}">
     <meta property="og:type" content="{{ $ogType ?? config('seo.og.type') }}">
     <meta property="og:site_name" content="{{ config('seo.og.site_name') }}">
     <meta property="og:locale" content="{{ config('seo.og.locale') }}">
@@ -38,8 +44,8 @@
     {{-- Twitter Card Meta Tags --}}
     <meta name="twitter:card" content="{{ config('seo.twitter.card') }}">
     <meta name="twitter:site" content="{{ config('seo.twitter.site') }}">
-    <meta name="twitter:title" content="{{ $metaTitle ?? config('seo.defaults.title') }}">
-    <meta name="twitter:description" content="{{ $metaDescription ?? config('seo.defaults.description') }}">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ $pageDescription }}">
     <meta name="twitter:image" content="{{ $ogImage ?? asset(config('seo.og.image')) }}">
 
     {{-- Favicon --}}
@@ -61,12 +67,8 @@
     {{-- Preload LCP hero image for homepage --}}
     @stack('preload')
     
-    {{-- Preload critical font (only weights used above fold) --}}
-    <link rel="preload" href="https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2" as="font" type="font/woff2" crossorigin>
-    
-    {{-- Fonts loaded async to prevent render blocking --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    {{-- Google Fonts loaded async to prevent render blocking --}}
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" as="style">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     <noscript>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700&display=swap" rel="stylesheet">

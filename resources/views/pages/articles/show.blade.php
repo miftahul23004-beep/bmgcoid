@@ -17,16 +17,8 @@
 @section('meta_description', $metaDescription)
 
 @push('meta')
-    {{-- Canonical URL --}}
-    <link rel="canonical" href="{{ $canonicalUrl }}">
-    
-    {{-- Open Graph --}}
+    {{-- Open Graph extras --}}
     <meta property="og:type" content="article">
-    <meta property="og:url" content="{{ $canonicalUrl }}">
-    <meta property="og:title" content="{{ e($articleTitle) }}">
-    <meta property="og:description" content="{{ e($metaDescription) }}">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
-    <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
     @if($article->featured_image)
         <meta property="og:image" content="{{ asset('storage/' . $article->featured_image) }}">
         <meta property="og:image:alt" content="{{ e($articleTitle) }}">
@@ -44,8 +36,6 @@
     
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ e($articleTitle) }}">
-    <meta name="twitter:description" content="{{ e($metaDescription) }}">
     @if($article->featured_image)
         <meta name="twitter:image" content="{{ asset('storage/' . $article->featured_image) }}">
     @endif

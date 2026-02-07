@@ -11,6 +11,8 @@ Disallow: /api/
 Disallow: /storage/logs/
 Disallow: /_debugbar/
 Disallow: /vendor/
+Disallow: /language/
+Disallow: /go/
 
 # Allow important resources
 Allow: /sitemap.xml

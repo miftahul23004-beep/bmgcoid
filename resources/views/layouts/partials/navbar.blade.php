@@ -42,18 +42,18 @@
                     </div>
                 </div>
                 {{-- Company Name & Tagline --}}
-                <div class="hidden sm:flex flex-col">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-gray-900 text-lg leading-tight group-hover:text-primary-700 transition-colors">{{ $companyName }}</span>
+                <div class="flex flex-col">
+                    <div class="flex items-center gap-1 sm:gap-2">
+                        <span class="font-bold text-gray-900 text-sm sm:text-lg leading-tight group-hover:text-primary-700 transition-colors line-clamp-1">{{ $companyName }}</span>
                         {{-- Verified Badge --}}
-                        <span class="inline-flex items-center gap-0.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-full">
+                        <span class="hidden sm:inline-flex items-center gap-0.5 bg-gradient-to-r from-primary-500 to-primary-600 text-white text-[9px] font-semibold px-1.5 py-0.5 rounded-full">
                             <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                             </svg>
                             <span class="hidden md:inline">Terpercaya</span>
                         </span>
                     </div>
-                    <span class="text-xs text-gray-500 leading-tight">{{ $companyTagline }}</span>
+                    <span class="text-[10px] sm:text-xs text-gray-500 leading-tight line-clamp-1">{{ $companyTagline }}</span>
                 </div>
             </a>
 
@@ -123,12 +123,12 @@
                         <div class="p-6">
                             <div class="grid grid-cols-2 gap-4">
                                 @foreach($navCategories as $category)
-                                    <a href="{{ route('products.index', ['category' => $category->slug]) }}" 
+                                    <a href="{{ route('products.category', $category->slug) }}" 
                                        class="group flex items-center gap-4 p-4 rounded-xl hover:bg-gray-50 transition-all duration-200">
                                         {{-- Icon --}}
                                         <span class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-200">
                                             @if($category->icon)
-                                                <img src="{{ asset('storage/' . $category->icon) }}" alt="" class="w-6 h-6 object-contain filter brightness-0 invert">
+                                                <img src="{{ asset('storage/' . $category->icon) }}" alt="{{ $category->getTranslation('name', app()->getLocale()) }}" class="w-6 h-6 object-contain filter brightness-0 invert">
                                             @else
                                                 <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
@@ -260,7 +260,7 @@
                         @foreach($navCategories as $category)
                             <div class="px-6 py-2">
                                 {{-- Parent category - always clickable --}}
-                                <a href="{{ route('products.index', ['category' => $category->slug]) }}" 
+                                <a href="{{ route('products.category', $category->slug) }}" 
                                    class="flex items-center justify-between text-xs font-semibold text-gray-700 uppercase tracking-wide mb-1 hover:text-primary-600 transition-colors py-1">
                                     <span>{{ $category->getTranslation('name', app()->getLocale()) }}</span>
                                     <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -270,12 +270,12 @@
                                 {{-- Children (if any) --}}
                                 @if($category->children->count() > 0)
                                     @foreach($category->children->take(4) as $child)
-                                        <a href="{{ route('products.index', ['category' => $child->slug]) }}" class="block px-2 py-1.5 text-sm text-gray-600 hover:text-primary-600">
+                                        <a href="{{ route('products.category', $child->slug) }}" class="block px-2 py-1.5 text-sm text-gray-600 hover:text-primary-600">
                                             {{ $child->getTranslation('name', app()->getLocale()) }}
                                         </a>
                                     @endforeach
                                     @if($category->children->count() > 4)
-                                        <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="block px-2 py-1 text-xs text-primary-600 font-medium">
+                                        <a href="{{ route('products.category', $category->slug) }}" class="block px-2 py-1 text-xs text-primary-600 font-medium">
                                             +{{ $category->children->count() - 4 }} {{ __('more') }} →
                                         </a>
                                     @endif

@@ -16,7 +16,7 @@ class ProductController extends Controller
         protected CategoryService $categoryService
     ) {}
 
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
         // Validate and sanitize inputs
         $validated = $request->validate([
@@ -28,21 +28,18 @@ class ProductController extends Controller
 
         $categories = $this->categoryService->getNavigationCategories();
 
-        // Get active category if filtering
-        $activeCategory = null;
+        // Redirect ?category=slug to /products/category/slug for SEO (avoid duplicate content)
         if (!empty($validated['category'])) {
-            $activeCategory = $this->categoryService->getBySlug($validated['category']);
-            
-            // 404 if category not found
-            if (!$activeCategory) {
-                abort(404);
-            }
+            return redirect(route('products.category', $validated['category']), 301);
         }
+
+        // No active category on index page (categories have their own route)
+        $activeCategory = null;
 
         $products = $this->productService->getProducts([
             'search' => $validated['search'] ?? null,
             'sort' => $validated['sort'] ?? 'newest',
-            'category_slug' => $validated['category'] ?? null,
+            'category_slug' => null,
             'paginate' => 12
         ]);
 
@@ -94,6 +91,7 @@ class ProductController extends Controller
         // Track click
         $link->incrementClickCount();
 
-        return redirect()->away($link->url);
+        return redirect()->away($link->url)
+            ->header('X-Robots-Tag', 'noindex, nofollow');
     }
 }

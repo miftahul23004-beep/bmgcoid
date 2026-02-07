@@ -13,7 +13,7 @@
 @endphp
 
 <a 
-    href="#" 
+    href="javascript:void(0)" 
     id="{{ $uniqueId }}"
     class="protected-email {{ $class }}"
     data-u="{{ base64_encode($user) }}"

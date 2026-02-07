@@ -1,3 +1,7 @@
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @extends('layouts.app')
 
 @section('title', __('Vision & Mission') . ' - ' . config('app.name'))
@@ -62,7 +66,11 @@
                     <div class="relative">
                         {{-- Main Image --}}
                         <div class="aspect-w-4 aspect-h-3 rounded-2xl overflow-hidden shadow-2xl">
-                            <img src="{{ asset('storage/about/vision.webp') }}" alt="Visi Perusahaan" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=Our+Vision'">
+                            @php
+                                $visionImage = $staticPageImages['vision_image'] ?? null;
+                                $visionImageUrl = $visionImage ? Storage::disk('public')->url($visionImage) : asset('storage/about/vision.webp');
+                            @endphp
+                            <img src="{{ $visionImageUrl }}" alt="Visi Perusahaan" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=Our+Vision'">
                         </div>
                         
                         {{-- Floating Badge --}}

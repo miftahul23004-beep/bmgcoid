@@ -1,19 +1,20 @@
 @extends('layouts.app')
 
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
+
 @section('title', __('About Us') . ' - ' . config('app.name'))
 
-@section('meta')
-    <meta name="description" content="{{ __('Learn about BMG - Your trusted partner for quality steel products since 2011. Distributor & supplier of steel for industry, manufacturing, and construction.') }}">
+@section('meta_description', __('Learn about BMG - Your trusted partner for quality steel products since 2011. Distributor & supplier of steel for industry, manufacturing, and construction.'))
+
+@php
+    $canonicalUrl = route('about.company');
+@endphp
+
+@push('meta')
     <meta name="keywords" content="about BMG, steel distributor, steel supplier, trusted steel partner, construction materials">
-    <link rel="canonical" href="{{ route('about.company') }}">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ __('About Us') }} - {{ config('app.name') }}">
-    <meta property="og:description" content="{{ __('Learn about BMG - Your trusted partner for quality steel products since 2011.') }}">
-    <meta property="og:url" content="{{ route('about.company') }}">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ __('About Us') }} - {{ config('app.name') }}">
-    <meta name="twitter:description" content="{{ __('Learn about BMG - Your trusted partner for quality steel products since 2011.') }}">
-@endsection
+@endpush
 
 @section('content')
     {{-- Hero Section with Overlay --}}
@@ -43,9 +44,9 @@
                 
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading mb-6 leading-tight">
                     @if(app()->getLocale() === 'en')
-                        Your <span class="text-secondary-400">Trusted Partner</span> for Quality Steel
+                        About <span class="text-secondary-400">PT. Berkah Mandiri</span> Globalindo
                     @else
-                        <span class="text-secondary-400">Mitra Terpercaya</span> untuk Besi Baja Berkualitas
+                        Tentang <span class="text-secondary-400">PT. Berkah Mandiri</span> Globalindo
                     @endif
                 </h1>
                 
@@ -123,7 +124,12 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 <div class="relative order-2 lg:order-1">
                     <div class="aspect-w-4 aspect-h-3 rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="{{ asset('storage/about/company.webp') }}" alt="PT. Berkah Mandiri Globalindo" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=PT.+Berkah+Mandiri+Globalindo'">
+                        @php
+                            $storyImage = !empty($staticPageImages['about_story_image']) 
+                                ? Storage::disk('public')->url($staticPageImages['about_story_image']) 
+                                : 'https://placehold.co/800x600/1E40AF/ffffff?text=PT.+Berkah+Mandiri+Globalindo';
+                        @endphp
+                        <img src="{{ $storyImage }}" alt="PT. Berkah Mandiri Globalindo" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=PT.+Berkah+Mandiri+Globalindo'">
                     </div>
                     <div class="absolute -bottom-8 -right-8 bg-secondary-600 text-white p-8 rounded-2xl shadow-2xl">
                         <div class="text-5xl font-bold">14+</div>

@@ -3,10 +3,10 @@
 @php
     use Illuminate\Support\Facades\Storage;
     
-    $productName = e($product->getTranslation('name', app()->getLocale()));
-    $productSlug = e($product->slug);
-    $categoryName = $product->category ? e($product->category->getTranslation('name', app()->getLocale())) : null;
-    $shortDesc = $product->short_description ? e($product->getTranslation('short_description', app()->getLocale())) : null;
+    $productName = $product->getTranslation('name', app()->getLocale());
+    $productSlug = $product->slug;
+    $categoryName = $product->category ? $product->category->getTranslation('name', app()->getLocale()) : null;
+    $shortDesc = $product->short_description ? $product->getTranslation('short_description', app()->getLocale()) : null;
     
     // Get product image - try featured_image first, then productMedia
     $productImage = null;
@@ -50,7 +50,7 @@
                     <span class="bg-green-700 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg border border-green-600">{{ __('New') }}</span>
                 @endif
                 @if($product->is_bestseller)
-                    <span class="bg-amber-600 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg border border-amber-700">{{ __('Best Seller') }}</span>
+                    <span class="bg-amber-700 text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg border border-amber-800">{{ __('Best Seller') }}</span>
                 @endif
             </div>
 
@@ -79,7 +79,7 @@
             @endif
             
             @if($product->sku)
-                <p class="text-xs {{ $dark ? 'text-gray-400' : 'text-gray-500' }}"><span itemprop="sku">{{ $product->sku }}</span></p>
+                <p class="text-xs {{ $dark ? 'text-gray-300' : 'text-gray-700' }}"><span itemprop="sku">{{ $product->sku }}</span></p>
             @endif
             
             {{-- Hidden brand for schema --}}
@@ -89,7 +89,7 @@
             @if($listView && $product->marketplaceLinks && $product->marketplaceLinks->count() > 0)
                 <div class="mt-3 pt-3 border-t {{ $dark ? 'border-gray-700' : 'border-gray-100' }}">
                     <div class="flex flex-wrap items-center gap-2">
-                        <span class="text-xs {{ $dark ? 'text-gray-400' : 'text-gray-500' }}">{{ __('Buy on') }}:</span>
+                        <span class="text-xs {{ $dark ? 'text-gray-300' : 'text-gray-700' }}">{{ __('Buy on') }}:</span>
                         @foreach($product->marketplaceLinks->take(3) as $link)
                             <span class="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-600 font-medium">
                                 {{ ucfirst($link->platform) }}

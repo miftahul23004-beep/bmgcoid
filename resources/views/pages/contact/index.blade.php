@@ -2,18 +2,15 @@
 
 @section('title', __('Contact Us') . ' - ' . config('app.name'))
 
-@section('meta')
-    <meta name="description" content="{{ __('Contact BMG for quality steel products. Get in touch with our team for inquiries, quotes, and support.') }}">
+@section('meta_description', __('Contact BMG for quality steel products. Get in touch with our team for inquiries, quotes, and support.'))
+
+@php
+    $canonicalUrl = route('contact');
+@endphp
+
+@push('meta')
     <meta name="keywords" content="contact BMG, steel inquiry, steel quote, steel supplier contact">
-    <link rel="canonical" href="{{ route('contact') }}">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="{{ __('Contact Us') }} - {{ config('app.name') }}">
-    <meta property="og:description" content="{{ __('Contact BMG for quality steel products. Get in touch with our team.') }}">
-    <meta property="og:url" content="{{ route('contact') }}">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ __('Contact Us') }} - {{ config('app.name') }}">
-    <meta name="twitter:description" content="{{ __('Contact BMG for quality steel products. Get in touch with our team.') }}">
-@endsection
+@endpush
 
 @php
     $settingService = app(\App\Services\SettingService::class);

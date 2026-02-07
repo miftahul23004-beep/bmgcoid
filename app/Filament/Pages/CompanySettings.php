@@ -226,9 +226,12 @@ class CompanySettings extends Page implements Forms\Contracts\HasForms
         }
 
         foreach ($data as $key => $value) {
-            $group = in_array($key, ['company_name', 'company_tagline', 'company_description', 'logo', 'logo_white', 'favicon']) 
-                ? 'general' 
-                : 'contact';
+            // Determine the group based on key
+            if (in_array($key, ['company_name', 'company_tagline', 'company_description', 'logo', 'logo_white', 'favicon'])) {
+                $group = 'general';
+            } else {
+                $group = 'contact';
+            }
 
             Setting::updateOrCreate(
                 ['key' => $key, 'group' => $group],

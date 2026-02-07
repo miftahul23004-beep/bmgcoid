@@ -19,9 +19,17 @@
     RewriteCond %{REQUEST_URI} ^/storage/categories/images/[a-f0-9\-]+\.webp$ [NC]
     RewriteRule ^(.*)$ /storage/categories/images/c6bba573-6e3f-4941-9490-f5818bc7e12f.webp [L,R=302]
 
-    # Force HTTPS in production
-    # RewriteCond %{HTTPS} off
-    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    # Force HTTPS in production (301 redirect)
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Redirect WWW to non-WWW (canonical domain)
+    RewriteCond %{HTTP_HOST} ^www\.berkahmandiri\.co\.id$ [NC]
+    RewriteRule ^(.*)$ https://berkahmandiri.co.id/$1 [L,R=301]
+
+    # Fix double slashes in URLs
+    RewriteCond %{THE_REQUEST} \s([^\s]*?)//+([^\s]*)\s [NC]
+    RewriteRule .* %1/%2 [R=301,L,NE]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .

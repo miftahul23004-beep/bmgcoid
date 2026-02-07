@@ -10,13 +10,12 @@
     $pageDescription = \Illuminate\Support\Str::limit($pageDescription, 155);
 @endphp
 
-@section('title', $pageTitle . ' - ' . config('app.name'))
+@section('title', $pageTitle . ($products->currentPage() > 1 ? ' - ' . __('Page') . ' ' . $products->currentPage() : '') . ' - ' . config('app.name'))
+@section('meta_description', $pageDescription)
 
 @push('meta')
     {{-- SEO Meta Tags --}}
-    <meta name="description" content="{{ e($pageDescription) }}">
     <meta name="keywords" content="{{ ($activeCategory ?? null) ? e($activeCategory->getTranslation('name', app()->getLocale())) . ', ' : '' }}steel products, iron products, construction materials, {{ config('app.name') }}">
-    <link rel="canonical" href="{{ url()->current() }}">
     
     {{-- Pagination SEO --}}
     @if($products->previousPageUrl())
@@ -26,28 +25,17 @@
         <link rel="next" href="{{ $products->nextPageUrl() }}">
     @endif
     
-    {{-- Noindex for search/filter pages --}}
-    @if(request('search'))
+    {{-- Noindex for search/filter/paginated pages --}}
+    @if(request('search') || request('sort') || $products->currentPage() > 1)
         <meta name="robots" content="noindex, follow">
     @endif
     
-    {{-- Open Graph --}}
-    <meta property="og:title" content="{{ e($pageTitle) }}">
-    <meta property="og:description" content="{{ e($pageDescription) }}">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:site_name" content="{{ config('app.name') }}">
-    <meta property="og:locale" content="{{ str_replace('-', '_', app()->getLocale()) }}">
+    {{-- Open Graph extra --}}
     @if($activeCategory ?? null)
         @if($activeCategory->image)
             <meta property="og:image" content="{{ asset('storage/' . $activeCategory->image) }}">
         @endif
     @endif
-    
-    {{-- Twitter Card --}}
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="{{ e($pageTitle) }}">
-    <meta name="twitter:description" content="{{ e($pageDescription) }}">
 @endpush
 
 @push('structured-data')
@@ -101,7 +89,7 @@
                     '@type' => 'ListItem',
                     'position' => 3,
                     'name' => $activeCategory->getTranslation('name', app()->getLocale()),
-                    'item' => route('products.index', ['category' => $activeCategory->slug]),
+                    'item' => route('products.category', $activeCategory->slug),
                 ] : null,
             ]),
         ],
@@ -249,11 +237,11 @@
                                                     </button>
                                                 @else
                                                     {{-- Parent without children: clickable --}}
-                                                    <a href="{{ route('products.index', ['category' => $category->slug]) }}" 
+                                                    <a href="{{ route('products.category', $category->slug) }}" 
                                                        class="flex-1 flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 {{ $isParentActive ? 'bg-primary-50 text-primary-700 font-semibold border-l-4 border-primary-500' : 'text-gray-700 hover:bg-gray-50' }}">
                                                         <span class="flex items-center gap-3">
                                                             @if($category->icon)
-                                                                <img src="{{ asset('storage/' . $category->icon) }}" alt="" class="w-5 h-5 object-contain">
+                                                                <img src="{{ asset('storage/' . $category->icon) }}" alt="{{ $category->getTranslation('name', app()->getLocale()) }}" class="w-5 h-5 object-contain">
                                                             @else
                                                                 <span class="w-5 h-5 rounded bg-primary-100 flex items-center justify-center">
                                                                     <span class="w-2 h-2 rounded-full bg-primary-500"></span>
@@ -273,7 +261,7 @@
                                                 <ul x-show="open" x-collapse class="ml-6 mt-1 space-y-1 border-l-2 border-gray-100 pl-4">
                                                     @foreach($category->children as $child)
                                                         <li>
-                                                            <a href="{{ route('products.index', ['category' => $child->slug]) }}" 
+                                                            <a href="{{ route('products.category', $child->slug) }}" 
                                                                class="flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-all duration-200 {{ request('category') === $child->slug ? 'bg-primary-50 text-primary-700 font-medium' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
                                                                 <span>{{ $child->getTranslation('name', app()->getLocale()) }}</span>
                                                                 <span class="text-xs {{ request('category') === $child->slug ? 'text-primary-600' : 'text-gray-400' }}">{{ $child->products_count ?? 0 }}</span>

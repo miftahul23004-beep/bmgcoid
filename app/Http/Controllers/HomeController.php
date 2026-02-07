@@ -62,22 +62,26 @@ class HomeController extends Controller
     public function about(): View
     {
         $companyInfo = $this->settingService->getCompanyInfo();
-        return view('pages.about.index', compact('companyInfo'));
+        $staticPageImages = $this->settingService->getStaticPageImages();
+        return view('pages.about.index', compact('companyInfo', 'staticPageImages'));
     }
 
     public function visionMission(): View
     {
-        return view('pages.about.vision-mission');
+        $staticPageImages = $this->settingService->getStaticPageImages();
+        return view('pages.about.vision-mission', compact('staticPageImages'));
     }
 
     public function team(): View
     {
-        return view('pages.about.team');
+        $staticPageImages = $this->settingService->getStaticPageImages();
+        return view('pages.about.team', compact('staticPageImages'));
     }
 
     public function certificates(): View
     {
-        return view('pages.about.certificates');
+        $staticPageImages = $this->settingService->getStaticPageImages();
+        return view('pages.about.certificates', compact('staticPageImages'));
     }
 
     public function privacy(): View

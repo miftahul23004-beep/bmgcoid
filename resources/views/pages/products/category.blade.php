@@ -1,6 +1,23 @@
 @extends('layouts.app')
 
-@section('title', $category->getTranslation('name', app()->getLocale()) . ' - ' . __('Products') . ' - ' . config('app.name'))
+@section('title', $category->getTranslation('name', app()->getLocale()) . ' - ' . __('Products') . ($products->currentPage() > 1 ? ' - ' . __('Page') . ' ' . $products->currentPage() : '') . ' - ' . config('app.name'))
+@section('meta_description', \Illuminate\Support\Str::limit(strip_tags($category->getTranslation('description', app()->getLocale()) ?? __('Explore our quality steel products')), 155))
+
+@php
+    $canonicalUrl = route('products.category', $category->slug);
+@endphp
+
+@push('meta')
+    @if($products->currentPage() > 1)
+        <meta name="robots" content="noindex, follow">
+    @endif
+    @if($products->previousPageUrl())
+        <link rel="prev" href="{{ $products->previousPageUrl() }}">
+    @endif
+    @if($products->nextPageUrl())
+        <link rel="next" href="{{ $products->nextPageUrl() }}">
+    @endif
+@endpush
 
 @section('content')
     {{-- Clean Modern Corporate Hero --}}

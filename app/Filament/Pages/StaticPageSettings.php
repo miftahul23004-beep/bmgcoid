@@ -30,6 +30,11 @@ class StaticPageSettings extends Page implements Forms\Contracts\HasForms
     protected static ?int $navigationSort = 2;
     protected string $view = 'filament.pages.static-page-settings';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->can('manage settings') ?? false;
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return __('Settings');

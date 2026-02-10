@@ -147,7 +147,7 @@ class AuditResultsTable
                 ]),
             ])
             ->defaultSort('created_at', 'desc')
-            ->poll('30s');
+            ->poll('120s');
     }
 
     protected static function getScoreColor(?int $score): string

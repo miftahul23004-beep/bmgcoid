@@ -62,6 +62,11 @@
                             '@type' => 'Brand',
                             'name' => config('app.name'),
                         ],
+                        'offers' => [
+                            '@type' => 'Offer',
+                            'availability' => 'https://schema.org/InStock',
+                            'url' => route('products.show', $product->slug),
+                        ],
                     ],
                 ];
                 if ($product->featured_image) {
@@ -76,7 +81,7 @@
                 [
                     '@type' => 'ListItem',
                     'position' => 1,
-                    'name' => __('Home'),
+                    'name' => __('Home Page'),
                     'item' => route('home'),
                 ],
                 [
@@ -104,13 +109,13 @@
     {{-- Compact Modern Hero --}}
     <section class="relative bg-gradient-to-br from-slate-900 via-primary-900 to-primary-800 text-white overflow-hidden">
         {{-- Subtle Pattern --}}
-        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"1\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        <div class="absolute inset-0 opacity-[0.03] bg-pattern-cross"></div>
         
         <div class="container relative z-10 py-8 md:py-10">
             {{-- Breadcrumb --}}
             <nav class="mb-4" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 text-sm text-white/60">
-                    <li><a href="{{ route('home') }}" class="hover:text-white transition-colors">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="hover:text-white transition-colors">{{ __('Home Page') }}</a></li>
                     <li class="text-white/40">/</li>
                     @if($activeCategory ?? null)
                         <li><a href="{{ route('products.index') }}" class="hover:text-white transition-colors">{{ __('Product Catalog') }}</a></li>
@@ -218,7 +223,7 @@
                                                        class="flex-1 flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 text-gray-700 hover:bg-gray-50 cursor-pointer">
                                                         <span class="flex items-center gap-3">
                                                             @if($category->icon)
-                                                                <img src="{{ asset('storage/' . $category->icon) }}" alt="" class="w-5 h-5 object-contain">
+                                                                <img src="{{ asset('storage/' . $category->icon) }}" alt="" class="w-5 h-5 object-contain" loading="lazy" decoding="async">
                                                             @else
                                                                 <span class="w-5 h-5 rounded bg-primary-100 flex items-center justify-center">
                                                                     <span class="w-2 h-2 rounded-full bg-primary-500"></span>
@@ -241,7 +246,7 @@
                                                        class="flex-1 flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 {{ $isParentActive ? 'bg-primary-50 text-primary-700 font-semibold border-l-4 border-primary-500' : 'text-gray-700 hover:bg-gray-50' }}">
                                                         <span class="flex items-center gap-3">
                                                             @if($category->icon)
-                                                                <img src="{{ asset('storage/' . $category->icon) }}" alt="{{ $category->getTranslation('name', app()->getLocale()) }}" class="w-5 h-5 object-contain">
+                                                                <img src="{{ asset('storage/' . $category->icon) }}" alt="{{ $category->getTranslation('name', app()->getLocale()) }}" class="w-5 h-5 object-contain" loading="lazy" decoding="async">
                                                             @else
                                                                 <span class="w-5 h-5 rounded bg-primary-100 flex items-center justify-center">
                                                                     <span class="w-2 h-2 rounded-full bg-primary-500"></span>
@@ -375,9 +380,9 @@
                     @if($products->count() > 0)
                         <div class="min-h-[400px]">
                             {{-- Grid View --}}
-                            <div x-data x-show="$store.productView.mode === 'grid'" x-cloak class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                            <div x-data x-show="$store.productView.mode === 'grid'" x-cloak aria-hidden="true" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                                 @foreach($products as $product)
-                                    @include('components.product-card', ['product' => $product, 'listView' => false])
+                                    @include('components.product-card', ['product' => $product, 'listView' => false, 'headingTag' => 'span'])
                                 @endforeach
                             </div>
                             
@@ -387,7 +392,7 @@
                                  x-init="if ($store.productView.mode !== 'list') $el.style.display = 'none'"
                                  class="space-y-4">
                                 @foreach($products as $product)
-                                    @include('components.product-card', ['product' => $product, 'listView' => true])
+                                    @include('components.product-card', ['product' => $product, 'listView' => true, 'headingTag' => 'h2'])
                                 @endforeach
                             </div>
                         </div>

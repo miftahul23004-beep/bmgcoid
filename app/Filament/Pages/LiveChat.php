@@ -21,6 +21,11 @@ class LiveChat extends Page
     protected static ?int $navigationSort = 4;
     protected string $view = 'filament.pages.live-chat';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->can('manage inquiries') ?? false;
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return __('Customers');

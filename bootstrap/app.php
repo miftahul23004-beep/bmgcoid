@@ -13,8 +13,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->web(append: [
             \App\Http\Middleware\SetLocale::class,
-            \App\Http\Middleware\CacheResponse::class,
             \App\Http\Middleware\SecurityHeaders::class,
+            \App\Http\Middleware\CacheResponse::class,
             \App\Http\Middleware\PerformanceLogging::class,
         ]);
     })

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', __('Client Testimonials') . ' - ' . config('app.name'))
+@section('meta_description', __('Read testimonials from our satisfied clients. Trusted by 500+ customers for quality steel products and reliable service across Indonesia.'))
 
 @section('content')
     {{-- Page Header --}}
@@ -8,7 +9,7 @@
         <div class="container">
             <nav class="text-sm mb-4" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2">
-                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white">{{ __('Home Page') }}</a></li>
                     <li><span class="text-primary-400">/</span></li>
                     <li class="text-white">{{ __('Testimonials') }}</li>
                 </ol>

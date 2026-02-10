@@ -22,10 +22,31 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class HomepageSectionResource extends Resource
 {
     protected static ?string $model = HomepageSection::class;
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user()?->can('manage homepage sections') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user()?->can('manage homepage sections') ?? false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user()?->can('manage homepage sections') ?? false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user()?->can('manage homepage sections') ?? false;
+    }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedViewColumns;
 
@@ -224,15 +245,5 @@ class HomepageSectionResource extends Resource
             'create' => Pages\CreateHomepageSection::route('/create'),
             'edit' => Pages\EditHomepageSection::route('/{record}/edit'),
         ];
-    }
-
-    public static function canCreate(): bool
-    {
-        return false;
-    }
-
-    public static function canDelete($record): bool
-    {
-        return false;
     }
 }

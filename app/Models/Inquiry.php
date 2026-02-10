@@ -15,15 +15,22 @@ class Inquiry extends Model
         'company',
         'subject',
         'message',
+        'quantity',
+        'unit',
         'type',
         'status',
+        'source',
+        'ip_address',
+        'user_agent',
         'assigned_to',
         'notes',
+        'meta',
         'replied_at',
     ];
 
     protected $casts = [
         'replied_at' => 'datetime',
+        'meta' => 'array',
     ];
 
     public function product(): BelongsTo

@@ -31,7 +31,7 @@
             {{-- Breadcrumb --}}
             <nav class="text-sm mb-3" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2">
-                    <li><a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600 transition-colors">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600 transition-colors">{{ __('Home Page') }}</a></li>
                     <li><svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></li>
                     <li class="text-gray-900 font-medium">{{ __('Articles') }}</li>
                 </ol>
@@ -81,7 +81,7 @@
                 <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
                     <a href="{{ route('articles.index') }}" 
                        class="flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors {{ !request('tag') && !request()->is('articles/tag/*') ? 'bg-primary-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
-                        {{ __('All') }}
+                        {{ __('All Articles') }}
                     </a>
                     @foreach($tags->take(6) as $tag)
                         <a href="{{ route('articles.tag', $tag->slug) }}" 
@@ -204,11 +204,11 @@
                     </div>
                 </div>
 
-                {{-- Grid View --}}
-                <div x-show="viewMode === 'grid'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" style="display: none;">
+                {{-- Grid View (hidden duplicate for visual toggle only, aria-hidden to avoid duplicate headings) --}}
+                <div x-show="viewMode === 'grid'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-cloak aria-hidden="true">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($articles as $article)
-                            @include('components.article-card', ['article' => $article])
+                            @include('components.article-card', ['article' => $article, 'headingTag' => 'span'])
                         @endforeach
                     </div>
                 </div>

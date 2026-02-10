@@ -28,6 +28,11 @@ class CompanySettings extends Page implements Forms\Contracts\HasForms
     protected static ?int $navigationSort = 1;
     protected string $view = 'filament.pages.company-settings';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->can('manage settings') ?? false;
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return __('Settings');

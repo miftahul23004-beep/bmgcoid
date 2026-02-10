@@ -1,15 +1,18 @@
 {
     "Home": "Beranda",
+    "Home Page": "Halaman Utama",
     "About": "Tentang",
     "About Us": "Tentang Kami",
     "About Company": "Tentang Perusahaan",
     "Vision & Mission": "Visi & Misi",
     "Our Team": "Tim Kami",
     "Certificates": "Sertifikat",
+    "Our Certificates": "Sertifikat Kami",
     "Certificates & Legality": "Sertifikat & Legalitas",
     "Certificates and legality documents of PT. Berkah Mandiri Globalindo": "Sertifikat dan dokumen legalitas PT. Berkah Mandiri Globalindo",
     "Meet the expert team behind PT. Berkah Mandiri Globalindo": "Kenali tim ahli di balik PT. Berkah Mandiri Globalindo",
     "Products": "Produk",
+    "Our Products": "Produk Kami",
     "All Products": "Semua Produk",
     "Product Catalog": "Katalog Produk",
     "Product Categories": "Kategori Produk",
@@ -19,6 +22,7 @@
     "View all :count categories": "Lihat semua :count kategori",
     "more": "lainnya",
     "Articles": "Artikel",
+    "News & Articles": "Berita & Artikel",
     "News": "Berita",
     "Contact": "Kontak",
     "Contact Us": "Hubungi Kami",
@@ -27,6 +31,7 @@
     "Search": "Cari",
     "Search Results": "Hasil Pencarian",
     "Search products...": "Cari produk...",
+    "Search Products": "Cari Produk",
     "No results found": "Tidak ada hasil ditemukan",
     
     "Company Profile": "Profil Perusahaan",
@@ -95,8 +100,14 @@
     "Terms of Service": "Syarat & Ketentuan",
     "Terms & Conditions": "Syarat & Ketentuan",
     "Sitemap": "Peta Situs",
+    "Site Map": "Peta Situs",
     "Copyright": "Hak Cipta",
     "All Rights Reserved": "Seluruh Hak Cipta Dilindungi",
+    
+    "General Inquiry": "Pertanyaan Umum",
+    "Sales Inquiry": "Pertanyaan Penjualan",
+    "Technical Support": "Dukungan Teknis",
+    "Partnership/Collaboration": "Kemitraan/Kolaborasi",
     
     "Address": "Alamat",
     "Phone Number": "Nomor Telepon",
@@ -367,6 +378,7 @@
     "No articles found": "Tidak ada artikel ditemukan",
     "No articles match your search criteria.": "Tidak ada artikel yang sesuai dengan kriteria pencarian Anda.",
     "View All Articles": "Lihat Semua Artikel",
+    "All Articles": "Semua Artikel",
     "Tutorial": "Tutorial",
     "Article": "Artikel",
     "Content": "Konten",
@@ -403,5 +415,13 @@
     "View products": "Lihat produk",
     "product": "produk",
     "subcategories": "subkategori",
-    "Categories": "Kategori"
+    "Categories": "Kategori",
+
+    "Distributor & supplier besi baja terpercaya sejak 2011. Besi beton, hollow, siku, plat & pipa besi berkualitas SNI untuk konstruksi, industri & manufaktur di Indonesia.": "Distributor & supplier besi baja terpercaya sejak 2011. Besi beton, hollow, siku, plat & pipa besi berkualitas SNI untuk konstruksi, industri & manufaktur di Indonesia.",
+    "Read testimonials from our satisfied clients. Trusted by 500+ customers for quality steel products and reliable service across Indonesia.": "Baca testimoni dari klien kami yang puas. Dipercaya 500+ pelanggan untuk produk besi baja berkualitas dan layanan handal di seluruh Indonesia.",
+    "Search for steel products, articles, and information on PT. Berkah Mandiri Globalindo website.": "Cari produk besi baja, artikel, dan informasi di website PT. Berkah Mandiri Globalindo.",
+    "Request a free quote for steel products. Get competitive prices for rebar, hollow sections, pipes, plates, and more from PT. Berkah Mandiri Globalindo.": "Minta penawaran harga gratis untuk produk besi baja. Dapatkan harga kompetitif untuk besi beton, hollow, pipa, plat, dan lainnya dari PT. Berkah Mandiri Globalindo.",
+    "Vision and mission of PT. Berkah Mandiri Globalindo. Committed to being the leading steel distributor in Indonesia with quality products and excellent service.": "Visi dan misi PT. Berkah Mandiri Globalindo. Berkomitmen menjadi distributor besi baja terdepan di Indonesia dengan produk berkualitas dan layanan prima.",
+    "Articles tagged": "Artikel bertag",
+    "Read the latest news, tips, and information about steel industry and construction from PT. Berkah Mandiri Globalindo.": "Baca berita terbaru, tips, dan informasi seputar industri besi baja dan konstruksi dari PT. Berkah Mandiri Globalindo."
 }

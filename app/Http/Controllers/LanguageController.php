@@ -26,8 +26,17 @@ class LanguageController extends Controller
 
         // Get previous URL and add cache-bust parameter to bypass Cloudflare cache
         $previousUrl = url()->previous();
-        $separator = str_contains($previousUrl, '?') ? '&' : '?';
-        $redirectUrl = $previousUrl . $separator . 'lang=' . $locale;
+
+        // Remove any trailing slashes after the domain path to prevent double-slash URLs
+        $parsed = parse_url($previousUrl);
+        $path = rtrim($parsed['path'] ?? '/', '/') ?: '/';
+        $cleanUrl = ($parsed['scheme'] ?? 'https') . '://' . ($parsed['host'] ?? request()->getHost()) . $path;
+        if (!empty($parsed['query'])) {
+            $cleanUrl .= '?' . $parsed['query'];
+        }
+
+        $separator = str_contains($cleanUrl, '?') ? '&' : '?';
+        $redirectUrl = $cleanUrl . $separator . 'lang=' . $locale;
 
         return redirect($redirectUrl)
             ->withCookie($cookie)

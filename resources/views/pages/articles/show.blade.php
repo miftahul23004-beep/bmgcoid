@@ -61,7 +61,7 @@
         
         // Breadcrumb Schema
         $breadcrumbItems = [
-            ['name' => __('Home'), 'url' => route('home')],
+            ['name' => __('Home Page'), 'url' => route('home')],
             ['name' => __('Articles'), 'url' => route('articles.index')],
             ['name' => $articleTitle, 'url' => null],
         ];
@@ -417,9 +417,9 @@
             {{-- Breadcrumb --}}
             <nav class="text-sm mb-4" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap">
-                    <li><a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600 transition-colors">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600 transition-colors">{{ __('Home Page') }}</a></li>
                     <li><svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></li>
-                    <li><a href="{{ route('articles.index') }}" class="text-gray-500 hover:text-primary-600 transition-colors">{{ __('Articles') }}</a></li>
+                    <li><a href="{{ route('articles.index') }}" class="text-gray-500 hover:text-primary-600 transition-colors">{{ __('News & Articles') }}</a></li>
                     <li><svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg></li>
                     <li class="text-gray-900 font-medium line-clamp-1">{{ Str::limit($articleTitle, 50) }}</li>
                 </ol>
@@ -432,6 +432,7 @@
                         <img src="{{ asset('storage/' . $article->featured_image) }}" 
                              alt="{{ e($articleTitle) }}" 
                              class="w-full h-48 lg:h-44 object-cover rounded-xl shadow-sm"
+                             width="320" height="192"
                              fetchpriority="high"
                              decoding="async">
                     </div>
@@ -599,14 +600,14 @@
                     <div class="sticky top-24 space-y-6">
                         {{-- Reading Progress Card --}}
                         <div class="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-6 border border-gray-200 shadow-lg shadow-gray-100/50">
-                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <div class="font-bold text-gray-900 mb-4 flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-lg bg-primary-100 flex items-center justify-center">
                                     <svg class="w-4 h-4 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>
                                 </div>
                                 {{ __('Article Info') }}
-                            </h3>
+                            </div>
                             <div class="space-y-4">
                                 <div class="flex items-center justify-between py-3 border-b border-gray-100">
                                     <span class="text-gray-500 text-sm">{{ __('Reading time') }}</span>
@@ -625,14 +626,14 @@
                         
                         {{-- Quick Navigation --}}
                         <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-lg shadow-gray-100/50">
-                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <div class="font-bold text-gray-900 mb-4 flex items-center gap-2">
                                 <div class="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
                                     <svg class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
                                     </svg>
                                 </div>
                                 {{ __('Quick Navigation') }}
-                            </h3>
+                            </div>
                             <div class="space-y-2">
                                 <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'});" class="w-full flex items-center gap-3 text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-all py-2.5 px-3 rounded-xl group text-left">
                                     <svg class="w-5 h-5 text-gray-500 group-hover:text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -658,14 +659,14 @@
                         {{-- Related Articles in Sidebar --}}
                         @if($relatedArticles->count() > 0)
                             <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-lg shadow-gray-100/50">
-                                <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <div class="font-bold text-gray-900 mb-4 flex items-center gap-2">
                                     <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
                                         <svg class="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
                                         </svg>
                                     </div>
                                     {{ __('Related Articles') }}
-                                </h3>
+                                </div>
                                 <div class="space-y-4">
                                     @foreach($relatedArticles as $related)
                                         <a href="{{ route('articles.show', $related->slug) }}" class="block group">
@@ -675,6 +676,7 @@
                                                         <img src="{{ asset('storage/' . $related->featured_image) }}" 
                                                              alt="{{ e($related->getTranslation('title', $locale)) }}" 
                                                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                             width="80" height="80"
                                                              loading="lazy"
                                                              decoding="async">
                                                     </div>
@@ -715,7 +717,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                                     </svg>
                                 </div>
-                                <h3 class="font-bold text-xl mb-2">{{ __('Need Steel Products?') }}</h3>
+                                <div class="font-bold text-xl mb-2">{{ __('Need Steel Products?') }}</div>
                                 <p class="text-primary-100 text-sm mb-5 leading-relaxed">{{ __('Get the best price and quality for your construction needs') }}</p>
                                 <a href="{{ route('quote') }}" class="inline-flex items-center gap-2 bg-white text-primary-600 px-5 py-3 rounded-xl font-bold text-sm hover:bg-primary-50 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
                                     {{ __('Request Quote') }}
@@ -752,5 +754,19 @@
             </div>
         </section>
     @endif
+
+    {{-- Add captions to CMS tables for accessibility --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.article-content table').forEach(function(table, i) {
+                if (!table.querySelector('caption')) {
+                    var caption = document.createElement('caption');
+                    caption.className = 'sr-only';
+                    caption.textContent = '{{ __("Data Table") }} ' + (i + 1);
+                    table.insertBefore(caption, table.firstChild);
+                }
+            });
+        });
+    </script>
 @endsection
 

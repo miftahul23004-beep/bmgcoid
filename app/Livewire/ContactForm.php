@@ -2,7 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Models\Contact;
+use App\Mail\InquiryConfirmation;
+use App\Mail\InquiryNotification;
+use App\Models\Inquiry;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -53,7 +56,7 @@ class ContactForm extends Component
     {
         $this->validate();
 
-        Contact::create([
+        $inquiry = Inquiry::create([
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
@@ -61,13 +64,22 @@ class ContactForm extends Component
             'subject' => $this->subject,
             'message' => $this->message,
             'type' => $this->subject_type,
-            'source' => 'contact_form',
             'status' => 'new',
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
         ]);
 
-        // TODO: Send email notification to admin
+        // Send email notification to admin
+        try {
+            Mail::to('info@berkahmandiri.co.id')->send(new InquiryNotification($inquiry));
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send inquiry email: ' . $e->getMessage());
+        }
+
+        // Send confirmation email to user
+        try {
+            Mail::to($inquiry->email)->send(new InquiryConfirmation($inquiry));
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send confirmation email: ' . $e->getMessage());
+        }
 
         $this->submitted = true;
         $this->dispatch('contact-submitted');

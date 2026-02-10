@@ -22,6 +22,11 @@ class ActivityLog extends Page implements HasTable
     protected static ?int $navigationSort = 5;
     protected string $view = 'filament.pages.activity-log';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole(['Super Admin', 'Admin']) ?? false;
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return __('System');

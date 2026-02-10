@@ -31,6 +31,11 @@ class SeoSettings extends Page implements Forms\Contracts\HasForms
     protected static ?int $navigationSort = 4;
     protected string $view = 'filament.pages.seo-settings';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->can('manage seo') ?? false;
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return __('Settings');

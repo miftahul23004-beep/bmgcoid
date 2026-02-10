@@ -5,31 +5,41 @@ namespace App\Filament\Widgets;
 use App\Models\PerformanceLog;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Cache;
 
 class PerformanceStatsWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
 
-    protected ?string $pollingInterval = '30s';
+    protected ?string $pollingInterval = '120s';
 
     protected function getStats(): array
     {
-        $today = now()->startOfDay();
-        $yesterday = now()->subDay()->startOfDay();
+        $data = Cache::remember('admin.stats.performance', 120, function () {
+            $today = now()->startOfDay();
+            $yesterday = now()->subDay()->startOfDay();
 
-        // Today's stats
-        $todayStats = PerformanceLog::where('created_at', '>=', $today)
-            ->selectRaw('COUNT(*) as total_requests')
-            ->selectRaw('AVG(response_time) as avg_response_time')
-            ->selectRaw('SUM(CASE WHEN status_code >= 500 THEN 1 ELSE 0 END) as error_count')
-            ->first();
+            $todayStats = PerformanceLog::where('created_at', '>=', $today)
+                ->selectRaw('COUNT(*) as total_requests')
+                ->selectRaw('AVG(response_time) as avg_response_time')
+                ->selectRaw('SUM(CASE WHEN status_code >= 500 THEN 1 ELSE 0 END) as error_count')
+                ->first();
 
-        // Yesterday's stats for comparison
-        $yesterdayStats = PerformanceLog::whereBetween('created_at', [$yesterday, $today])
-            ->selectRaw('AVG(response_time) as avg_response_time')
-            ->first();
+            $yesterdayStats = PerformanceLog::whereBetween('created_at', [$yesterday, $today])
+                ->selectRaw('AVG(response_time) as avg_response_time')
+                ->first();
 
-        // Calculate trends
+            $slowRequests = PerformanceLog::where('created_at', '>=', $today)
+                ->where('response_time', '>', 1)
+                ->count();
+
+            return compact('todayStats', 'yesterdayStats', 'slowRequests');
+        });
+
+        $todayStats = $data['todayStats'];
+        $yesterdayStats = $data['yesterdayStats'];
+        $slowRequests = $data['slowRequests'];
+
         $avgResponseToday = $todayStats->avg_response_time ?? 0;
         $avgResponseYesterday = $yesterdayStats->avg_response_time ?? 0;
         $responseTrend = $avgResponseYesterday > 0 
@@ -40,11 +50,6 @@ class PerformanceStatsWidget extends BaseWidget
         $uptime = $todayStats->total_requests > 0
             ? round((($todayStats->total_requests - $todayStats->error_count) / $todayStats->total_requests) * 100, 2)
             : 100;
-
-        // Slow requests (> 1 second)
-        $slowRequests = PerformanceLog::where('created_at', '>=', $today)
-            ->where('response_time', '>', 1)
-            ->count();
 
         return [
             Stat::make(

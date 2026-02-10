@@ -1,11 +1,20 @@
 @extends('layouts.app')
 
-@section('title', __('Home') . ' - ' . ($companyInfo['company_name'] ?? config('app.name')))
+@section('title', __('Home Page') . ' - ' . ($companyInfo['company_name'] ?? config('app.name')))
+@section('meta_description', __('Distributor & supplier besi baja terpercaya sejak 2011. Besi beton, hollow, siku, plat & pipa besi berkualitas SNI untuk konstruksi, industri & manufaktur di Indonesia.'))
 
-{{-- Preload LCP hero image for faster rendering --}}
+{{-- Preload ALL hero slides for faster LCP (CrUX shows different slides as LCP) --}}
 @push('preload')
 @if($heroSlides->count() > 0)
-<link rel="preload" href="{{ $heroSlides->first()->image_url }}" as="image" type="image/webp" fetchpriority="high">
+@foreach($heroSlides as $preloadSlide)
+@php
+    $heroUrl = $preloadSlide->image_url;
+    $heroMobileUrl = preg_replace('/\.webp$/', '-640w.webp', $heroUrl);
+@endphp
+<link rel="preload" as="image" type="image/webp" {{ $loop->first ? 'fetchpriority="high"' : '' }}
+      imagesrcset="{{ $heroMobileUrl }} 640w, {{ $heroUrl }} 1280w"
+      imagesizes="100vw">
+@endforeach
 @endif
 @endpush
 
@@ -48,30 +57,49 @@
         
         {{-- Slides --}}
         @foreach($heroSlides as $index => $slide)
-        <div @if($index === 0)
-                x-show="currentSlide === {{ $index }}"
-                style="display: block"
-             @else
-                x-show="currentSlide === {{ $index }}"
-                x-cloak
-             @endif
+        <div x-show="currentSlide === {{ $index }}"
+             @if($index === 0) style="display: block;" @else x-cloak @endif
              x-transition:enter="transition ease-out duration-700"
              x-transition:enter-start="opacity-0"
              x-transition:enter-end="opacity-100"
              x-transition:leave="transition ease-in duration-300"
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
-             class="absolute inset-0">
+             class="absolute inset-0"
+             >
             
-            {{-- Background Image - Use <img> for LCP optimization --}}
+            {{-- Background Image - Use <img> with srcset for responsive LCP --}}
+            @php
+                $imgUrl = $slide->image_url;
+                $imgMobileUrl = preg_replace('/\.webp$/', '-640w.webp', $imgUrl);
+            @endphp
+            @if($index === 0)
             <img 
-                src="{{ $slide->image_url }}" 
+                src="{{ $imgUrl }}" 
+                srcset="{{ $imgMobileUrl }} 640w, {{ $imgUrl }} 1280w"
+                sizes="100vw"
                 alt="{{ $slide->title }}"
                 class="absolute inset-0 w-full h-full object-cover"
                 width="1280"
                 height="540"
-                @if($index === 0) fetchpriority="high" loading="eager" decoding="sync" @else loading="lazy" decoding="async" @endif
+                fetchpriority="high"
+                loading="eager"
+                decoding="sync"
             >
+            @else
+            <img 
+                src="{{ $imgUrl }}" 
+                srcset="{{ $imgMobileUrl }} 640w, {{ $imgUrl }} 1280w"
+                sizes="100vw"
+                alt="{{ $slide->title }}"
+                class="absolute inset-0 w-full h-full object-cover"
+                width="1280"
+                height="540"
+                fetchpriority="low"
+                loading="eager"
+                decoding="async"
+            >
+            @endif
             
             {{-- Gradient Overlay --}}
             <div class="absolute inset-0 bg-gradient-to-r {{ $slide->gradient_class }}"></div>
@@ -79,7 +107,7 @@
             {{-- Decorative Elements --}}
             <div class="absolute inset-0 opacity-10 hidden md:block">
                 <div class="absolute top-5 right-5 w-48 h-48 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse"></div>
-                <div class="absolute bottom-5 left-5 w-64 h-64 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse" style="animation-delay: 1s"></div>
+                <div class="absolute bottom-5 left-5 w-64 h-64 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse [animation-delay:1s]" ></div>
             </div>
             
             {{-- Content --}}
@@ -205,7 +233,7 @@
                     <div class="text-sm md:text-base text-gray-600">@if(app()->getLocale() === 'en') Happy Clients @else Klien Puas @endif</div>
                 </div>
                 
-                <div class="text-center" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 100ms">
+                <div class="text-center [animation-delay:100ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="inline-flex items-center justify-center w-16 h-16 bg-secondary-100 text-secondary-600 rounded-2xl mb-4">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -215,7 +243,7 @@
                     <div class="text-sm md:text-base text-gray-600">@if(app()->getLocale() === 'en') Projects Completed @else Proyek Selesai @endif</div>
                 </div>
                 
-                <div class="text-center" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 200ms">
+                <div class="text-center [animation-delay:200ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="inline-flex items-center justify-center w-16 h-16 bg-accent-100 text-accent-600 rounded-2xl mb-4">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
@@ -225,7 +253,7 @@
                     <div class="text-sm md:text-base text-gray-600">@if(app()->getLocale() === 'en') Products @else Produk @endif</div>
                 </div>
                 
-                <div class="text-center" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 300ms">
+                <div class="text-center [animation-delay:300ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="inline-flex items-center justify-center w-16 h-16 bg-green-100 text-green-600 rounded-2xl mb-4">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -394,7 +422,7 @@
                         @endif
                     </p>
                 </div>
-                <div class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 100ms">
+                <div class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2 [animation-delay:100ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="w-16 h-16 bg-white text-secondary-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
@@ -411,7 +439,7 @@
                         @endif
                     </p>
                 </div>
-                <div class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 200ms">
+                <div class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2 [animation-delay:200ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="w-16 h-16 bg-white text-accent-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -428,7 +456,7 @@
                         @endif
                     </p>
                 </div>
-                <div class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 300ms">
+                <div class="group bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:-translate-y-2 [animation-delay:300ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="w-16 h-16 bg-white text-green-600 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -456,7 +484,7 @@
         {{-- Animated background --}}
         {{-- <div class="absolute inset-0 opacity-5">
             <div class="absolute top-0 left-1/4 w-72 h-72 bg-primary-500 rounded-full mix-blend-screen filter blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary-500 rounded-full mix-blend-screen filter blur-3xl animate-pulse" style="animation-delay: 1.5s"></div>
+            <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-secondary-500 rounded-full mix-blend-screen filter blur-3xl animate-pulse [animation-delay:1.5s]" ></div>
         </div>
         
         <div class="container relative z-10">
@@ -877,7 +905,7 @@
         {{-- Decorative elements --}}
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-10 right-10 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-10 left-10 w-80 h-80 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse" style="animation-delay: 1s"></div>
+            <div class="absolute bottom-10 left-10 w-80 h-80 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse [animation-delay:1s]" ></div>
         </div>
         
         <div class="container relative z-10">

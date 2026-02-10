@@ -12,7 +12,7 @@ class PerformanceChartWidget extends ChartWidget
 
     protected static ?int $sort = 3;
 
-    protected ?string $pollingInterval = '60s';
+    protected ?string $pollingInterval = '120s';
 
     protected function getData(): array
     {

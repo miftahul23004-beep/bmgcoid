@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\InquiryConfirmation;
+use App\Mail\InquiryNotification;
 use App\Models\Inquiry;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class ContactController extends Controller
@@ -31,7 +34,21 @@ class ContactController extends Controller
         $validated['user_agent'] = $request->userAgent();
         $validated['source'] = 'contact_form';
 
-        Inquiry::create($validated);
+        $inquiry = Inquiry::create($validated);
+
+        // Send email notification to admin
+        try {
+            Mail::to('info@berkahmandiri.co.id')->send(new InquiryNotification($inquiry));
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send contact notification email: ' . $e->getMessage());
+        }
+
+        // Send confirmation email to user
+        try {
+            Mail::to($inquiry->email)->send(new InquiryConfirmation($inquiry));
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send contact confirmation email: ' . $e->getMessage());
+        }
 
         return back()->with('success', __('messages.contact_success'));
     }
@@ -75,7 +92,7 @@ class ContactController extends Controller
             }
         }
 
-        Inquiry::create([
+        $inquiry = Inquiry::create([
             'type' => 'quote',
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -93,6 +110,20 @@ class ContactController extends Controller
             'user_agent' => $request->userAgent(),
             'source' => 'quote_form',
         ]);
+
+        // Send email notification to admin
+        try {
+            Mail::to('info@berkahmandiri.co.id')->send(new InquiryNotification($inquiry));
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send quote notification email: ' . $e->getMessage());
+        }
+
+        // Send confirmation email to user
+        try {
+            Mail::to($inquiry->email)->send(new InquiryConfirmation($inquiry));
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send quote confirmation email: ' . $e->getMessage());
+        }
 
         return back()->with('success', __('messages.quote_success'));
     }

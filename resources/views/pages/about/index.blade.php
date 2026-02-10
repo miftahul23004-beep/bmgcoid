@@ -22,13 +22,13 @@
         {{-- Decorative elements --}}
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse" style="animation-delay: 1s"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse [animation-delay:1s]" ></div>
         </div>
         
         <div class="container relative z-10">
             <nav class="text-sm mb-6" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2">
-                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white transition-colors">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white transition-colors">{{ __('Home Page') }}</a></li>
                     <li><span class="text-primary-400">/</span></li>
                     <li class="text-white">{{ __('About Us') }}</li>
                 </ol>
@@ -119,7 +119,7 @@
     </section>
 
     {{-- Company Story Section --}}
-    <section class="py-16 md:py-24 bg-gray-50">
+    <section class="py-16 md:py-24 bg-gray-50 overflow-hidden">
         <div class="container">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 <div class="relative order-2 lg:order-1">
@@ -129,7 +129,7 @@
                                 ? Storage::disk('public')->url($staticPageImages['about_story_image']) 
                                 : 'https://placehold.co/800x600/1E40AF/ffffff?text=PT.+Berkah+Mandiri+Globalindo';
                         @endphp
-                        <img src="{{ $storyImage }}" alt="PT. Berkah Mandiri Globalindo" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=PT.+Berkah+Mandiri+Globalindo'">
+                        <img src="{{ $storyImage }}" alt="PT. Berkah Mandiri Globalindo" class="w-full h-full object-cover" width="800" height="600" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=PT.+Berkah+Mandiri+Globalindo'">
                     </div>
                     <div class="absolute -bottom-8 -right-8 bg-secondary-600 text-white p-8 rounded-2xl shadow-2xl">
                         <div class="text-5xl font-bold">14+</div>
@@ -164,10 +164,10 @@
                     
                     <div class="flex items-center gap-4 mt-8">
                         <div class="flex -space-x-4">
-                            <img src="https://ui-avatars.com/api/?name=Client+1&background=1E40AF&color=fff" alt="Client" class="w-12 h-12 rounded-full border-4 border-white" width="48" height="48">
-                            <img src="https://ui-avatars.com/api/?name=Client+2&background=DC2626&color=fff" alt="Client" class="w-12 h-12 rounded-full border-4 border-white" width="48" height="48">
-                            <img src="https://ui-avatars.com/api/?name=Client+3&background=059669&color=fff" alt="Client" class="w-12 h-12 rounded-full border-4 border-white" width="48" height="48">
-                            <img src="https://ui-avatars.com/api/?name=Client+4&background=EA580C&color=fff" alt="Client" class="w-12 h-12 rounded-full border-4 border-white" width="48" height="48">
+                            <img src="https://ui-avatars.com/api/?name=Client+1&background=1E40AF&color=fff" alt="Client" class="w-12 h-12 rounded-full border-4 border-white" width="48" height="48" loading="lazy" decoding="async">
+                            <img src="https://ui-avatars.com/api/?name=Client+2&background=DC2626&color=fff" alt="Client" class="w-12 h-12 rounded-full border-4 border-white" width="48" height="48" loading="lazy" decoding="async">
+                            <img src="https://ui-avatars.com/api/?name=Client+3&background=059669&color=fff" alt="Client" class="w-12 h-12 rounded-full border-4 border-white" width="48" height="48" loading="lazy" decoding="async">
+                            <img src="https://ui-avatars.com/api/?name=Client+4&background=EA580C&color=fff" alt="Client" class="w-12 h-12 rounded-full border-4 border-white" width="48" height="48" loading="lazy" decoding="async">
                         </div>
                         <div>
                             <div class="font-semibold text-gray-900">500+ @if(app()->getLocale() === 'en') Happy Clients @else Klien Bahagia @endif</div>

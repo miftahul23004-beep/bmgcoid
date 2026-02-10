@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', $tag->name . ' - ' . __('Articles') . ' - ' . config('app.name'))
+@section('meta_description', __('Articles tagged') . ' ' . $tag->name . '. ' . __('Read the latest news, tips, and information about steel industry and construction from PT. Berkah Mandiri Globalindo.'))
 
 @section('content')
     {{-- Page Header --}}
@@ -8,9 +9,9 @@
         <div class="container">
             <nav class="text-sm mb-4" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2">
-                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white">{{ __('Home Page') }}</a></li>
                     <li><span class="text-primary-400">/</span></li>
-                    <li><a href="{{ route('articles.index') }}" class="text-primary-200 hover:text-white">{{ __('Articles') }}</a></li>
+                    <li><a href="{{ route('articles.index') }}" class="text-primary-200 hover:text-white">{{ __('News & Articles') }}</a></li>
                     <li><span class="text-primary-400">/</span></li>
                     <li class="text-white">{{ $tag->name }}</li>
                 </ol>

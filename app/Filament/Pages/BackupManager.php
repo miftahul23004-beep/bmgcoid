@@ -19,6 +19,11 @@ class BackupManager extends Page
 
     public string $selectedType = 'full';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->hasRole('Super Admin') ?? false;
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return 'System';

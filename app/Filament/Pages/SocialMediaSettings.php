@@ -26,6 +26,11 @@ class SocialMediaSettings extends Page implements Forms\Contracts\HasForms
     protected static ?int $navigationSort = 2;
     protected string $view = 'filament.pages.social-media-settings';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->can('manage settings') ?? false;
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return __('Settings');

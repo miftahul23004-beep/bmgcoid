@@ -16,7 +16,7 @@
                     {{-- Logo Container --}}
                     <div class="relative flex-shrink-0">
                         <div class="bg-gradient-to-br from-gray-800 to-gray-700 p-2.5 rounded-xl border border-gray-600/50 shadow-lg">
-                            <img src="{{ $logoWhitePath }}" alt="{{ $companyInfo['company_name'] ?? config('app.name') }}" class="h-10 w-auto" width="116" height="80" loading="lazy">
+                            <img src="{{ $logoWhitePath }}" alt="{{ $companyInfo['company_name'] ?? config('app.name') }}" title="{{ $companyInfo['company_name'] ?? config('app.name') }}" class="h-10 w-auto" width="116" height="80" loading="lazy">
                         </div>
                         {{-- Trust Badge on Logo --}}
                         <div class="absolute -bottom-1.5 -right-1.5 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-full p-1 shadow-lg">
@@ -28,7 +28,7 @@
                     {{-- Company Name & Badges --}}
                     <div class="flex-1 min-w-0">
                         <div class="flex flex-wrap items-center gap-2 mb-1">
-                            <h3 class="text-white font-bold text-lg leading-tight">{{ $companyInfo['company_name'] ?? config('app.name') }}</h3>
+                            <div class="text-white font-bold text-lg leading-tight">{{ $companyInfo['company_name'] ?? config('app.name') }}</div>
                         </div>
                         {{-- Badge Row --}}
                         <div class="flex flex-wrap items-center gap-1.5">
@@ -74,20 +74,20 @@
 
             {{-- Quick Links --}}
             <div>
-                <h4 class="text-white font-semibold text-lg mb-4">{{ __('Quick Links') }}</h4>
+                <div class="text-white font-semibold text-lg mb-4">{{ __('Quick Links') }}</div>
                 <ul class="space-y-2">
-                    <li><a href="{{ route('home') }}" class="hover:text-primary-400 transition-colors">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="hover:text-primary-400 transition-colors">{{ __('Home Page') }}</a></li>
                     <li><a href="{{ route('about.company') }}" class="hover:text-primary-400 transition-colors">{{ __('About Us') }}</a></li>
-                    <li><a href="{{ route('products.index') }}" class="hover:text-primary-400 transition-colors">{{ __('Products') }}</a></li>
-                    <li><a href="{{ route('articles.index') }}" class="hover:text-primary-400 transition-colors">{{ __('Articles') }}</a></li>
-                    <li><a href="{{ route('contact') }}" class="hover:text-primary-400 transition-colors">{{ __('Contact') }}</a></li>
+                    <li><a href="{{ route('products.index') }}" class="hover:text-primary-400 transition-colors">{{ __('Our Products') }}</a></li>
+                    <li><a href="{{ route('articles.index') }}" class="hover:text-primary-400 transition-colors">{{ __('News & Articles') }}</a></li>
+                    <li><a href="{{ route('contact') }}" class="hover:text-primary-400 transition-colors">{{ __('Contact Us') }}</a></li>
                     <li><a href="{{ route('quote') }}" class="hover:text-primary-400 transition-colors">{{ __('Request Quote') }}</a></li>
                 </ul>
             </div>
 
             {{-- Product Categories --}}
             <div>
-                <h4 class="text-white font-semibold text-lg mb-4">{{ __('Product Categories') }}</h4>
+                <div class="text-white font-semibold text-lg mb-4">{{ __('Product Categories') }}</div>
                 <ul class="space-y-2">
                     @foreach(\App\Models\Category::active()->roots()->ordered()->take(6)->get() as $category)
                     <li>
@@ -101,7 +101,7 @@
 
             {{-- Contact Info --}}
             <div>
-                <h4 class="text-white font-semibold text-lg mb-4">{{ __('Contact Us') }}</h4>
+                <div class="text-white font-semibold text-lg mb-4">{{ __('Contact Us') }}</div>
                 <ul class="space-y-4">
                     <li class="flex items-start">
                         <svg class="w-5 h-5 mr-3 mt-0.5 text-primary-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,13 +164,13 @@
         {{-- Service Areas - Local & National SEO --}}
         <div class="border-t border-gray-800 mt-8 pt-8">
             <div class="text-center">
-                <h4 class="text-white font-semibold text-sm mb-3">
+                <div class="text-white font-semibold text-sm mb-3">
                     @if(app()->getLocale() === 'en') 
                         Steel Supplier Serving All of Indonesia
                     @else 
                         Supplier Besi Baja Melayani Seluruh Indonesia
                     @endif
-                </h4>
+                </div>
                 <p class="text-xs text-gray-400 max-w-4xl mx-auto leading-relaxed mb-2">
                     @if(app()->getLocale() === 'en') 
                         <span class="text-primary-400">Wholesale & Retail</span> • 
@@ -209,7 +209,7 @@
                 <div class="flex space-x-6 text-sm">
                     <a href="{{ route('privacy') }}" class="hover:text-primary-400 transition-colors">{{ __('Privacy Policy') }}</a>
                     <a href="{{ route('terms') }}" class="hover:text-primary-400 transition-colors">{{ __('Terms of Service') }}</a>
-                    <a href="{{ route('sitemap') }}" class="hover:text-primary-400 transition-colors">{{ __('Sitemap') }}</a>
+                    <a href="{{ route('sitemap') }}" class="hover:text-primary-400 transition-colors">{{ __('Site Map') }}</a>
                 </div>
             </div>
         </div>

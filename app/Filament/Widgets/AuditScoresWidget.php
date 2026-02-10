@@ -11,7 +11,7 @@ class AuditScoresWidget extends BaseWidget
 {
     protected static ?int $sort = 2;
 
-    protected ?string $pollingInterval = '30s';
+    protected ?string $pollingInterval = '300s';
 
     protected function getStats(): array
     {

@@ -23,7 +23,7 @@
     {{-- Clean Modern Corporate Hero --}}
     <section class="relative bg-gradient-to-br from-slate-900 via-primary-900 to-primary-800 overflow-hidden">
         {{-- Subtle Pattern Overlay --}}
-        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"1\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        <div class="absolute inset-0 opacity-[0.03] bg-pattern-cross"></div>
         
         {{-- Gradient Orb Decorations --}}
         <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary-500/20 rounded-full blur-3xl"></div>
@@ -33,9 +33,9 @@
             {{-- Breadcrumb --}}
             <nav class="pt-8 pb-4" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 text-sm text-white/60">
-                    <li><a href="{{ route('home') }}" class="hover:text-white transition-colors">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="hover:text-white transition-colors">{{ __('Home Page') }}</a></li>
                     <li class="text-white/40">/</li>
-                    <li><a href="{{ route('products.index') }}" class="hover:text-white transition-colors">{{ __('Products') }}</a></li>
+                    <li><a href="{{ route('products.index') }}" class="hover:text-white transition-colors">{{ __('Our Products') }}</a></li>
                     @foreach($breadcrumbs as $crumb)
                         <li class="text-white/40">/</li>
                         @if($crumb['url'])
@@ -117,9 +117,10 @@
 
             {{-- Products --}}
             @if($products->count() > 0)
+                <h2 class="text-2xl font-bold mb-6">{{ __('Products') }} {{ $category->getTranslation('name', app()->getLocale()) }}</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach($products as $product)
-                        @include('components.product-card', ['product' => $product])
+                        @include('components.product-card', ['product' => $product, 'headingTag' => 'h3'])
                     @endforeach
                 </div>
 
@@ -132,7 +133,7 @@
                     <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                     </svg>
-                    <h3 class="text-lg font-semibold text-gray-600 mb-2">Belum Ada Produk</h3>
+                    <h2 class="text-lg font-semibold text-gray-600 mb-2">Belum Ada Produk</h2>
                     <p class="text-gray-500">Kategori ini belum memiliki produk.</p>
                     <a href="{{ route('products.index') }}" class="btn btn-primary mt-4">Lihat Semua Produk</a>
                 </div>

@@ -17,6 +17,7 @@ class LatestInquiries extends BaseWidget
         return $table
             ->query(
                 Inquiry::query()
+                    ->with('product')
                     ->latest()
                     ->limit(5)
             )

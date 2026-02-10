@@ -5,6 +5,7 @@
 @extends('layouts.app')
 
 @section('title', __('Vision & Mission') . ' - ' . config('app.name'))
+@section('meta_description', __('Vision and mission of PT. Berkah Mandiri Globalindo. Committed to being the leading steel distributor in Indonesia with quality products and excellent service.'))
 
 @section('content')
     {{-- Hero Section with Overlay --}}
@@ -12,18 +13,18 @@
         {{-- Decorative elements --}}
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse" style="animation-delay: 1s"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse [animation-delay:1s]" ></div>
         </div>
         
         {{-- Grid pattern overlay --}}
-        <div class="absolute inset-0 opacity-5" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.4&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        <div class="absolute inset-0 opacity-5 bg-pattern-cross"></div>
         
         <div class="container relative z-10">
             <nav class="text-sm mb-6" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2">
-                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white transition-colors">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white transition-colors">{{ __('Home Page') }}</a></li>
                     <li><span class="text-primary-400">/</span></li>
-                    <li><a href="{{ route('about.company') }}" class="text-primary-200 hover:text-white transition-colors">{{ __('About') }}</a></li>
+                    <li><a href="{{ route('about.company') }}" class="text-primary-200 hover:text-white transition-colors">{{ __('About Us') }}</a></li>
                     <li><span class="text-primary-400">/</span></li>
                     <li class="text-white">{{ __('Vision & Mission') }}</li>
                 </ol>
@@ -58,7 +59,7 @@
     </section>
 
     {{-- Vision Section --}}
-    <section class="py-16 md:py-24 bg-white">
+    <section class="py-16 md:py-24 bg-white overflow-hidden">
         <div class="container">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                 {{-- Image Side --}}
@@ -70,7 +71,7 @@
                                 $visionImage = $staticPageImages['vision_image'] ?? null;
                                 $visionImageUrl = $visionImage ? Storage::disk('public')->url($visionImage) : asset('storage/about/vision.webp');
                             @endphp
-                            <img src="{{ $visionImageUrl }}" alt="Visi Perusahaan" class="w-full h-full object-cover" width="800" height="600" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=Our+Vision'">
+                            <img src="{{ $visionImageUrl }}" alt="Visi Perusahaan" class="w-full h-full object-cover" width="800" height="600" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/800x600/1E40AF/ffffff?text=Our+Vision'">
                         </div>
                         
                         {{-- Floating Badge --}}
@@ -196,7 +197,7 @@
                 </div>
 
                 {{-- Mission 2 --}}
-                <div class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-secondary-200 hover:-translate-y-2" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 100ms">
+                <div class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-secondary-200 hover:-translate-y-2 [animation-delay:100ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-secondary-100 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
                     <div class="relative">
                         <div class="w-16 h-16 bg-gradient-to-br from-secondary-500 to-secondary-600 text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-secondary-200">
@@ -208,7 +209,7 @@
                 </div>
 
                 {{-- Mission 3 --}}
-                <div class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-accent-200 hover:-translate-y-2" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 200ms">
+                <div class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-accent-200 hover:-translate-y-2 [animation-delay:200ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent-100 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
                     <div class="relative">
                         <div class="w-16 h-16 bg-gradient-to-br from-accent-500 to-accent-600 text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-accent-200">
@@ -220,7 +221,7 @@
                 </div>
 
                 {{-- Mission 4 --}}
-                <div class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-green-200 hover:-translate-y-2" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 300ms">
+                <div class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-green-200 hover:-translate-y-2 [animation-delay:300ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-100 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
                     <div class="relative">
                         <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-green-200">
@@ -232,7 +233,7 @@
                 </div>
 
                 {{-- Mission 5 --}}
-                <div class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-purple-200 hover:-translate-y-2" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 400ms">
+                <div class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-purple-200 hover:-translate-y-2 [animation-delay:400ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-100 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
                     <div class="relative">
                         <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-purple-200">
@@ -244,7 +245,7 @@
                 </div>
 
                 {{-- Mission 6 --}}
-                <div class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-rose-200 hover:-translate-y-2" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 500ms">
+                <div class="group relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-rose-200 hover:-translate-y-2 [animation-delay:500ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-rose-100 to-transparent rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
                     <div class="relative">
                         <div class="w-16 h-16 bg-gradient-to-br from-rose-500 to-rose-600 text-white rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-rose-200">
@@ -296,7 +297,7 @@
                 </div>
 
                 {{-- Value 2: Professionalism --}}
-                <div class="group text-center" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 100ms">
+                <div class="group text-center [animation-delay:100ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="relative inline-block mb-6">
                         <div class="w-24 h-24 bg-gradient-to-br from-secondary-500 to-secondary-700 text-white rounded-2xl flex items-center justify-center mx-auto transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl shadow-secondary-200">
                             <svg class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -310,7 +311,7 @@
                 </div>
 
                 {{-- Value 3: Innovation --}}
-                <div class="group text-center" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 200ms">
+                <div class="group text-center [animation-delay:200ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="relative inline-block mb-6">
                         <div class="w-24 h-24 bg-gradient-to-br from-accent-500 to-accent-700 text-white rounded-2xl flex items-center justify-center mx-auto transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl shadow-accent-200">
                             <svg class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -324,7 +325,7 @@
                 </div>
 
                 {{-- Value 4: Care --}}
-                <div class="group text-center" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" style="animation-delay: 300ms">
+                <div class="group text-center [animation-delay:300ms]" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')" >
                     <div class="relative inline-block mb-6">
                         <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-green-700 text-white rounded-2xl flex items-center justify-center mx-auto transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-xl shadow-green-200">
                             <svg class="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">

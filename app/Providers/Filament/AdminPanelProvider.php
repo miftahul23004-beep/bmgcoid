@@ -38,6 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->passwordReset()
             ->brandName($siteName)
             ->brandLogo(fn () => view('filament.brand-logo', ['logo' => $logoUrl, 'name' => $siteName]))
             ->darkModeBrandLogo(fn () => view('filament.brand-logo', ['logo' => $logoUrl, 'name' => $siteName, 'dark' => true]))
@@ -68,6 +69,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                \Illuminate\Routing\Middleware\ThrottleRequests::class . ':60,1',
             ])
             ->authMiddleware([
                 Authenticate::class,

@@ -98,9 +98,9 @@
             <div x-show="isTyping" class="flex justify-start">
                 <div class="bg-white rounded-2xl rounded-bl-md shadow-sm px-4 py-3">
                     <div class="flex space-x-1">
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0ms"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 150ms"></div>
-                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 300ms"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0ms]" ></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:150ms]" ></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:300ms]" ></div>
                     </div>
                 </div>
             </div>

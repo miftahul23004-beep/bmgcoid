@@ -142,11 +142,11 @@ class SchemaService
                 '@type' => 'OfferCatalog',
                 'name' => 'Katalog Produk Besi Baja',
                 'itemListElement' => [
-                    ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Product', 'name' => 'Besi Beton']],
-                    ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Product', 'name' => 'Besi Hollow']],
-                    ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Product', 'name' => 'Besi Siku']],
-                    ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Product', 'name' => 'Plat Besi']],
-                    ['@type' => 'Offer', 'itemOffered' => ['@type' => 'Product', 'name' => 'Pipa Besi']],
+                    ['@type' => 'OfferCatalog', 'name' => 'Besi Beton'],
+                    ['@type' => 'OfferCatalog', 'name' => 'Besi Hollow'],
+                    ['@type' => 'OfferCatalog', 'name' => 'Besi Siku'],
+                    ['@type' => 'OfferCatalog', 'name' => 'Plat Besi'],
+                    ['@type' => 'OfferCatalog', 'name' => 'Pipa Besi'],
                 ],
             ],
         ];

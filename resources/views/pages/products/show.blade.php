@@ -58,7 +58,7 @@
         
         // Breadcrumb Schema
         $breadcrumbItems = [
-            ['name' => __('Home'), 'url' => route('home')],
+            ['name' => __('Home Page'), 'url' => route('home')],
             ['name' => __('Products'), 'url' => route('products.index')],
         ];
         foreach($breadcrumbs as $crumb) {
@@ -134,14 +134,15 @@
             <nav class="text-sm" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2 flex-wrap">
                     <li>
-                        <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600 transition-colors">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary-600 transition-colors" aria-label="{{ __('Home Page') }}">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                             </svg>
+                            <span class="sr-only">{{ __('Home Page') }}</span>
                         </a>
                     </li>
                     <li><span class="text-gray-500">/</span></li>
-                    <li><a href="{{ route('products.index') }}" class="text-gray-500 hover:text-primary-600 transition-colors">{{ __('Products') }}</a></li>
+                    <li><a href="{{ route('products.index') }}" class="text-gray-500 hover:text-primary-600 transition-colors">{{ __('Our Products') }}</a></li>
                     @foreach($breadcrumbs as $crumb)
                         <li><span class="text-gray-500">/</span></li>
                         @if($crumb['url'])
@@ -172,11 +173,11 @@
                                     class="aspect-square bg-gray-100 rounded-lg overflow-hidden transition-all flex-shrink-0"
                                 >
                                     <template x-if="media.type === 'image' || media.type === 'placeholder'">
-                                        <img :src="media.thumbnail || '/images/placeholder-product.png'" alt="Thumbnail" class="w-full h-full object-cover">
+                                        <img :src="media.thumbnail || '/images/placeholder-product.png'" alt="Thumbnail" class="w-full h-full object-cover" width="80" height="80" loading="lazy" decoding="async">
                                     </template>
                                     <template x-if="media.type === 'youtube' && media.thumbnail">
                                         <div class="w-full h-full relative">
-                                            <img :src="media.thumbnail" alt="YouTube" class="w-full h-full object-cover">
+                                            <img :src="media.thumbnail" alt="YouTube" class="w-full h-full object-cover" width="80" height="80" loading="lazy" decoding="async">
                                             <div class="absolute inset-0 flex items-center justify-center bg-black/20">
                                                 <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                                                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -200,7 +201,7 @@
                                     <div x-show="activeIndex === index" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" class="absolute inset-0">
                                         <template x-if="media.type === 'image'">
                                             <div class="relative w-full h-full overflow-hidden">
-                                                <img :src="media.url" :alt="'{{ addslashes($product->getTranslation('name', app()->getLocale())) }}'" class="w-full h-full object-contain transition-transform duration-150" :style="zoomEnabled && activeMedia?.type === 'image' ? zoomStyle : ''">
+                                                <img :src="media.url" :alt="'{{ addslashes($product->getTranslation('name', app()->getLocale())) }}'" class="w-full h-full object-contain transition-transform duration-150" :style="zoomEnabled && activeMedia?.type === 'image' ? zoomStyle : ''" width="600" height="600">
                                             </div>
                                         </template>
                                         <template x-if="media.type === 'youtube' && media.youtube_id">
@@ -270,11 +271,11 @@
                                         class="w-16 h-16 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden"
                                     >
                                         <template x-if="media.type === 'image' || media.type === 'placeholder'">
-                                            <img :src="media.thumbnail || '/images/placeholder-product.png'" alt="Thumbnail" class="w-full h-full object-cover">
+                                            <img :src="media.thumbnail || '/images/placeholder-product.png'" alt="Thumbnail" class="w-full h-full object-cover" width="64" height="64" loading="lazy" decoding="async">
                                         </template>
                                         <template x-if="media.type === 'youtube' && media.thumbnail">
                                             <div class="w-full h-full relative">
-                                                <img :src="media.thumbnail" alt="YouTube" class="w-full h-full object-cover">
+                                                <img :src="media.thumbnail" alt="YouTube" class="w-full h-full object-cover" width="64" height="64" loading="lazy" decoding="async">
                                                 <div class="absolute inset-0 flex items-center justify-center bg-black/20">
                                                     <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24">
                                                         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -302,7 +303,7 @@
                     @if($product->category)
                         <a href="{{ route('products.category', $product->category->slug) }}" class="inline-flex items-center gap-1.5 text-sm text-primary-600 hover:text-primary-700 font-medium mb-3 transition-colors">
                             @if($product->category->icon)
-                                <img src="{{ asset('storage/' . $product->category->icon) }}" alt="{{ $product->category->getTranslation('name', app()->getLocale()) }}" class="w-4 h-4 object-contain">
+                                <img src="{{ asset('storage/' . $product->category->icon) }}" alt="{{ $product->category->getTranslation('name', app()->getLocale()) }}" class="w-4 h-4 object-contain" width="16" height="16" loading="lazy" decoding="async">
                             @endif
                             {{ $product->category->getTranslation('name', app()->getLocale()) }}
                         </a>
@@ -558,9 +559,10 @@
 
                     {{-- Specifications Tab --}}
                     @if($product->specifications && count($product->specifications) > 0)
-                        <div x-show="activeTab === 'specifications'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                        <div x-show="activeTab === 'specifications'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                             <div class="overflow-hidden rounded-xl border border-gray-200">
                                 <table class="w-full">
+                                    <caption class="sr-only">{{ __('Product Specifications') }} - {{ $product->getTranslation('name', app()->getLocale()) }}</caption>
                                     <tbody class="divide-y divide-gray-200">
                                         @foreach($product->specifications as $key => $value)
                                             <tr class="hover:bg-gray-50 transition-colors">
@@ -576,9 +578,10 @@
 
                     {{-- Variants Tab --}}
                     @if($product->variants->count() > 0)
-                        <div x-show="activeTab === 'variants'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                        <div x-show="activeTab === 'variants'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                             <div class="overflow-hidden rounded-xl border border-gray-200">
                                 <table class="w-full">
+                                    <caption class="sr-only">{{ __('Product Variants') }} - {{ $product->getTranslation('name', app()->getLocale()) }}</caption>
                                     <thead class="bg-gray-50">
                                         <tr>
                                             <th class="py-4 px-6 text-left font-semibold text-gray-900">{{ __('Variant') }}</th>
@@ -613,7 +616,7 @@
 
                     {{-- Documents Tab --}}
                     @if($product->documents->count() > 0)
-                        <div x-show="activeTab === 'documents'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                        <div x-show="activeTab === 'documents'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                             <div class="grid gap-4 sm:grid-cols-2">
                                 @foreach($product->documents as $document)
                                     <a href="{{ $document->file_url }}" target="_blank" rel="noopener" class="flex items-center gap-4 p-5 bg-gray-50 border border-gray-200 rounded-xl hover:bg-primary-50 hover:border-primary-200 transition-colors group">
@@ -637,7 +640,7 @@
 
                     {{-- FAQ Tab --}}
                     @if(($product->productFaqs ?? collect())->count() > 0)
-                        <div x-show="activeTab === 'faq'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" style="display: none;">
+                        <div x-show="activeTab === 'faq'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" x-cloak>
                             <div class="space-y-3" x-data="{ openFaq: 0 }">
                                 @foreach($product->productFaqs as $index => $faq)
                                     <div class="border border-gray-200 rounded-xl overflow-hidden">
@@ -662,17 +665,42 @@
         </div>
     </section>
 
-    {{-- Product Inquiry Form Section --}}
+    {{-- CTA Request Quote --}}
     <section class="py-8 md:py-12 bg-white">
         <div class="container">
             <div class="max-w-3xl mx-auto">
-                <div class="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-8 md:p-10 text-white shadow-xl">
-                    <div class="text-center mb-8">
-                        <h2 class="text-2xl md:text-3xl font-bold font-heading">{{ __('Request a Quote') }}</h2>
-                        <p class="text-primary-200 mt-2">{{ __('Get the best price for this product') }}</p>
+                <div class="bg-gradient-to-br from-primary-600 to-primary-700 rounded-2xl p-8 md:p-10 text-white shadow-xl text-center">
+                    <div class="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
                     </div>
-                    <div class="bg-white rounded-xl p-6">
-                        @livewire('product-inquiry-form', ['product' => $product])
+                    <h2 class="text-2xl md:text-3xl font-bold font-heading mb-3">{{ __('Interested in this product?') }}</h2>
+                    <p class="text-primary-100 mb-8 max-w-lg mx-auto">
+                        @if(app()->getLocale() === 'en')
+                            Get the best price quote for <strong class="text-white">{{ $product->name }}</strong>. Our team will respond within 1-2 business days.
+                        @else
+                            Dapatkan penawaran harga terbaik untuk <strong class="text-white">{{ $product->name }}</strong>. Tim kami akan merespons dalam 1-2 hari kerja.
+                        @endif
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="{{ route('quote', ['product' => $product->id]) }}" class="inline-flex items-center gap-2 bg-white text-primary-700 px-8 py-4 rounded-xl font-bold hover:bg-primary-50 transition-all hover:scale-105 shadow-lg">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                            </svg>
+                            @if(app()->getLocale() === 'en') Request a Quote @else Minta Penawaran @endif
+                        </a>
+                        @php
+                            $socialLinks = app(\App\Services\SettingService::class)->getSocialLinks();
+                        @endphp
+                        @if(!empty($socialLinks['whatsapp']))
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $socialLinks['whatsapp']) }}?text={{ urlencode('Halo, saya tertarik dengan produk ' . $product->name . '. Bisa minta informasi harga?') }}" target="_blank" class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-all border border-white/20">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                                </svg>
+                                WhatsApp
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -730,9 +758,9 @@
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                 <template x-for="product in products.slice(0, 5)" :key="product.id">
-                    <a :href="product.url" class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+                    <a href="#" :href="product.url" class="group bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 overflow-hidden">
                         <div class="aspect-square bg-gray-100 overflow-hidden">
-                            <img :src="product.image || '/images/placeholder-product.png'" :alt="product.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <img src="/images/placeholder-product.png" :src="product.image || '/images/placeholder-product.png'" alt="Product" :alt="product.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" width="300" height="300" loading="lazy" decoding="async">
                         </div>
                         <div class="p-3">
                             <h3 class="font-medium text-gray-900 text-sm line-clamp-2 group-hover:text-primary-600 transition-colors" x-text="product.name"></h3>

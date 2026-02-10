@@ -80,7 +80,12 @@ class UserForm
                                     ->default(null),
                                 Select::make('roles')
                                     ->label('Roles')
-                                    ->relationship('roles', 'name')
+                                    ->relationship('roles', 'name', function ($query) {
+                                        // Non-Super Admin users cannot see/assign Super Admin role
+                                        if (!auth()->user()?->hasRole('Super Admin')) {
+                                            $query->where('name', '!=', 'Super Admin');
+                                        }
+                                    })
                                     ->multiple()
                                     ->preload()
                                     ->searchable(),

@@ -2,8 +2,11 @@
 
 namespace App\Livewire;
 
+use App\Mail\InquiryConfirmation;
+use App\Mail\InquiryNotification;
 use App\Models\Inquiry;
 use App\Models\Product;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\Attributes\Validate;
 
@@ -72,7 +75,19 @@ class ProductInquiryForm extends Component
             $this->product->incrementInquiryCount();
         }
 
-        // TODO: Send notification email to admin
+        // Send email notification to admin
+        try {
+            Mail::to('info@berkahmandiri.co.id')->send(new InquiryNotification($inquiry));
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send inquiry email: ' . $e->getMessage());
+        }
+
+        // Send confirmation email to user
+        try {
+            Mail::to($inquiry->email)->send(new InquiryConfirmation($inquiry));
+        } catch (\Throwable $e) {
+            \Log::error('Failed to send confirmation email: ' . $e->getMessage());
+        }
 
         $this->submitted = true;
         $this->dispatch('inquiry-submitted');

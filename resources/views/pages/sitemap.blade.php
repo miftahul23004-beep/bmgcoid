@@ -8,17 +8,25 @@
     @endif
 @endsection
 
+@section('meta_description')
+    @if(app()->getLocale() === 'en')
+        Complete sitemap of PT. Berkah Mandiri Globalindo website. Navigate all pages including products, articles, and company information.
+    @else
+        Peta situs lengkap PT. Berkah Mandiri Globalindo. Navigasi semua halaman termasuk produk, artikel, dan informasi perusahaan.
+    @endif
+@endsection
+
 @section('content')
     {{-- Hero Section with Overlay --}}
     <section class="relative bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 text-white py-16 md:py-20 overflow-hidden">
         {{-- Decorative elements --}}
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse"></div>
-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse" style="animation-delay: 1s"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-overlay filter blur-3xl animate-pulse [animation-delay:1s]" ></div>
         </div>
         
         {{-- Grid pattern overlay --}}
-        <div class="absolute inset-0 opacity-5" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.4&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        <div class="absolute inset-0 opacity-5 bg-pattern-cross"></div>
 
         {{-- Map decorative icon --}}
         <div class="absolute top-1/2 right-10 -translate-y-1/2 opacity-5 hidden xl:block">
@@ -30,7 +38,7 @@
         <div class="container relative z-10">
             <nav class="text-sm mb-6" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2">
-                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white transition-colors">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white transition-colors">{{ __('Home Page') }}</a></li>
                     <li><span class="text-primary-400">/</span></li>
                     <li class="text-white">
                         @if(app()->getLocale() === 'en') Sitemap @else Peta Situs @endif
@@ -75,7 +83,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
                     </div>
-                    <h2 class="font-bold text-2xl text-gray-900">6+</h2>
+                    <div class="font-bold text-2xl text-gray-900">6+</div>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Main Pages @else Halaman Utama @endif</p>
                 </div>
                 <div class="text-center">
@@ -84,7 +92,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                         </svg>
                     </div>
-                    <h2 class="font-bold text-2xl text-gray-900">{{ $categories->count() }}</h2>
+                    <div class="font-bold text-2xl text-gray-900">{{ $categories->count() }}</div>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Product Categories @else Kategori Produk @endif</p>
                 </div>
                 <div class="text-center">
@@ -93,7 +101,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
                         </svg>
                     </div>
-                    <h2 class="font-bold text-2xl text-gray-900">{{ $articles->count() }}</h2>
+                    <div class="font-bold text-2xl text-gray-900">{{ $articles->count() }}</div>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Articles @else Artikel @endif</p>
                 </div>
                 <div class="text-center">
@@ -102,7 +110,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
-                    <h2 class="font-bold text-2xl text-gray-900">3</h2>
+                    <div class="font-bold text-2xl text-gray-900">3</div>
                     <p class="text-xs text-gray-500">@if(app()->getLocale() === 'en') Info Pages @else Halaman Info @endif</p>
                 </div>
             </div>
@@ -131,7 +139,7 @@
                                 <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
-                                {{ __('Home') }}
+                                {{ __('Home Page') }}
                             </a>
                         </li>
                         <li>
@@ -163,7 +171,7 @@
                                 <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
-                                {{ __('Certificates') }}
+                                {{ __('Our Certificates') }}
                             </a>
                         </li>
                         <li>
@@ -307,7 +315,7 @@
                                 <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
-                                {{ __('Search') }}
+                                {{ __('Search Products') }}
                             </a>
                         </li>
                         <li>
@@ -315,7 +323,7 @@
                                 <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
-                                {{ __('Testimonials') }}
+                                {{ __('Client Testimonials') }}
                             </a>
                         </li>
                     </ul>

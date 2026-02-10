@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('title', __('Search Results') . ' - ' . config('app.name'))
+@section('meta_description', __('Search for steel products, articles, and information on PT. Berkah Mandiri Globalindo website.'))
 
 @section('content')
     {{-- Page Header --}}
@@ -8,7 +9,7 @@
         <div class="container">
             <nav class="text-sm mb-4" aria-label="Breadcrumb">
                 <ol class="flex items-center gap-2">
-                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white">{{ __('Home') }}</a></li>
+                    <li><a href="{{ route('home') }}" class="text-primary-200 hover:text-white">{{ __('Home Page') }}</a></li>
                     <li><span class="text-primary-400">/</span></li>
                     <li class="text-white">{{ __('Search Results') }}</li>
                 </ol>
@@ -96,10 +97,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                     @if($query)
-                        <h3 class="text-xl font-semibold text-gray-600 mb-2">{{ __('No results found') }}</h3>
+                        <h2 class="text-xl font-semibold text-gray-600 mb-2">{{ __('No results found') }}</h2>
                         <p class="text-gray-500 max-w-md mx-auto mb-6">Tidak ada hasil yang cocok dengan pencarian "{{ $query }}". Coba gunakan kata kunci yang berbeda.</p>
                     @else
-                        <h3 class="text-xl font-semibold text-gray-600 mb-2">Masukkan Kata Kunci</h3>
+                        <h2 class="text-xl font-semibold text-gray-600 mb-2">Masukkan Kata Kunci</h2>
                         <p class="text-gray-500 max-w-md mx-auto mb-6">Ketik kata kunci untuk mencari produk atau artikel yang Anda butuhkan.</p>
                     @endif
                     <div class="flex flex-wrap justify-center gap-4">

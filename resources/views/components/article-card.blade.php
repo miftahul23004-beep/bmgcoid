@@ -1,4 +1,4 @@
-@props(['article'])
+@props(['article', 'headingTag' => 'h3'])
 
 <article class="card group hover:shadow-lg transition-all duration-300" x-data x-intersect.once="$el.classList.add('animate-fade-in-up')">
     <a href="{{ route('articles.show', $article->slug) }}" class="block">
@@ -26,9 +26,9 @@
             @endforeach
         </div>
         
-        <h3 class="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 mb-2">
+        <{{ $headingTag }} class="font-semibold text-gray-900 group-hover:text-primary-600 transition-colors line-clamp-2 mb-2">
             {{ e($article->getTranslation('title', app()->getLocale())) }}
-        </h3>
+        </{{ $headingTag }}>
         
         @if($article->excerpt)
             <p class="text-gray-600 text-sm line-clamp-2 mb-4">{{ e($article->getTranslation('excerpt', app()->getLocale())) }}</p>

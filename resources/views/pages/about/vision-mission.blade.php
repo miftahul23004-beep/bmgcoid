@@ -41,9 +41,9 @@
                 
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading mb-6 leading-tight">
                     @if(app()->getLocale() === 'en')
-                        Vision & <span class="text-secondary-400">Mission</span>
+                        Vision & Mission
                     @else
-                        Visi & <span class="text-secondary-400">Misi</span>
+                        Visi & Misi
                     @endif
                 </h1>
                 

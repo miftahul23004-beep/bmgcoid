@@ -26,7 +26,15 @@ class ArticleController extends Controller
             'paginate' => 9
         ]);
 
-        return view('pages.articles.index', compact('tags', 'articles'));
+        // Noindex for search/paginated pages
+        $metaRobots = (request('search') || $articles->currentPage() > 1)
+            ? 'noindex, follow'
+            : null;
+
+        // Canonical always points to the clean indexable URL
+        $canonicalUrl = $metaRobots ? route('articles.index') : null;
+
+        return view('pages.articles.index', compact('tags', 'articles', 'metaRobots', 'canonicalUrl'));
     }
 
     public function tag(string $slug): View

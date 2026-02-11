@@ -25,10 +25,7 @@
         <link rel="next" href="{{ $products->nextPageUrl() }}">
     @endif
     
-    {{-- Noindex for search/filter/paginated pages --}}
-    @if(request('search') || request('sort') || $products->currentPage() > 1)
-        <meta name="robots" content="noindex, follow">
-    @endif
+    {{-- Noindex for search/filter/paginated pages is handled via $metaRobots in the layout --}}
     
     {{-- Open Graph extra --}}
     @if($activeCategory ?? null)
@@ -50,29 +47,39 @@
             '@type' => 'ItemList',
             'numberOfItems' => $products->total(),
             'itemListElement' => $products->take(10)->map(function($product, $index) {
-                $item = [
-                    '@type' => 'ListItem',
-                    'position' => $index + 1,
-                    'item' => [
-                        '@type' => 'Product',
-                        'name' => e($product->getTranslation('name', app()->getLocale())),
-                        'url' => route('products.show', $product->slug),
-                        'sku' => e($product->sku ?? ''),
-                        'brand' => [
-                            '@type' => 'Brand',
-                            'name' => config('app.name'),
-                        ],
-                        'offers' => [
-                            '@type' => 'Offer',
-                            'availability' => 'https://schema.org/InStock',
-                            'url' => route('products.show', $product->slug),
-                        ],
+                $productItem = [
+                    '@type' => 'Product',
+                    'name' => e($product->getTranslation('name', app()->getLocale())),
+                    'description' => \Illuminate\Support\Str::limit(strip_tags($product->getTranslation('description', app()->getLocale()) ?? $product->getTranslation('short_description', app()->getLocale()) ?? ''), 200),
+                    'url' => route('products.show', $product->slug),
+                    'sku' => e($product->sku ?? ''),
+                    'brand' => [
+                        '@type' => 'Brand',
+                        'name' => config('app.name'),
                     ],
                 ];
-                if ($product->featured_image) {
-                    $item['item']['image'] = asset('storage/' . $product->featured_image);
+
+                // Only include offers with price for products that have a real price
+                if (!$product->price_on_request && $product->base_price && $product->base_price > 0) {
+                    $productItem['offers'] = [
+                        '@type' => 'Offer',
+                        'priceCurrency' => 'IDR',
+                        'price' => number_format((float) $product->base_price, 2, '.', ''),
+                        'priceValidUntil' => now()->addYear()->format('Y-m-d'),
+                        'availability' => 'https://schema.org/InStock',
+                        'url' => route('products.show', $product->slug),
+                    ];
                 }
-                return $item;
+
+                if ($product->featured_image) {
+                    $productItem['image'] = asset('storage/' . $product->featured_image);
+                }
+
+                return [
+                    '@type' => 'ListItem',
+                    'position' => $index + 1,
+                    'item' => $productItem,
+                ];
             })->values()->toArray(),
         ],
         'breadcrumb' => [

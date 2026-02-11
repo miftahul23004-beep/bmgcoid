@@ -38,12 +38,12 @@ class SecurityHeaders
         // Content-Security-Policy - Basic CSP
         $cspDirectives = [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://www.google.com https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://challenges.cloudflare.com",
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://www.google.com https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://static.cloudflareinsights.com https://challenges.cloudflare.com",
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
             "img-src 'self' data: https: http: blob:",
             "font-src 'self' https://fonts.gstatic.com",
             "frame-src 'self' https://www.youtube.com https://www.google.com https://challenges.cloudflare.com",
-            "connect-src 'self' https://www.google-analytics.com https://cloudflareinsights.com wss: ws:",
+            "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com https://stats.g.doubleclick.net https://*.g.doubleclick.net wss: ws:",
             "media-src 'self' https: http:",
             "object-src 'none'",
             "base-uri 'self'",

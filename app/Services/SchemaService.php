@@ -186,19 +186,26 @@ class SchemaService
             $schema['category'] = $category['name'] ?? '';
         }
 
-        // Add offers
-        $schema['offers'] = [
-            '@type' => 'Offer',
-            'url' => route('products.show', $product['slug'] ?? ''),
-            'priceCurrency' => 'IDR',
-            'price' => $product['price'] ?? 0,
-            'priceValidUntil' => now()->addYear()->format('Y-m-d'),
-            'availability' => $this->getStockAvailability($product['stock_status'] ?? 'ready'),
-            'seller' => [
-                '@type' => 'Organization',
-                'name' => $companyInfo['company_name'] ?? config('app.name'),
-            ],
-        ];
+        // Add offers — only include when product has a real price.
+        // Google requires price+priceCurrency in Offer; omitting Offer entirely
+        // for "price on request" products avoids the critical error.
+        $hasPrice = !empty($product['base_price']) && $product['base_price'] > 0 && empty($product['price_on_request']);
+
+        if ($hasPrice) {
+            $schema['offers'] = [
+                '@type' => 'Offer',
+                'url' => route('products.show', $product['slug'] ?? ''),
+                'priceCurrency' => 'IDR',
+                'price' => number_format((float) $product['base_price'], 2, '.', ''),
+                'priceValidUntil' => now()->addYear()->format('Y-m-d'),
+                'availability' => $this->getStockAvailability($product['stock_status'] ?? 'ready'),
+                'seller' => [
+                    '@type' => 'Organization',
+                    'name' => $companyInfo['company_name'] ?? config('app.name'),
+                ],
+            ];
+        }
+        // For price_on_request products: no offers block = no price error from Google
 
         // Add reviews if available
         if (!empty($product['reviews_count']) && $product['reviews_count'] > 0) {

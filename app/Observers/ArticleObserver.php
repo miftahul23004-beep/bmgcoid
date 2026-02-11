@@ -25,8 +25,8 @@ class ArticleObserver
             $purgeService = app(CloudflarePurgeService::class);
             $urls = [
                 config('app.url'),
-                config('app.url') . '/artikel',
-                config('app.url') . '/artikel/' . $article->slug,
+                config('app.url') . '/articles',
+                config('app.url') . '/articles/' . $article->slug,
             ];
             $purgeService->purgeUrls($urls);
             \Log::info('Cloudflare purged for article: ' . $article->slug);
@@ -54,7 +54,7 @@ class ArticleObserver
             $purgeService = app(CloudflarePurgeService::class);
             $purgeService->purgeUrls([
                 config('app.url'),
-                config('app.url') . '/artikel',
+                config('app.url') . '/articles',
             ]);
         } catch (\Exception $e) {
             \Log::warning('Cloudflare purge failed: ' . $e->getMessage());

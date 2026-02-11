@@ -38,7 +38,7 @@
         class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-100"
         x-cloak
     >
-        <a href="{{ route('language.switch', 'id') }}" class="flex items-center gap-3 px-4 py-2 hover:bg-primary-50 transition-colors {{ app()->getLocale() === 'id' ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">
+        <button type="button" onclick="window.location.href='{{ route('language.switch', 'id') }}'" class="flex items-center gap-3 px-4 py-2 w-full hover:bg-primary-50 transition-colors {{ app()->getLocale() === 'id' ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">
             <svg class="w-6 h-6" viewBox="0 0 640 480" xmlns="http://www.w3.org/2000/svg">
                 <path fill="#e70011" d="M0 0h640v240H0z"/>
                 <path fill="#fff" d="M0 240h640v240H0z"/>
@@ -52,8 +52,8 @@
                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                 </svg>
             @endif
-        </a>
-        <a href="{{ route('language.switch', 'en') }}" class="flex items-center gap-3 px-4 py-2 hover:bg-primary-50 transition-colors {{ app()->getLocale() === 'en' ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">
+        </button>
+        <button type="button" onclick="window.location.href='{{ route('language.switch', 'en') }}'" class="flex items-center gap-3 px-4 py-2 w-full hover:bg-primary-50 transition-colors {{ app()->getLocale() === 'en' ? 'bg-primary-50 text-primary-600' : 'text-gray-700' }}">
             <svg class="w-6 h-6" viewBox="0 0 640 480" xmlns="http://www.w3.org/2000/svg">
                 <path fill="#012169" d="M0 0h640v480H0z"/>
                 <path fill="#FFF" d="m75 0 244 181L562 0h78v62L400 241l240 178v61h-80L320 301 81 480H0v-60l239-178L0 64V0h75z"/>
@@ -70,6 +70,6 @@
                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                 </svg>
             @endif
-        </a>
+        </button>
     </div>
 </div>

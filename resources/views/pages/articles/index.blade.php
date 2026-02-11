@@ -18,10 +18,7 @@
         <link rel="next" href="{{ $articles->nextPageUrl() }}">
     @endif
     
-    {{-- Noindex for search/filter/paginated pages --}}
-    @if(request('search') || $articles->currentPage() > 1)
-        <meta name="robots" content="noindex, follow">
-    @endif
+    {{-- Noindex for search/filter/paginated pages is handled via $metaRobots in the layout --}}
 @endpush
 
 @section('content')
@@ -86,7 +83,7 @@
                     @foreach($tags->take(6) as $tag)
                         <a href="{{ route('articles.tag', $tag->slug) }}" 
                            class="flex-shrink-0 px-3 py-1.5 rounded-full text-sm font-medium transition-colors {{ request()->is('articles/tag/' . $tag->slug) ? 'bg-primary-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200' }}">
-                            {{ $tag->name }}
+                            {{ __('Article') }} {{ $tag->name }}
                         </a>
                     @endforeach
                     @if($tags->count() > 6)

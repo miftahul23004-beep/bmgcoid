@@ -1,16 +1,29 @@
 <x-filament-panels::page>
-    @php $backups = $this->getBackups(); @endphp
+    @php 
+        $backups = $this->getBackups(); 
+        $sqlBackups = $this->getSqlBackups();
+    @endphp
     
     {{-- Stats Overview --}}
     <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 mb-6">
-        <div class="grid gap-6 p-6 md:grid-cols-3">
+        <div class="grid gap-6 p-6 md:grid-cols-4">
             <div class="flex items-center gap-x-3">
                 <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-primary-50 dark:bg-primary-500/10">
                     <x-filament::icon icon="heroicon-o-archive-box" class="w-6 h-6 text-primary-600 dark:text-primary-400"/>
                 </div>
                 <div>
-                    <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Backups</div>
+                    <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Spatie Backups</div>
                     <div class="text-2xl font-semibold">{{ count($backups) }}</div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-x-3">
+                <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-info-50 dark:bg-info-500/10">
+                    <x-filament::icon icon="heroicon-o-circle-stack" class="w-6 h-6 text-info-600 dark:text-info-400"/>
+                </div>
+                <div>
+                    <div class="text-sm font-medium text-gray-500 dark:text-gray-400">SQL Backups</div>
+                    <div class="text-2xl font-semibold">{{ count($sqlBackups) }}</div>
                 </div>
             </div>
             
@@ -31,7 +44,13 @@
                 <div>
                     <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Last Backup</div>
                     <div class="text-lg font-semibold">
-                        {{ count($backups) > 0 ? \Carbon\Carbon::parse($backups[0]['created_at'])->diffForHumans() : 'Never' }}
+                        @php
+                            $lastDates = [];
+                            if (count($backups) > 0) $lastDates[] = $backups[0]['created_at'];
+                            if (count($sqlBackups) > 0) $lastDates[] = $sqlBackups[0]['created_at'];
+                            rsort($lastDates);
+                        @endphp
+                        {{ count($lastDates) > 0 ? \Carbon\Carbon::parse($lastDates[0])->diffForHumans() : 'Never' }}
                     </div>
                 </div>
             </div>
@@ -178,7 +197,106 @@
         @endif
     </x-filament::section>
 
-    {{-- Info --}}
+    {{-- SQL Backup Section (phpMyAdmin-style) --}}
+    <x-filament::section class="mb-6">
+        <x-slot name="heading">
+            <div class="flex items-center gap-2">
+                <x-filament::icon icon="heroicon-o-circle-stack" class="w-5 h-5"/>
+                SQL Database Backup (phpMyAdmin Format)
+            </div>
+        </x-slot>
+        
+        <x-slot name="description">
+            Create a .sql backup identical to phpMyAdmin export — can be imported directly via phpMyAdmin
+        </x-slot>
+
+        <div class="flex flex-col sm:flex-row gap-4 items-end mb-6">
+            <x-filament::button 
+                wire:click="createSqlBackup"
+                icon="heroicon-o-circle-stack"
+                color="info"
+                wire:loading.attr="disabled"
+            >
+                <span wire:loading.remove wire:target="createSqlBackup">Create SQL Backup</span>
+                <span wire:loading wire:target="createSqlBackup">Creating SQL dump...</span>
+            </x-filament::button>
+        </div>
+
+        @if(count($sqlBackups) > 0)
+            <div class="divide-y divide-gray-200 dark:divide-gray-700">
+                @foreach($sqlBackups as $index => $backup)
+                    <div class="py-4 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-info-50 dark:bg-info-500/10">
+                                    <x-filament::icon icon="heroicon-o-circle-stack" class="w-6 h-6 text-info-600 dark:text-info-400"/>
+                                </div>
+                            </div>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <h4 class="font-mono text-sm font-semibold truncate" title="{{ $backup['filename'] }}">
+                                        {{ $backup['filename'] }}
+                                    </h4>
+                                    @if($index === 0)
+                                        <x-filament::badge color="success" size="sm">Latest</x-filament::badge>
+                                    @endif
+                                    <x-filament::badge color="info" size="sm">
+                                        {{ $backup['type_label'] }}
+                                    </x-filament::badge>
+                                </div>
+                                
+                                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <div class="flex items-center gap-1.5">
+                                        <x-filament::icon icon="heroicon-o-server" class="w-4 h-4"/>
+                                        <span class="font-medium">{{ $backup['size'] }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5">
+                                        <x-filament::icon icon="heroicon-o-calendar" class="w-4 h-4"/>
+                                        <span>{{ \Carbon\Carbon::parse($backup['created_at'])->format('M d, Y H:i:s') }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 text-gray-400">
+                                        <x-filament::icon icon="heroicon-o-clock" class="w-4 h-4"/>
+                                        <span>{{ \Carbon\Carbon::parse($backup['created_at'])->diffForHumans() }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex-shrink-0 flex items-center gap-2">
+                                <x-filament::button
+                                    wire:click="downloadSqlBackup('{{ $backup['filename'] }}')"
+                                    size="sm"
+                                    color="info"
+                                    icon="heroicon-o-arrow-down-tray"
+                                >
+                                    Download
+                                </x-filament::button>
+                                
+                                <x-filament::icon-button
+                                    icon="heroicon-o-trash"
+                                    color="danger"
+                                    size="sm"
+                                    wire:click="deleteSqlBackup('{{ $backup['filename'] }}')"
+                                    wire:confirm="Are you sure you want to delete this SQL backup?"
+                                    tooltip="Delete"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <div class="text-center py-8">
+                <x-filament::icon icon="heroicon-o-circle-stack" class="mx-auto h-10 w-10 text-gray-400 mb-3"/>
+                <h3 class="text-sm font-medium mb-1">No SQL backups yet</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Click "Create SQL Backup" to generate a phpMyAdmin-compatible dump
+                </p>
+            </div>
+        @endif
+    </x-filament::section>
+
+    {{-- Backup Info --}}
     <x-filament::section icon="heroicon-o-information-circle" icon-color="info">
         <x-slot name="heading">Backup Information</x-slot>
         <x-slot name="description">Important details about the backup system</x-slot>
@@ -186,11 +304,19 @@
         <ul class="space-y-2 text-sm">
             <li class="flex gap-2">
                 <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-success-500 flex-shrink-0"/>
-                <span>Backups stored in <code class="px-1 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs">storage/app/backups/</code></span>
+                <span>Spatie backups stored in <code class="px-1 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs">storage/app/backups/</code> (zip format)</span>
             </li>
             <li class="flex gap-2">
                 <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-success-500 flex-shrink-0"/>
-                <span>Database backed up using mysqldump for reliability</span>
+                <span>SQL backups are phpMyAdmin-compatible — import directly via phpMyAdmin on any hosting</span>
+            </li>
+            <li class="flex gap-2">
+                <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-success-500 flex-shrink-0"/>
+                <span>Auto backup: SQL (daily 01:00) + Spatie (via config). Max 10 daily, 4 weekly backups kept</span>
+            </li>
+            <li class="flex gap-2">
+                <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-success-500 flex-shrink-0"/>
+                <span>CLI: <code class="px-1 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs">php artisan backup:database</code> (options: --compress, --max-files, --filename, --path)</span>
             </li>
             <li class="flex gap-2">
                 <x-filament::icon icon="heroicon-o-check-circle" class="w-5 h-5 text-success-500 flex-shrink-0"/>

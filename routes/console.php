@@ -40,3 +40,19 @@ Schedule::command('logs:prune')
     ->at('03:00')
     ->withoutOverlapping()
     ->appendOutputTo(storage_path('logs/prune.log'));
+
+// Auto backup database daily at 1 AM (phpMyAdmin-style SQL)
+Schedule::command('backup:database', ['--compress', '--max-files=10'])
+    ->dailyAt('01:00')
+    ->withoutOverlapping()
+    ->runInBackground()
+    ->appendOutputTo(storage_path('logs/backup-database.log'));
+
+// Weekly full backup (uncompressed) on Sundays at 1:30 AM
+Schedule::command('backup:database', ['--max-files=4', '--filename=' . 'weekly_' . now()->format('Y-m-d')])
+    ->weekly()
+    ->sundays()
+    ->at('01:30')
+    ->withoutOverlapping()
+    ->runInBackground()
+    ->appendOutputTo(storage_path('logs/backup-database.log'));

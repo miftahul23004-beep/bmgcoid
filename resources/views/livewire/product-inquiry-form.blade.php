@@ -25,22 +25,22 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Name') }} <span class="text-red-600">*</span></label>
-                        <input type="text" id="name" wire:model="name" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('name') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Your full name @else Nama lengkap Anda @endif">
+                        <input type="text" id="name" wire:model.blur="name" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('name') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Your full name @else Nama lengkap Anda @endif">
                         @error('name') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Email') }} <span class="text-red-600">*</span></label>
-                        <input type="email" id="email" wire:model="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('email') border-red-500 @enderror" placeholder="email@example.com">
+                        <input type="email" id="email" wire:model.blur="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('email') border-red-500 @enderror" placeholder="email@example.com">
                         @error('email') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="phone" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Phone') }} <span class="text-red-600">*</span></label>
-                        <input type="tel" id="phone" wire:model="phone" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('phone') border-red-500 @enderror" placeholder="08xxxxxxxxxx">
+                        <input type="tel" id="phone" wire:model.blur="phone" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('phone') border-red-500 @enderror" placeholder="08xxxxxxxxxx">
                         @error('phone') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
                         <label for="company" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Company') }}</label>
-                        <input type="text" id="company" wire:model="company" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all" placeholder="@if(app()->getLocale() === 'en') Company name (optional) @else Nama perusahaan (opsional) @endif">
+                        <input type="text" id="company" wire:model.blur="company" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all" placeholder="@if(app()->getLocale() === 'en') Company name (optional) @else Nama perusahaan (opsional) @endif">
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Quantity') }} <span class="text-red-600">*</span></label>
-                        <input type="number" id="quantity" wire:model="quantity" min="1" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('quantity') border-red-500 @enderror">
+                        <input type="number" id="quantity" wire:model.blur="quantity" min="1" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('quantity') border-red-500 @enderror">
                         @error('quantity') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                     </div>
                     <div>
@@ -89,12 +89,12 @@
                 </div>
                 <div>
                     <label for="subject" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Subject') }} <span class="text-red-600">*</span></label>
-                    <input type="text" id="subject" wire:model="subject" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('subject') border-red-500 @enderror">
+                    <input type="text" id="subject" wire:model.blur="subject" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('subject') border-red-500 @enderror">
                     @error('subject') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                 </div>
                 <div class="mt-4">
                     <label for="message" class="block text-sm font-medium text-gray-700 mb-1.5">{{ __('Message') }} <span class="text-red-600">*</span></label>
-                    <textarea id="message" wire:model="message" rows="4" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('message') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Tell us about your requirements... @else Ceritakan kebutuhan Anda... @endif"></textarea>
+                    <textarea id="message" wire:model.blur="message" rows="4" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all @error('message') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Tell us about your requirements... @else Ceritakan kebutuhan Anda... @endif"></textarea>
                     @error('message') <span class="text-red-600 text-sm mt-1">{{ $message }}</span> @enderror
                 </div>
             </div>

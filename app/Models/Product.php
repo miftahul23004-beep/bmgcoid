@@ -102,16 +102,6 @@ class Product extends Model implements HasMedia
         return $this->hasMany(ProductDocument::class)->orderBy('order');
     }
 
-    public function reviews(): HasMany
-    {
-        return $this->hasMany(ProductReview::class);
-    }
-
-    public function approvedReviews(): HasMany
-    {
-        return $this->hasMany(ProductReview::class)->where('status', 'approved');
-    }
-
     public function productFaqs(): HasMany
     {
         return $this->hasMany(ProductFaq::class)->orderBy('order');
@@ -170,16 +160,6 @@ class Product extends Model implements HasMedia
     public function incrementInquiryCount(): void
     {
         $this->increment('inquiry_count');
-    }
-
-    public function getAverageRating(): ?float
-    {
-        return $this->approvedReviews()->avg('rating');
-    }
-
-    public function getReviewCount(): int
-    {
-        return $this->approvedReviews()->count();
     }
 
     public function getActivitylogOptions(): LogOptions

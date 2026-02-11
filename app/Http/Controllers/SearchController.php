@@ -55,6 +55,10 @@ class SearchController extends Controller
 
         $totalResults = $products->count() + $articles->count();
 
-        return view('pages.search.index', compact('query', 'type', 'products', 'articles', 'totalResults'));
+        // Search pages should not be indexed by search engines
+        $metaRobots = 'noindex, follow';
+        $canonicalUrl = url('/search');
+
+        return view('pages.search.index', compact('query', 'type', 'products', 'articles', 'totalResults', 'metaRobots', 'canonicalUrl'));
     }
 }

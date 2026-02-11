@@ -44,9 +44,9 @@
                 
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading mb-6 leading-tight">
                     @if(app()->getLocale() === 'en')
-                        About <span class="text-secondary-400">PT. Berkah Mandiri</span> Globalindo
+                        About PT. Berkah Mandiri Globalindo
                     @else
-                        Tentang <span class="text-secondary-400">PT. Berkah Mandiri</span> Globalindo
+                        Tentang PT. Berkah Mandiri Globalindo
                     @endif
                 </h1>
                 

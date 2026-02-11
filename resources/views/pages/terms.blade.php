@@ -73,9 +73,9 @@
                 
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading mb-6 leading-tight">
                     @if(app()->getLocale() === 'en')
-                        Terms & <span class="text-secondary-400">Conditions</span>
+                        Terms & Conditions
                     @else
-                        Syarat & <span class="text-secondary-400">Ketentuan</span>
+                        Syarat & Ketentuan
                     @endif
                 </h1>
                 

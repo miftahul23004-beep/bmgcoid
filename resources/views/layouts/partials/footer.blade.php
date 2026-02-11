@@ -80,6 +80,7 @@
                     <li><a href="{{ route('about.company') }}" class="hover:text-primary-400 transition-colors">{{ __('About Us') }}</a></li>
                     <li><a href="{{ route('products.index') }}" class="hover:text-primary-400 transition-colors">{{ __('Our Products') }}</a></li>
                     <li><a href="{{ route('articles.index') }}" class="hover:text-primary-400 transition-colors">{{ __('News & Articles') }}</a></li>
+                    <li><a href="{{ route('testimonials') }}" class="hover:text-primary-400 transition-colors">{{ __('Client Testimonials') }}</a></li>
                     <li><a href="{{ route('contact') }}" class="hover:text-primary-400 transition-colors">{{ __('Contact Us') }}</a></li>
                     <li><a href="{{ route('quote') }}" class="hover:text-primary-400 transition-colors">{{ __('Request Quote') }}</a></li>
                 </ul>
@@ -92,7 +93,7 @@
                     @foreach(\App\Models\Category::active()->roots()->ordered()->take(6)->get() as $category)
                     <li>
                         <a href="{{ route('products.category', $category->slug) }}" class="hover:text-primary-400 transition-colors">
-                            {{ $category->getTranslation('name', app()->getLocale()) }}
+                            {{ __('Products') }} {{ $category->getTranslation('name', app()->getLocale()) }}
                         </a>
                     </li>
                     @endforeach

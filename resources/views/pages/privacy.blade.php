@@ -73,9 +73,9 @@
                 
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading mb-6 leading-tight">
                     @if(app()->getLocale() === 'en')
-                        Privacy <span class="text-secondary-400">Policy</span>
+                        Privacy Policy
                     @else
-                        Kebijakan <span class="text-secondary-400">Privasi</span>
+                        Kebijakan Privasi
                     @endif
                 </h1>
                 

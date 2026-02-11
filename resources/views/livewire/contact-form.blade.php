@@ -26,7 +26,7 @@
                         @if(app()->getLocale() === 'en') Full Name @else Nama Lengkap @endif
                         <span class="text-red-600">*</span>
                     </label>
-                    <input type="text" id="name" wire:model="name" class="input w-full @error('name') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Enter your name @else Masukkan nama Anda @endif">
+                    <input type="text" id="name" wire:model.blur="name" class="input w-full @error('name') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Enter your name @else Masukkan nama Anda @endif">
                     @error('name') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
                 <div>
@@ -34,7 +34,7 @@
                         @if(app()->getLocale() === 'en') Email Address @else Alamat Email @endif
                         <span class="text-red-600">*</span>
                     </label>
-                    <input type="email" id="email" wire:model="email" class="input w-full @error('email') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Enter your email @else Masukkan email Anda @endif">
+                    <input type="email" id="email" wire:model.blur="email" class="input w-full @error('email') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Enter your email @else Masukkan email Anda @endif">
                     @error('email') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
             </div>
@@ -46,14 +46,14 @@
                         @if(app()->getLocale() === 'en') Phone Number @else Nomor Telepon @endif
                         <span class="text-red-600">*</span>
                     </label>
-                    <input type="tel" id="phone" wire:model="phone" class="input w-full @error('phone') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Enter your phone number @else Masukkan nomor telepon Anda @endif">
+                    <input type="tel" id="phone" wire:model.blur="phone" class="input w-full @error('phone') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Enter your phone number @else Masukkan nomor telepon Anda @endif">
                     @error('phone') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
                 </div>
                 <div>
                     <label for="company" class="block text-sm font-medium text-gray-700 mb-1">
                         @if(app()->getLocale() === 'en') Company @else Perusahaan @endif
                     </label>
-                    <input type="text" id="company" wire:model="company" class="input w-full" placeholder="@if(app()->getLocale() === 'en') Enter your company name @else Masukkan nama perusahaan Anda @endif">
+                    <input type="text" id="company" wire:model.blur="company" class="input w-full" placeholder="@if(app()->getLocale() === 'en') Enter your company name @else Masukkan nama perusahaan Anda @endif">
                 </div>
             </div>
 
@@ -77,7 +77,7 @@
                     @if(app()->getLocale() === 'en') Subject @else Subjek @endif
                     <span class="text-red-600">*</span>
                 </label>
-                <input type="text" id="subject" wire:model="subject" class="input w-full @error('subject') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Enter your subject @else Masukkan subjek Anda @endif">
+                <input type="text" id="subject" wire:model.blur="subject" class="input w-full @error('subject') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Enter your subject @else Masukkan subjek Anda @endif">
                 @error('subject') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
             </div>
 
@@ -87,7 +87,7 @@
                     @if(app()->getLocale() === 'en') Message @else Pesan @endif
                     <span class="text-red-600">*</span>
                 </label>
-                <textarea id="message" wire:model="message" rows="5" class="input w-full @error('message') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Write your message here... (minimum 20 characters) @else Tulis pesan Anda di sini... (minimal 20 karakter) @endif"></textarea>
+                <textarea id="message" wire:model.blur="message" rows="5" class="input w-full @error('message') border-red-500 @enderror" placeholder="@if(app()->getLocale() === 'en') Write your message here... (minimum 20 characters) @else Tulis pesan Anda di sini... (minimal 20 karakter) @endif"></textarea>
                 @error('message') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
             </div>
 

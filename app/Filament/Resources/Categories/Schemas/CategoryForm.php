@@ -143,6 +143,10 @@ class CategoryForm
                                         ->rows(2)
                                         ->helperText(__('Max 160 characters')),
                                 ]),
+                                TextInput::make('meta_keywords.id')
+                                    ->label(__('Meta Keywords (ID)'))
+                                    ->maxLength(255)
+                                    ->helperText(__('Pisahkan dengan koma')),
                             ]),
                             Tabs\Tab::make('🇬🇧 SEO English')->schema([
                                 Grid::make(2)->schema([
@@ -156,6 +160,10 @@ class CategoryForm
                                         ->rows(2)
                                         ->helperText(__('Max 160 characters')),
                                 ]),
+                                TextInput::make('meta_keywords.en')
+                                    ->label(__('Meta Keywords (EN)'))
+                                    ->maxLength(255)
+                                    ->helperText(__('Separate with commas')),
                             ]),
                         ]),
                     ]),

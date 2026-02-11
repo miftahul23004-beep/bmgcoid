@@ -13,7 +13,7 @@ class HtmlSanitizer
         'ul', 'ol', 'li',
         'a', 'img',
         'blockquote', 'pre', 'code',
-        'table', 'thead', 'tbody', 'tr', 'th', 'td',
+        'table', 'caption', 'thead', 'tbody', 'tr', 'th', 'td',
         'hr', 'figure', 'figcaption',
         'div', 'span',
     ];
@@ -107,6 +107,28 @@ class HtmlSanitizer
                     $attrs .= ' loading="lazy"';
                 }
                 return '<img ' . $attrs . '>';
+            },
+            $html
+        );
+
+        // Add <caption> to tables that don't have one
+        $html = preg_replace_callback(
+            '/<table(\s[^>]*)?>(?!\s*<caption)/i',
+            function ($matches) {
+                $attrs = $matches[1] ?? '';
+                return '<table' . $attrs . '><caption class="sr-only">Data Table</caption>';
+            },
+            $html
+        );
+
+        // Wrap first row with <th> in <thead> if table has no <thead>
+        $html = preg_replace_callback(
+            '/<table([^>]*)>((?:(?!<thead).)*?)(<tr[^>]*>\s*(?:<th[\s>]).*?<\/tr>)/is',
+            function ($matches) {
+                $tableAttrs = $matches[1];
+                $beforeFirstRow = $matches[2];
+                $firstRow = $matches[3];
+                return '<table' . $tableAttrs . '>' . $beforeFirstRow . '<thead>' . $firstRow . '</thead>';
             },
             $html
         );

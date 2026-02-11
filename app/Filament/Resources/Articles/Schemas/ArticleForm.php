@@ -143,8 +143,8 @@ class ArticleForm
                             ->schema([
                                 TextInput::make('meta_title.id')
                                     ->label('Meta Title')
-                                    ->maxLength(70)
-                                    ->helperText('Maksimal 70 karakter. Kosongkan untuk menggunakan judul artikel.'),
+                                    ->maxLength(60)
+                                    ->helperText('Maksimal 60 karakter. Kosongkan untuk menggunakan judul artikel.'),
                                 Textarea::make('meta_description.id')
                                     ->label('Meta Description')
                                     ->rows(3)
@@ -158,8 +158,8 @@ class ArticleForm
                             ->schema([
                                 TextInput::make('meta_title.en')
                                     ->label('Meta Title')
-                                    ->maxLength(70)
-                                    ->helperText('Max 70 characters. Leave empty to use article title.'),
+                                    ->maxLength(60)
+                                    ->helperText('Max 60 characters. Leave empty to use article title.'),
                                 Textarea::make('meta_description.en')
                                     ->label('Meta Description')
                                     ->rows(3)

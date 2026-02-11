@@ -56,9 +56,9 @@
                 
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold font-heading mb-6 leading-tight">
                     @if(app()->getLocale() === 'en')
-                        Site <span class="text-secondary-400">Map</span>
+                        Site Map
                     @else
-                        Peta <span class="text-secondary-400">Situs</span>
+                        Peta Situs
                     @endif
                 </h1>
                 
@@ -218,7 +218,7 @@
                                 <svg class="w-4 h-4 text-gray-500 group-hover:text-primary-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>
-                                {{ $category->name }}
+                                {{ __('Products') }} {{ $category->name }}
                             </a>
                             @if ($category->children->count() > 0)
                             <ul class="ml-6 mt-2 space-y-1">
@@ -228,7 +228,7 @@
                                         <svg class="w-3 h-3 text-gray-400 group-hover:text-primary-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                         </svg>
-                                        {{ $child->name }}
+                                        {{ __('Products') }} {{ $child->name }}
                                     </a>
                                 </li>
                                 @endforeach

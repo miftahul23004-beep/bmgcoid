@@ -318,6 +318,7 @@
         text-align: left;
         font-weight: 600;
         color: white;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
         font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -433,7 +434,7 @@
                              alt="{{ e($articleTitle) }}" 
                              class="w-full h-48 lg:h-44 object-cover rounded-xl shadow-sm"
                              width="320" height="192"
-                             fetchpriority="high"
+                             loading="lazy"
                              decoding="async">
                     </div>
                 @endif
@@ -447,7 +448,7 @@
                                 <a href="{{ route('articles.tag', $tag->slug) }}" 
                                    class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors"
                                    role="listitem">
-                                    {{ $tag->name }}
+                                    {{ __('Article') }} {{ $tag->name }}
                                 </a>
                             @endforeach
                             @if($article->tags->count() > 3)
@@ -532,7 +533,7 @@
                                     </svg>
                                     @foreach($article->tags as $tag)
                                         <a href="{{ route('articles.tag', $tag->slug) }}" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-primary-100 hover:text-primary-700 transition-colors">
-                                            #{{ $tag->name }}
+                                            #{{ $tag->name }} {{ __('article') }}
                                         </a>
                                     @endforeach
                                 </div>

@@ -8,9 +8,6 @@
 @endphp
 
 @push('meta')
-    @if($products->currentPage() > 1)
-        <meta name="robots" content="noindex, follow">
-    @endif
     @if($products->previousPageUrl())
         <link rel="prev" href="{{ $products->previousPageUrl() }}">
     @endif

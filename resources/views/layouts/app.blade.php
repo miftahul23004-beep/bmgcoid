@@ -28,7 +28,15 @@
     <meta name="keywords" content="{{ $metaKeywords ?? config('seo.defaults.keywords') }}">
     <meta name="author" content="{{ config('seo.defaults.author') }}">
     <meta name="robots" content="{{ $metaRobots ?? config('seo.defaults.robots') }}">
-    <link rel="canonical" href="{{ $canonicalUrl ?? url()->current() }}">
+    <link rel="canonical" href="{{ $canonicalUrl ?? strtok(url()->current(), '?') }}">
+
+    {{-- Hreflang for multilingual SEO --}}
+    @php
+        $cleanUrl = strtok(url()->current(), '?');
+    @endphp
+    <link rel="alternate" hreflang="id" href="{{ $cleanUrl }}?lang=id">
+    <link rel="alternate" hreflang="en" href="{{ $cleanUrl }}?lang=en">
+    <link rel="alternate" hreflang="x-default" href="{{ $cleanUrl }}">
 
     {{-- Open Graph Meta Tags --}}
     <meta property="og:title" content="{{ $ogTitle ?? $pageTitle }}">
@@ -97,31 +105,38 @@
     @stack('head')
     @stack('meta')
     
-    {{-- Custom Head Scripts from SEO Settings (deferred to reduce TBT) --}}
-    @if(!empty($seoSettings['custom_head_scripts']))
+    {{-- Google Analytics 4 - Direct load for tag verification --}}
+    @if(!empty($seoSettings['google_analytics_id']))
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $seoSettings['google_analytics_id'] }}"></script>
     <script>
-        // Defer third-party scripts (GTM, etc.) until after page load
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                var div = document.createElement('div');
-                div.innerHTML = {!! json_encode($seoSettings['custom_head_scripts']) !!};
-                var scripts = div.querySelectorAll('script');
-                scripts.forEach(function(script) {
-                    var newScript = document.createElement('script');
-                    if (script.src) {
-                        newScript.src = script.src;
-                        newScript.async = true;
-                    } else {
-                        newScript.textContent = script.textContent;
-                    }
-                    document.head.appendChild(newScript);
-                });
-            }, 1500);
-        });
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ $seoSettings['google_analytics_id'] }}');
     </script>
+    @endif
+
+    {{-- Google Tag Manager - Direct load for tag verification --}}
+    @if(!empty($seoSettings['google_tag_manager_id']))
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','{{ trim($seoSettings['google_tag_manager_id']) }}');</script>
+    @endif
+
+    {{-- Custom Head Scripts from SEO Settings --}}
+    @if(!empty($seoSettings['custom_head_scripts']))
+        {!! $seoSettings['custom_head_scripts'] !!}
     @endif
 </head>
 <body class="font-sans antialiased bg-gray-50 text-gray-900 overflow-x-hidden">
+    {{-- Google Tag Manager (noscript) - must be immediately after body tag --}}
+    @if(!empty($seoSettings['google_tag_manager_id']))
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ trim($seoSettings['google_tag_manager_id']) }}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
+
     {{-- Skip to main content for accessibility --}}
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-600 text-white px-4 py-2 rounded-md z-50">
         {{ __('Skip to main content') }}
@@ -167,26 +182,6 @@
 
     {{-- Additional Scripts --}}
     @stack('scripts')
-
-    {{-- Google Analytics - Loaded after page content for better performance --}}
-    @if(config('seo.analytics.google_analytics_id'))
-    <script>
-        // Defer Google Analytics until after page load
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                var script = document.createElement('script');
-                script.src = 'https://www.googletagmanager.com/gtag/js?id={{ config('seo.analytics.google_analytics_id') }}';
-                script.async = true;
-                document.head.appendChild(script);
-                
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '{{ config('seo.analytics.google_analytics_id') }}');
-            }, 2000); // Wait 2 seconds after page load
-        });
-    </script>
-    @endif
 
     {{-- Base JSON-LD Schema (Organization, LocalBusiness, WebSite) --}}
     @php

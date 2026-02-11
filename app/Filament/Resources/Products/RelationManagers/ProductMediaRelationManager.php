@@ -91,7 +91,9 @@ class ProductMediaRelationManager extends RelationManager
                     Tabs\Tab::make('🇮🇩 Indonesia')->schema([
                         TextInput::make('alt_text.id')
                             ->label(__('Alt Text (ID)'))
-                            ->maxLength(255),
+                            ->required()
+                            ->maxLength(255)
+                            ->helperText(__('Deskripsi gambar untuk SEO & aksesibilitas. Wajib diisi.')),
                         TextInput::make('caption.id')
                             ->label(__('Caption (ID)'))
                             ->maxLength(255),
@@ -99,7 +101,8 @@ class ProductMediaRelationManager extends RelationManager
                     Tabs\Tab::make('🇬🇧 English')->schema([
                         TextInput::make('alt_text.en')
                             ->label(__('Alt Text (EN)'))
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->helperText(__('Image description for SEO & accessibility.')),
                         TextInput::make('caption.en')
                             ->label(__('Caption (EN)'))
                             ->maxLength(255),

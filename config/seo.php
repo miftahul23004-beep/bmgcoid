@@ -101,8 +101,8 @@ return [
         'organization' => [
             '@type' => 'Organization',
             'name' => 'PT. Berkah Mandiri Globalindo',
-            'url' => env('APP_URL'),
-            'logo' => env('APP_URL') . '/images/logo.png',
+            'url' => null, // Resolved at runtime via config('app.url')
+            'logo' => null, // Resolved at runtime via config('app.url') . '/images/logo.png'
             'description' => 'Supplier dan distributor besi baja terpercaya di Surabaya, Sidoarjo, Gresik, Mojokerto, Jombang & seluruh Jawa Timur.',
             'address' => [
                 '@type' => 'PostalAddress',

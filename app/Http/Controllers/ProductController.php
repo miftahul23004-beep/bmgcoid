@@ -49,7 +49,15 @@ class ProductController extends Controller
             'products' => cache()->remember('stats.products_count', 3600, fn() => \App\Models\Product::where('is_active', true)->count()),
         ];
 
-        return view('pages.products.index', compact('categories', 'products', 'activeCategory', 'stats'));
+        // Noindex for search/filter/paginated pages
+        $metaRobots = (request('search') || request('sort') || $products->currentPage() > 1)
+            ? 'noindex, follow'
+            : null;
+
+        // Canonical always points to the clean indexable URL
+        $canonicalUrl = $metaRobots ? route('products.index') : null;
+
+        return view('pages.products.index', compact('categories', 'products', 'activeCategory', 'stats', 'metaRobots', 'canonicalUrl'));
     }
 
     public function category(string $slug): View
@@ -60,7 +68,13 @@ class ProductController extends Controller
 
         $breadcrumbs = $this->categoryService->getBreadcrumbs($category);
 
-        return view('pages.products.category', compact('category', 'products', 'breadcrumbs'));
+        // Noindex for paginated category pages
+        $metaRobots = $products->currentPage() > 1 ? 'noindex, follow' : null;
+
+        // Canonical always points to page 1
+        $canonicalUrl = $metaRobots ? route('products.category', $slug) : null;
+
+        return view('pages.products.category', compact('category', 'products', 'breadcrumbs', 'metaRobots', 'canonicalUrl'));
     }
 
     public function show(string $slug): View

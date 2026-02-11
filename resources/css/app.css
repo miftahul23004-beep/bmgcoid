@@ -510,7 +510,7 @@
 }
 
 .product-description th {
-    @apply px-4 py-3 text-left text-white font-semibold text-sm uppercase tracking-wider;
+    @apply px-4 py-3 text-left text-white font-semibold text-sm uppercase tracking-wider bg-gradient-to-r from-primary-600 to-primary-700;
 }
 
 .product-description tbody tr {

@@ -30,24 +30,30 @@ class BackupManager extends Page
     }
 
     /**
-     * Get total size of all backups
+     * Get total size of all backups (Spatie + SQL)
      */
     public function getTotalSize(): string
     {
+        $totalBytes = 0;
+
+        // Spatie backups
         $backupName = config('backup.backup.name');
         $disk = Storage::disk('backups');
         $backupPath = $backupName;
         
-        if (!$disk->exists($backupPath)) {
-            return '0 B';
+        if ($disk->exists($backupPath)) {
+            foreach ($disk->files($backupPath) as $file) {
+                if (str_ends_with($file, '.zip')) {
+                    $totalBytes += $disk->size($file);
+                }
+            }
         }
 
-        $files = $disk->files($backupPath);
-        $totalBytes = 0;
-        
-        foreach ($files as $file) {
-            if (str_ends_with($file, '.zip')) {
-                $totalBytes += $disk->size($file);
+        // SQL backups
+        $sqlDir = storage_path('app/backups');
+        if (is_dir($sqlDir)) {
+            foreach (array_merge(glob("{$sqlDir}/*.sql"), glob("{$sqlDir}/*.sql.gz")) as $f) {
+                $totalBytes += filesize($f);
             }
         }
         
@@ -193,6 +199,118 @@ class BackupManager extends Page
                 ->send();
         }
         
+        $this->dispatch('$refresh');
+    }
+
+    /**
+     * Get SQL backups (phpMyAdmin-style)
+     */
+    public function getSqlBackups(): array
+    {
+        $sqlDir = storage_path('app/backups');
+        if (!is_dir($sqlDir)) {
+            return [];
+        }
+
+        $sqlFiles = array_merge(glob("{$sqlDir}/*.sql"), glob("{$sqlDir}/*.sql.gz"));
+        $backups = [];
+
+        foreach ($sqlFiles as $file) {
+            $filename = basename($file);
+            $isCompressed = str_ends_with($filename, '.gz');
+
+            $backups[] = [
+                'filename' => $filename,
+                'path' => $file,
+                'type' => 'sql',
+                'type_label' => $isCompressed ? 'SQL (gzip)' : 'SQL',
+                'type_color' => 'info',
+                'size' => $this->formatBytes(filesize($file)),
+                'created_at' => date('Y-m-d H:i:s', filemtime($file)),
+            ];
+        }
+
+        usort($backups, fn($a, $b) => strtotime($b['created_at']) - strtotime($a['created_at']));
+
+        return $backups;
+    }
+
+    /**
+     * Create phpMyAdmin-style SQL backup
+     */
+    public function createSqlBackup(): void
+    {
+        try {
+            Notification::make()
+                ->title('Creating SQL backup...')
+                ->info()
+                ->body('Generating phpMyAdmin-compatible SQL dump.')
+                ->send();
+
+            $exitCode = Artisan::call('backup:database', ['--compress' => true, '--max-files' => 10]);
+            $output = Artisan::output();
+
+            if ($exitCode === 0) {
+                Notification::make()
+                    ->title('SQL Backup created successfully!')
+                    ->success()
+                    ->body('phpMyAdmin-compatible SQL dump has been saved.')
+                    ->send();
+            } else {
+                Notification::make()
+                    ->title('SQL Backup failed')
+                    ->danger()
+                    ->body($output)
+                    ->send();
+            }
+
+            $this->dispatch('$refresh');
+        } catch (\Exception $e) {
+            Notification::make()
+                ->title('SQL Backup failed')
+                ->danger()
+                ->body($e->getMessage())
+                ->send();
+        }
+    }
+
+    /**
+     * Download an SQL backup file
+     */
+    public function downloadSqlBackup(string $filename): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $path = storage_path('app/backups/' . $filename);
+
+        if (!file_exists($path)) {
+            Notification::make()
+                ->title('File not found')
+                ->danger()
+                ->send();
+            return response()->noContent();
+        }
+
+        return response()->download($path, $filename);
+    }
+
+    /**
+     * Delete an SQL backup file
+     */
+    public function deleteSqlBackup(string $filename): void
+    {
+        $path = storage_path('app/backups/' . $filename);
+
+        if (file_exists($path) && unlink($path)) {
+            Notification::make()
+                ->title('SQL backup deleted')
+                ->success()
+                ->send();
+        } else {
+            Notification::make()
+                ->title('Failed to delete SQL backup')
+                ->danger()
+                ->send();
+        }
+
         $this->dispatch('$refresh');
     }
 
